@@ -1,0 +1,18 @@
+{
+    "module_name": "",
+    "package_name": "trytond_{{ cookiecutter.module_name }}",
+    "purpose": "",
+    "keywords": "tryton {{ cookiecutter.module_name.replace('_', ' ').lower() }}",
+    "test_with_scenario": "no",
+    "copyright_name": "",
+    "support_email_name": "",
+    "support_email": "",
+    "support_url": "",
+    "tryton_package_author": "",
+    "tryton_package_email": "",
+    "tryton_series": "",
+    "tryton_modules_url": "",
+    "tryton_modules_bugtracker_url": "",
+    "tryton_modules_repository_url": "",
+    "tryton_modules_repository_name": "tryton-modules"
+}
