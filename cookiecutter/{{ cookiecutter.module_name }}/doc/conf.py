@@ -43,7 +43,7 @@ def get_version(release):
 # Project information
 project = get_setup_argument('name')
 author = get_setup_argument('author')
-copyright = get_copyright(2019, date.today().year, author)
+copyright = get_copyright({% now 'local', '%Y' %}, date.today().year, author)
 release = get_setup_argument('version')
 version = get_version(release)
 
