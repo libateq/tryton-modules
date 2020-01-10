@@ -1,0 +1,903 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the account_personal Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+repository for full copyright notices, license terms and support information.
+-->
+<tryton>
+  <data>
+    <record model="account.account.type.template" id="personal">
+      <field name="name">Account Type (Personal)</field>
+      <field name="sequence" eval="10"/>
+      <field name="statement" eval="None"/>
+    </record>
+
+    <record model="account.account.type.template" id="assets">
+      <field name="name">Assets</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="personal"/>
+      <field name="statement">balance</field>
+      <field name="assets" eval="True"/>
+    </record>
+
+    <record model="account.account.type.template" id="asset_fixed">
+      <field name="name">Fixed assets</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="assets"/>
+      <field name="statement">balance</field>
+      <field name="assets" eval="True"/>
+    </record>
+    <record model="account.account.type.template" id="asset_property">
+      <field name="name">Property</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="asset_fixed"/>
+      <field name="statement">balance</field>
+      <field name="assets" eval="True"/>
+    </record>
+    <record model="account.account.type.template" id="asset_vehicles">
+      <field name="name">Vehicles</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="asset_fixed"/>
+      <field name="statement">balance</field>
+      <field name="assets" eval="True"/>
+    </record>
+
+    <record model="account.account.type.template" id="asset_non_current">
+      <field name="name">Non-current assets</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="assets"/>
+      <field name="statement">balance</field>
+      <field name="assets" eval="True"/>
+    </record>
+    <record model="account.account.type.template" id="asset_pension">
+      <field name="name">Pension</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="asset_non_current"/>
+      <field name="statement">balance</field>
+      <field name="assets" eval="True"/>
+    </record>
+    <record model="account.account.type.template" id="asset_shares">
+      <field name="name">Stocks and shares</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="asset_non_current"/>
+      <field name="statement">balance</field>
+      <field name="assets" eval="True"/>
+    </record>
+    <record model="account.account.type.template" id="asset_non_current_loans">
+      <field name="name">Loans</field>
+      <field name="sequence" eval="30"/>
+      <field name="parent" ref="asset_non_current"/>
+      <field name="statement">balance</field>
+      <field name="assets" eval="True"/>
+    </record>
+
+    <record model="account.account.type.template" id="asset_current">
+      <field name="name">Current assets</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="assets"/>
+      <field name="statement">balance</field>
+      <field name="assets" eval="True"/>
+    </record>
+    <record model="account.account.type.template" id="asset_debtors">
+      <field name="name">Debtors</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="asset_current"/>
+      <field name="statement">balance</field>
+      <field name="assets" eval="True"/>
+      <field name="receivable" eval="True"/>
+    </record>
+    <record model="account.account.type.template" id="asset_cash">
+      <field name="name">Cash at bank and in hand</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="asset_current"/>
+      <field name="statement">balance</field>
+      <field name="assets" eval="True"/>
+    </record>
+    <record model="account.account.type.template" id="asset_current_loans">
+      <field name="name">Loans</field>
+      <field name="sequence" eval="30"/>
+      <field name="parent" ref="asset_current"/>
+      <field name="statement">balance</field>
+      <field name="assets" eval="True"/>
+    </record>
+
+    <record model="account.account.type.template" id="liabilities">
+      <field name="name">Liabilities</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="personal"/>
+      <field name="statement">balance</field>
+    </record>
+
+    <record model="account.account.type.template" id="liability_non_current">
+      <field name="name">Non-current liabilities</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="liabilities"/>
+      <field name="statement">balance</field>
+    </record>
+    <record model="account.account.type.template" id="liability_mortgage">
+      <field name="name">Bank loans and mortgages</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="liability_non_current"/>
+      <field name="statement">balance</field>
+    </record>
+    <record model="account.account.type.template" id="liability_long_term_loan">
+      <field name="name">Other loans</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="liability_non_current"/>
+      <field name="statement">balance</field>
+    </record>
+
+    <record model="account.account.type.template" id="liability_current">
+      <field name="name">Current liabilities</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="liabilities"/>
+      <field name="statement">balance</field>
+    </record>
+    <record model="account.account.type.template" id="liability_creditor">
+      <field name="name">Creditors</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="liability_current"/>
+      <field name="statement">balance</field>
+      <field name="payable" eval="True"/>
+    </record>
+    <record model="account.account.type.template" id="liability_bank">
+      <field name="name">Bank loans and overdrafts</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="liability_current"/>
+      <field name="statement">balance</field>
+    </record>
+    <record model="account.account.type.template" id="liability_credit_card">
+      <field name="name">Credit cards</field>
+      <field name="sequence" eval="30"/>
+      <field name="parent" ref="liability_current"/>
+      <field name="statement">balance</field>
+    </record>
+    <record model="account.account.type.template" id="liability_short_term_loan">
+      <field name="name">Other loans</field>
+      <field name="sequence" eval="40"/>
+      <field name="parent" ref="liability_current"/>
+      <field name="statement">balance</field>
+    </record>
+
+    <record model="account.account.type.template" id="equity">
+      <field name="name">Equity</field>
+      <field name="sequence" eval="30"/>
+      <field name="parent" ref="personal"/>
+      <field name="statement">balance</field>
+    </record>
+    <record model="account.account.type.template" id="equity_opening_balances">
+      <field name="name">Opening balances</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="equity"/>
+      <field name="statement">balance</field>
+    </record>
+    <record model="account.account.type.template" id="equity_year_end">
+      <field name="name">Year end</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="equity"/>
+      <field name="statement">balance</field>
+    </record>
+
+    <record model="account.account.type.template" id="income">
+      <field name="name">Net income</field>
+      <field name="sequence" eval="40"/>
+      <field name="parent" ref="personal"/>
+      <field name="statement">income</field>
+    </record>
+
+    <record model="account.account.type.template" id="income_gross">
+      <field name="name">Gross income</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="income"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="income_work">
+      <field name="name">Income from work</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="income_gross"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="income_investment">
+      <field name="name">Income from investments</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="income_gross"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="income_dividends">
+      <field name="name">Dividends</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="income_investment"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="income_interest">
+      <field name="name">Interest</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="income_investment"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="income_other">
+      <field name="name">Other income</field>
+      <field name="sequence" eval="30"/>
+      <field name="parent" ref="income_gross"/>
+      <field name="statement">income</field>
+    </record>
+
+    <record model="account.account.type.template" id="expenses">
+      <field name="name">Expenses</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="income"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="expense_financial">
+      <field name="name">Financial expenses</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="expenses"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="expense_essential">
+      <field name="name">Food and essentials</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="expenses"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="expense_housing">
+      <field name="name">Housing</field>
+      <field name="sequence" eval="30"/>
+      <field name="parent" ref="expenses"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="expense_living">
+      <field name="name">Living expenses</field>
+      <field name="sequence" eval="40"/>
+      <field name="parent" ref="expenses"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="expense_recreation">
+      <field name="name">Recreation and entertainment</field>
+      <field name="sequence" eval="50"/>
+      <field name="parent" ref="expenses"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="expense_taxes">
+      <field name="name">Taxes</field>
+      <field name="sequence" eval="60"/>
+      <field name="parent" ref="expenses"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="expense_utilities">
+      <field name="name">Utilities</field>
+      <field name="sequence" eval="70"/>
+      <field name="parent" ref="expenses"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="expense_transport">
+      <field name="name">Transport</field>
+      <field name="sequence" eval="80"/>
+      <field name="parent" ref="expenses"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="expense_car">
+      <field name="name">Car</field>
+      <field name="sequence" eval="10"/>
+      <field name="parent" ref="expense_transport"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="expense_travel">
+      <field name="name">Travel</field>
+      <field name="sequence" eval="20"/>
+      <field name="parent" ref="expense_transport"/>
+      <field name="statement">income</field>
+    </record>
+    <record model="account.account.type.template" id="expense_other">
+      <field name="name">Other expenses</field>
+      <field name="sequence" eval="90"/>
+      <field name="parent" ref="expenses"/>
+      <field name="statement">income</field>
+    </record>
+
+    <record model="account.account.type.template" id="off_sheet">
+      <field name="name">Off balance sheet</field>
+      <field name="sequence" eval="9999"/>
+      <field name="parent" ref="personal"/>
+      <field name="statement">off-balance</field>
+    </record>
+
+    <record model="account.account.template" id="root">
+      <field name="name">Account Chart (Personal)</field>
+      <field name="type" ref="personal"/>
+      <field name="closed" eval="True"/>
+    </record>
+
+    <record model="account.account.template" id="account_assets">
+      <field name="name">Assets</field>
+      <field name="code">A</field>
+      <field name="parent" ref="root"/>
+    </record>
+
+    <record model="account.account.template" id="account_asset_current">
+      <field name="name">Current Assets</field>
+      <field name="code">A1</field>
+      <field name="type" ref="asset_current"/>
+      <field name="parent" ref="account_assets"/>
+    </record>
+    <record model="account.account.template" id="account_current_accounts">
+      <field name="name">Current Accounts</field>
+      <field name="code">A11</field>
+      <field name="type" ref="asset_cash"/>
+      <field name="parent" ref="account_asset_current"/>
+    </record>
+    <record model="account.account.template" id="account_savings_accounts">
+      <field name="name">Savings Accounts</field>
+      <field name="code">A12</field>
+      <field name="type" ref="asset_cash"/>
+      <field name="parent" ref="account_asset_current"/>
+    </record>
+    <record model="account.account.template" id="account_cash">
+      <field name="name">Cash</field>
+      <field name="code">A13</field>
+      <field name="type" ref="asset_cash"/>
+      <field name="parent" ref="account_asset_current"/>
+    </record>
+    <record model="account.account.template" id="account_current_loans">
+      <field name="name">Loans</field>
+      <field name="code">A14</field>
+      <field name="type" ref="asset_current_loans"/>
+      <field name="parent" ref="account_asset_current"/>
+      <field name="party_required" eval="True"/>
+    </record>
+
+    <record model="account.account.template" id="account_asset_fixed">
+      <field name="name">Fixed Assets</field>
+      <field name="code">A2</field>
+      <field name="type" ref="asset_fixed"/>
+      <field name="parent" ref="account_assets"/>
+    </record>
+    <record model="account.account.template" id="account_property">
+      <field name="name">Property</field>
+      <field name="code">A21</field>
+      <field name="type" ref="asset_property"/>
+      <field name="parent" ref="account_asset_fixed"/>
+    </record>
+    <record model="account.account.template" id="account_vehicles">
+      <field name="name">Vehicles</field>
+      <field name="code">A22</field>
+      <field name="type" ref="asset_vehicles"/>
+      <field name="parent" ref="account_asset_fixed"/>
+    </record>
+
+    <record model="account.account.template" id="account_investments">
+      <field name="name">Investments</field>
+      <field name="code">A3</field>
+      <field name="type" ref="asset_non_current"/>
+      <field name="parent" ref="account_assets"/>
+    </record>
+    <record model="account.account.template" id="account_shares">
+      <field name="name">Stocks and Shares</field>
+      <field name="code">A31</field>
+      <field name="type" ref="asset_shares"/>
+      <field name="parent" ref="account_investments"/>
+    </record>
+    <record model="account.account.template" id="account_pensions">
+      <field name="name">Pensions</field>
+      <field name="code">A32</field>
+      <field name="type" ref="asset_pension"/>
+      <field name="parent" ref="account_investments"/>
+    </record>
+    <record model="account.account.template" id="account_non_current_loans">
+      <field name="name">Loans</field>
+      <field name="code">A33</field>
+      <field name="type" ref="asset_non_current_loans"/>
+      <field name="parent" ref="account_investments"/>
+      <field name="party_required" eval="True"/>
+    </record>
+
+    <record model="account.account.template" id="account_recievables">
+      <field name="name">Recievables</field>
+      <field name="code">A4</field>
+      <field name="type" ref="asset_debtors"/>
+      <field name="parent" ref="account_assets"/>
+      <field name="party_required" eval="True"/>
+    </record>
+
+    <record model="account.account.template" id="account_liabilities">
+      <field name="name">Liabilities</field>
+      <field name="code">B</field>
+      <field name="parent" ref="root"/>
+    </record>
+
+    <record model="account.account.template" id="account_liability_current">
+      <field name="name">Current Liabilities</field>
+      <field name="code">B1</field>
+      <field name="type" ref="liability_current"/>
+      <field name="parent" ref="account_liabilities"/>
+    </record>
+    <record model="account.account.template" id="account_bank_loans_short">
+      <field name="name">Bank Loans</field>
+      <field name="code">B11</field>
+      <field name="type" ref="liability_bank"/>
+      <field name="parent" ref="account_liability_current"/>
+    </record>
+    <record model="account.account.template" id="account_overdrafts">
+      <field name="name">Bank Overdrafts</field>
+      <field name="code">B12</field>
+      <field name="type" ref="liability_bank"/>
+      <field name="parent" ref="account_liability_current"/>
+    </record>
+    <record model="account.account.template" id="account_credit_cards">
+      <field name="name">Credit Cards</field>
+      <field name="code">B13</field>
+      <field name="type" ref="liability_credit_card"/>
+      <field name="parent" ref="account_liability_current"/>
+    </record>
+    <record model="account.account.template" id="account_loans_short">
+      <field name="name">Other Loans</field>
+      <field name="code">B19</field>
+      <field name="type" ref="liability_short_term_loan"/>
+      <field name="parent" ref="account_liability_current"/>
+      <field name="party_required" eval="True"/>
+    </record>
+
+    <record model="account.account.template" id="account_liability_long_term">
+      <field name="name">Long Term Liabilities</field>
+      <field name="code">B2</field>
+      <field name="type" ref="liability_non_current"/>
+      <field name="parent" ref="account_liabilities"/>
+    </record>
+    <record model="account.account.template" id="account_bank_loans_long">
+      <field name="name">Bank Loans</field>
+      <field name="code">B21</field>
+      <field name="type" ref="liability_mortgage"/>
+      <field name="parent" ref="account_liability_long_term"/>
+    </record>
+    <record model="account.account.template" id="account_mortgages">
+      <field name="name">Mortgages</field>
+      <field name="code">B22</field>
+      <field name="type" ref="liability_mortgage"/>
+      <field name="parent" ref="account_liability_long_term"/>
+    </record>
+    <record model="account.account.template" id="account_loans_long">
+      <field name="name">Other Loans</field>
+      <field name="code">B23</field>
+      <field name="type" ref="liability_long_term_loan"/>
+      <field name="parent" ref="account_liability_long_term"/>
+      <field name="party_required" eval="True"/>
+    </record>
+
+    <record model="account.account.template" id="account_payables">
+      <field name="name">Payables</field>
+      <field name="code">B3</field>
+      <field name="type" ref="liability_creditor"/>
+      <field name="parent" ref="account_liabilities"/>
+      <field name="party_required" eval="True"/>
+    </record>
+
+    <record model="account.account.template" id="account_equity">
+      <field name="name">Equity</field>
+      <field name="code">C</field>
+      <field name="parent" ref="root"/>
+    </record>
+
+    <record model="account.account.template" id="account_opening_balances">
+      <field name="name">Opening Balances</field>
+      <field name="code">C1</field>
+      <field name="type" ref="equity_opening_balances"/>
+      <field name="parent" ref="account_equity"/>
+    </record>
+
+    <record model="account.account.template" id="account_year_end">
+      <field name="name">Year End</field>
+      <field name="code">C2</field>
+      <field name="type" ref="equity_year_end"/>
+      <field name="parent" ref="account_equity"/>
+    </record>
+
+    <record model="account.account.template" id="account_income">
+      <field name="name">Income</field>
+      <field name="code">D</field>
+      <field name="parent" ref="root"/>
+    </record>
+
+    <record model="account.account.template" id="account_work">
+      <field name="name">Work</field>
+      <field name="code">D1</field>
+      <field name="type" ref="income_work"/>
+      <field name="parent" ref="account_income"/>
+    </record>
+
+    <record model="account.account.template" id="account_income_investments">
+      <field name="name">Investments</field>
+      <field name="code">D2</field>
+      <field name="type" ref="income_investment"/>
+      <field name="parent" ref="account_income"/>
+    </record>
+    <record model="account.account.template" id="account_dividends">
+      <field name="name">Dividends</field>
+      <field name="code">D21</field>
+      <field name="type" ref="income_dividends"/>
+      <field name="parent" ref="account_income_investments"/>
+    </record>
+    <record model="account.account.template" id="account_interest">
+      <field name="name">Interest</field>
+      <field name="code">D22</field>
+      <field name="type" ref="income_interest"/>
+      <field name="parent" ref="account_income_investments"/>
+    </record>
+    <record model="account.account.template" id="account_interest_exempt">
+      <field name="name">Interest Tax Exempt</field>
+      <field name="code">D221</field>
+      <field name="type" ref="income_interest"/>
+      <field name="parent" ref="account_interest"/>
+    </record>
+    <record model="account.account.template" id="account_interest_0">
+      <field name="name">Interest Taxed at 0%</field>
+      <field name="code">D222</field>
+      <field name="type" ref="income_interest"/>
+      <field name="parent" ref="account_interest"/>
+    </record>
+    <record model="account.account.template" id="account_interest_20">
+      <field name="name">Interest Taxed at 20%</field>
+      <field name="code">D223</field>
+      <field name="type" ref="income_interest"/>
+      <field name="parent" ref="account_interest"/>
+    </record>
+
+    <record model="account.account.template" id="account_income_other">
+      <field name="name">Other Income</field>
+      <field name="code">D3</field>
+      <field name="type" ref="income_other"/>
+      <field name="parent" ref="account_income"/>
+    </record>
+    <record model="account.account.template" id="account_income_gifts">
+      <field name="name">Gifts</field>
+      <field name="code">D31</field>
+      <field name="type" ref="income_other"/>
+      <field name="parent" ref="account_income_other"/>
+    </record>
+
+    <record model="account.account.template" id="account_expenses">
+      <field name="name">Expenses</field>
+      <field name="code">E</field>
+      <field name="parent" ref="root"/>
+    </record>
+
+    <record model="account.account.template" id="account_expense_financial">
+      <field name="name">Financial Expenses</field>
+      <field name="code">E1</field>
+      <field name="type" ref="expense_financial"/>
+      <field name="parent" ref="account_expenses"/>
+    </record>
+    <record model="account.account.template" id="account_bank_charges">
+      <field name="name">Bank Charges</field>
+      <field name="code">E11</field>
+      <field name="type" ref="expense_financial"/>
+      <field name="parent" ref="account_expense_financial"/>
+    </record>
+    <record model="account.account.template" id="account_bank_loan_interest">
+      <field name="name">Bank Loan Interest</field>
+      <field name="code">E12</field>
+      <field name="type" ref="expense_financial"/>
+      <field name="parent" ref="account_expense_financial"/>
+    </record>
+    <record model="account.account.template" id="account_currency_exchange_cost">
+      <field name="name">Currency Exchange</field>
+      <field name="code">E13</field>
+      <field name="type" ref="expense_financial"/>
+      <field name="parent" ref="account_expense_financial"/>
+    </record>
+    <record model="account.account.template" id="account_mortgage_interest">
+      <field name="name">Mortgage Interest</field>
+      <field name="code">E14</field>
+      <field name="type" ref="expense_financial"/>
+      <field name="parent" ref="account_expense_financial"/>
+    </record>
+    <record model="account.account.template" id="account_pension_charges">
+      <field name="name">Pension Management Charges</field>
+      <field name="code">E15</field>
+      <field name="type" ref="expense_financial"/>
+      <field name="parent" ref="account_expense_financial"/>
+    </record>
+
+    <record model="account.account.template" id="account_essentials">
+      <field name="name">Food and Essentials</field>
+      <field name="code">E2</field>
+      <field name="type" ref="expense_essential"/>
+      <field name="parent" ref="account_expenses"/>
+    </record>
+    <record model="account.account.template" id="account_childcare">
+      <field name="name">Childcare</field>
+      <field name="code">E21</field>
+      <field name="type" ref="expense_essential"/>
+      <field name="parent" ref="account_essentials"/>
+    </record>
+    <record model="account.account.template" id="account_groceries">
+      <field name="name">Groceries</field>
+      <field name="code">E22</field>
+      <field name="type" ref="expense_essential"/>
+      <field name="parent" ref="account_essentials"/>
+    </record>
+    <record model="account.account.template" id="account_pets">
+      <field name="name">Pets</field>
+      <field name="code">E23</field>
+      <field name="type" ref="expense_essential"/>
+      <field name="parent" ref="account_essentials"/>
+    </record>
+
+    <record model="account.account.template" id="account_housing">
+      <field name="name">Housing</field>
+      <field name="code">E3</field>
+      <field name="type" ref="expense_housing"/>
+      <field name="parent" ref="account_expenses"/>
+    </record>
+    <record model="account.account.template" id="account_domestic_appliances">
+      <field name="name">Domestic Appliances</field>
+      <field name="code">E31</field>
+      <field name="type" ref="expense_housing"/>
+      <field name="parent" ref="account_housing"/>
+    </record>
+    <record model="account.account.template" id="account_fixtures_and_fittings">
+      <field name="name">Fixtures and Fittings</field>
+      <field name="code">E32</field>
+      <field name="type" ref="expense_housing"/>
+      <field name="parent" ref="account_housing"/>
+    </record>
+    <record model="account.account.template" id="account_house_insurance">
+      <field name="name">Insurance</field>
+      <field name="code">E33</field>
+      <field name="type" ref="expense_housing"/>
+      <field name="parent" ref="account_housing"/>
+    </record>
+    <record model="account.account.template" id="account_house_maintenance">
+      <field name="name">Maintenance</field>
+      <field name="code">E34</field>
+      <field name="type" ref="expense_housing"/>
+      <field name="parent" ref="account_housing"/>
+    </record>
+    <record model="account.account.template" id="account_rent">
+      <field name="name">Rent</field>
+      <field name="code">E35</field>
+      <field name="type" ref="expense_housing"/>
+      <field name="parent" ref="account_housing"/>
+    </record>
+    <record model="account.account.template" id="account_garden">
+      <field name="name">Garden</field>
+      <field name="code">E36</field>
+      <field name="type" ref="expense_housing"/>
+      <field name="parent" ref="account_housing"/>
+    </record>
+
+    <record model="account.account.template" id="account_expense_living">
+      <field name="name">Living Expenses</field>
+      <field name="code">E4</field>
+      <field name="type" ref="expense_living"/>
+      <field name="parent" ref="account_expenses"/>
+    </record>
+    <record model="account.account.template" id="account_clothing">
+      <field name="name">Clothing</field>
+      <field name="code">E41</field>
+      <field name="type" ref="expense_living"/>
+      <field name="parent" ref="account_expense_living"/>
+    </record>
+    <record model="account.account.template" id="account_health_beauty">
+      <field name="name">Health and Beauty</field>
+      <field name="code">E42</field>
+      <field name="type" ref="expense_living"/>
+      <field name="parent" ref="account_expense_living"/>
+    </record>
+    <record model="account.account.template" id="account_sports_fitness">
+      <field name="name">Sports and Fitness</field>
+      <field name="code">E43</field>
+      <field name="type" ref="expense_living"/>
+      <field name="parent" ref="account_expense_living"/>
+    </record>
+
+    <record model="account.account.template" id="account_expense_other">
+      <field name="name">Other Expenses</field>
+      <field name="code">E5</field>
+      <field name="type" ref="expense_other"/>
+      <field name="parent" ref="account_expenses"/>
+    </record>
+    <record model="account.account.template" id="account_charity">
+      <field name="name">Charity</field>
+      <field name="code">E51</field>
+      <field name="type" ref="expense_other"/>
+      <field name="parent" ref="account_expense_other"/>
+    </record>
+    <record model="account.account.template" id="account_expense_gifts">
+      <field name="name">Gifts</field>
+      <field name="code">E52</field>
+      <field name="type" ref="expense_other"/>
+      <field name="parent" ref="account_expense_other"/>
+    </record>
+    <record model="account.account.template" id="account_expense_general">
+      <field name="name">General Expenses</field>
+      <field name="code">E59</field>
+      <field name="type" ref="expense_other"/>
+      <field name="parent" ref="account_expense_other"/>
+    </record>
+
+    <record model="account.account.template" id="account_entertainment">
+      <field name="name">Recreation and Entertainment</field>
+      <field name="code">E6</field>
+      <field name="type" ref="expense_recreation"/>
+      <field name="parent" ref="account_expenses"/>
+    </record>
+    <record model="account.account.template" id="account_books">
+      <field name="name">Books</field>
+      <field name="code">E61</field>
+      <field name="type" ref="expense_recreation"/>
+      <field name="parent" ref="account_entertainment"/>
+    </record>
+    <record model="account.account.template" id="account_computer_games">
+      <field name="name">Computer Games</field>
+      <field name="code">E62</field>
+      <field name="type" ref="expense_recreation"/>
+      <field name="parent" ref="account_entertainment"/>
+    </record>
+    <record model="account.account.template" id="account_eating_out">
+      <field name="name">Eating Out</field>
+      <field name="code">E63</field>
+      <field name="type" ref="expense_recreation"/>
+      <field name="parent" ref="account_entertainment"/>
+    </record>
+    <record model="account.account.template" id="account_going_out">
+      <field name="name">Going Out</field>
+      <field name="code">E64</field>
+      <field name="type" ref="expense_recreation"/>
+      <field name="parent" ref="account_entertainment"/>
+    </record>
+    <record model="account.account.template" id="account_hobbies">
+      <field name="name">Hobbies</field>
+      <field name="code">E65</field>
+      <field name="type" ref="expense_recreation"/>
+      <field name="parent" ref="account_entertainment"/>
+    </record>
+    <record model="account.account.template" id="account_holidays">
+      <field name="name">Holidays and Days Out</field>
+      <field name="code">E66</field>
+      <field name="type" ref="expense_recreation"/>
+      <field name="parent" ref="account_entertainment"/>
+    </record>
+    <record model="account.account.template" id="account_tv_movies">
+      <field name="name">TV and Movies</field>
+      <field name="code">E67</field>
+      <field name="type" ref="expense_recreation"/>
+      <field name="parent" ref="account_entertainment"/>
+    </record>
+
+    <record model="account.account.template" id="account_taxes">
+      <field name="name">Taxes</field>
+      <field name="code">E7</field>
+      <field name="type" ref="expense_taxes"/>
+      <field name="parent" ref="account_expenses"/>
+    </record>
+    <record model="account.account.template" id="account_council_tax">
+      <field name="name">Council Tax</field>
+      <field name="code">E71</field>
+      <field name="type" ref="expense_taxes"/>
+      <field name="parent" ref="account_taxes"/>
+    </record>
+    <record model="account.account.template" id="account_income_tax">
+      <field name="name">Income Tax</field>
+      <field name="code">E72</field>
+      <field name="type" ref="expense_taxes"/>
+      <field name="parent" ref="account_taxes"/>
+    </record>
+    <record model="account.account.template" id="account_national_insurance">
+      <field name="name">National Insurance</field>
+      <field name="code">E73</field>
+      <field name="type" ref="expense_taxes"/>
+      <field name="parent" ref="account_taxes"/>
+    </record>
+    <record model="account.account.template" id="account_tax_on_interest">
+      <field name="name">Tax on Interest</field>
+      <field name="code">E74</field>
+      <field name="type" ref="expense_taxes"/>
+      <field name="parent" ref="account_taxes"/>
+    </record>
+
+    <record model="account.account.template" id="account_utilities">
+      <field name="name">Utilities</field>
+      <field name="code">E8</field>
+      <field name="type" ref="expense_utilities"/>
+      <field name="parent" ref="account_expenses"/>
+    </record>
+    <record model="account.account.template" id="account_power">
+      <field name="name">Power</field>
+      <field name="code">E81</field>
+      <field name="type" ref="expense_utilities"/>
+      <field name="parent" ref="account_utilities"/>
+    </record>
+    <record model="account.account.template" id="account_gas">
+      <field name="name">Gas</field>
+      <field name="code">E811</field>
+      <field name="type" ref="expense_utilities"/>
+      <field name="parent" ref="account_power"/>
+    </record>
+    <record model="account.account.template" id="account_electricity">
+      <field name="name">Electricity</field>
+      <field name="code">E812</field>
+      <field name="type" ref="expense_utilities"/>
+      <field name="parent" ref="account_power"/>
+    </record>
+    <record model="account.account.template" id="account_water">
+      <field name="name">Water</field>
+      <field name="code">E82</field>
+      <field name="type" ref="expense_utilities"/>
+      <field name="parent" ref="account_utilities"/>
+    </record>
+    <record model="account.account.template" id="account_mobile_phone">
+      <field name="name">Mobile Phone</field>
+      <field name="code">E83</field>
+      <field name="type" ref="expense_utilities"/>
+      <field name="parent" ref="account_utilities"/>
+    </record>
+    <record model="account.account.template" id="account_telephone_broadband">
+      <field name="name">Telephone and Broadband</field>
+      <field name="code">E84</field>
+      <field name="type" ref="expense_utilities"/>
+      <field name="parent" ref="account_utilities"/>
+    </record>
+    <record model="account.account.template" id="account_internet">
+      <field name="name">Internet Services</field>
+      <field name="code">E85</field>
+      <field name="type" ref="expense_utilities"/>
+      <field name="parent" ref="account_utilities"/>
+    </record>
+
+    <record model="account.account.template" id="account_transport">
+      <field name="name">Transport</field>
+      <field name="code">E9</field>
+      <field name="type" ref="expense_transport"/>
+      <field name="parent" ref="account_expenses"/>
+    </record>
+    <record model="account.account.template" id="account_car">
+      <field name="name">Car</field>
+      <field name="code">E91</field>
+      <field name="type" ref="expense_car"/>
+      <field name="parent" ref="account_transport"/>
+    </record>
+    <record model="account.account.template" id="account_car_depreciation">
+      <field name="name">Depreciation</field>
+      <field name="code">E911</field>
+      <field name="type" ref="expense_car"/>
+      <field name="parent" ref="account_car"/>
+    </record>
+    <record model="account.account.template" id="account_car_fuel">
+      <field name="name">Fuel</field>
+      <field name="code">E912</field>
+      <field name="type" ref="expense_car"/>
+      <field name="parent" ref="account_car"/>
+    </record>
+    <record model="account.account.template" id="account_car_insurance">
+      <field name="name">Insurance</field>
+      <field name="code">E913</field>
+      <field name="type" ref="expense_car"/>
+      <field name="parent" ref="account_car"/>
+    </record>
+    <record model="account.account.template" id="account_car_maintenance">
+      <field name="name">Maintenance</field>
+      <field name="code">E914</field>
+      <field name="type" ref="expense_car"/>
+      <field name="parent" ref="account_car"/>
+    </record>
+    <record model="account.account.template" id="account_car_service_mot">
+      <field name="name">Service and MOT</field>
+      <field name="code">E915</field>
+      <field name="type" ref="expense_car"/>
+      <field name="parent" ref="account_car"/>
+    </record>
+    <record model="account.account.template" id="account_car_license">
+      <field name="name">Vehicle License</field>
+      <field name="code">E916</field>
+      <field name="type" ref="expense_car"/>
+      <field name="parent" ref="account_car"/>
+    </record>
+
+    <record model="account.account.template" id="account_travel">
+      <field name="name">Travel</field>
+      <field name="code">E92</field>
+      <field name="type" ref="expense_travel"/>
+      <field name="parent" ref="account_transport"/>
+    </record>
+  </data>
+</tryton>
