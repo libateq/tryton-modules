@@ -1,8 +1,5 @@
-Account Personal Module
-#######################
-
-A module for the Tryton application platform that provides a chart of accounts
-for personal accounting.
+.. include:: ../README.rst
+    :end-before: .. start-of-readme-only-text
 
 
 Contents
