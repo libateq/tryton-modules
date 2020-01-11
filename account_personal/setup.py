@@ -25,7 +25,8 @@ def setup_version():
     version = tryton_cfg.get('version', '0.0.1').split('.', 2)
     version = dict(
         zip(('major', 'minor', 'revision'), [int(i) for i in version]))
-    version['suffix'] = '' if version['minor'] % 2 else '.dev0'
+    if version['minor'] % 2:
+        version['revision'] = 'dev{}'.format(version['revision'])
 
 
 def read(fname):
@@ -34,10 +35,10 @@ def read(fname):
 
 
 def required_version(name, version):
-    required = '{name} >={major}.{minor}{suffix}, <{next_major}.{next_minor}'
+    required = '{name} >={major}.{minor}{dev}, <{next_major}.{next_minor}'
     return required.format(
         name=name, next_major=version['major'], next_minor=version['minor']+1,
-        **version)
+        dev='.dev0' if version['minor'] % 2 else '', **version)
 
 
 def install_requires():
@@ -58,7 +59,7 @@ setup_tryton_cfg()
 setup_version()
 setup(
     name='trytond_account_personal',
-    version='{major}.{minor}.{revision}{suffix}'.format(**version),
+    version='{major}.{minor}.{revision}'.format(**version),
     description=(
         'Tryton module that provides a chart of accounts for personal '
         'accounting'),
