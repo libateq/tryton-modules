@@ -18,7 +18,7 @@ the Python Package Index:
 
 .. code-block:: bash
 
-    pip install {{ cookiecutter.package_name }}
+    pip3 install {{ cookiecutter.package_name }}
 
 
 Using Sources
@@ -30,7 +30,7 @@ module from there:
 .. code-block:: bash
 
     hg clone {{ cookiecutter.tryton_modules_repository_url }}
-    cd ./{{ cookiecutter.tryton_modules_repository_name }}/{{ cookiecutter.module_name }}
+    cd {{ cookiecutter.tryton_modules_repository_name }}/{{ cookiecutter.module_name }}
     python3 setup.py install
 
 

@@ -18,7 +18,7 @@ the Python Package Index:
 
 .. code-block:: bash
 
-    pip install trytond_account_personal
+    pip3 install trytond_account_personal
 
 
 Using Sources
@@ -30,7 +30,7 @@ module from there:
 .. code-block:: bash
 
     hg clone https://bitbucket.org/libateq/tryton-modules
-    cd ./tryton-modules/account_personal
+    cd tryton-modules/account_personal
     python3 setup.py install
 
 
