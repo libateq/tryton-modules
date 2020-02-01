@@ -18,7 +18,7 @@ the Python Package Index:
 
 .. code-block:: bash
 
-    pip3 install trytond_account_personal
+    pip3 install trytonlq_account_personal
 
 
 Using Sources

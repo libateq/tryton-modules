@@ -11,4 +11,4 @@ Installation
 
 .. code:: python
 
-    pip3 install trytond-account-personal
+    pip3 install trytonlq-account-personal

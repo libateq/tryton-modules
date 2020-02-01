@@ -41,12 +41,13 @@ def required_version(name, version):
         dev='.dev0' if version['minor'] % 2 else '', **version)
 
 
-def install_requires():
+def install_requires(third_party_packages={}):
     python_packages = []
     trytond_requires = [required_version('trytond', version)]
     for module in tryton_cfg.get('depends', []):
         if not match(r'(ir|res)(\W|$)', module):
-            module_name = 'trytond_{module}'.format(module=module)
+            module_name = third_party_packages.get(
+                module, 'trytond_{module}'.format(module=module))
             trytond_requires.append(required_version(module_name, version))
     return python_packages + trytond_requires
 
