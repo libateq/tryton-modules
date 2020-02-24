@@ -93,7 +93,7 @@ setup(
         'Intended Audience :: Financial and Insurance Industry',
         'Intended Audience :: Legal Industry',
         'Intended Audience :: Manufacturing',
-        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',  # noqa
+        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',  # noqa: E501
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',

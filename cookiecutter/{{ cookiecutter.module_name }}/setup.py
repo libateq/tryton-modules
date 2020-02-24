@@ -100,7 +100,7 @@ setup(
         'Intended Audience :: Financial and Insurance Industry',
         'Intended Audience :: Legal Industry',
         'Intended Audience :: Manufacturing',
-        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',  # noqa
+        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',  # noqa: E501
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
@@ -118,13 +118,12 @@ setup(
     zip_safe=False,
     entry_points="""
     [trytond.modules]
-    {% if cookiecutter.module_name|length <= 28 -%}
     {{ cookiecutter.module_name }} = trytond.modules.{{ cookiecutter.module_name }}
-    {%- else -%}
-    {{ cookiecutter.module_name }} = \
-        trytond.modules.{{ cookiecutter.module_name }}
-    {%- endif %}
+    {% if cookiecutter.module_name|length <= 28 -%}
     """,
+    {%- else -%}
+    """,  # noqa: E501
+    {%- endif %}
     test_suite='tests',
     test_loader='trytond.test_loader:Loader',
     tests_require=tests_require(),
