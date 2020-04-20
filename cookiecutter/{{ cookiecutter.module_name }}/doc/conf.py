@@ -1,7 +1,7 @@
 # Configuration file for the Sphinx Documentation.
 # This file is part of the {{ cookiecutter.module_name }} Tryton module.
 # Please see the COPYRIGHT and README.rst files at the top level of this
-# repository for full copyright notices, license terms and support information.
+# package for full copyright notices, license terms and support information.
 from datetime import date
 from os import chdir
 from os.path import join, dirname

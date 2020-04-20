@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # This file is part of the account_personal Tryton module.
 # Please see the COPYRIGHT and README.rst files at the top level of this
-# repository for full copyright notices, license terms and support information.
+# package for full copyright notices, license terms and support information.
 from configparser import ConfigParser
 from io import open
 from os.path import dirname, join
