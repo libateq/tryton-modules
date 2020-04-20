@@ -66,10 +66,10 @@ setup(
     name='{{ cookiecutter.package_name }}',
     version='{major}.{minor}.{revision}'.format(**version),
     {% if cookiecutter.purpose|length <= 41 -%}
-    description='Tryton module that {{ cookiecutter.purpose }}',
+    description="Tryton module that {{ cookiecutter.purpose }}",
     {%- else -%}
     description=(
-        {{ ("'Tryton module that " + cookiecutter.purpose + "'") | wordwrap(width=69, wrapstring=" '\n        '")}}),
+        {{ ('"Tryton module that ' + cookiecutter.purpose + '"') | wordwrap(width=69, wrapstring=' "\n        "')}}),
     {%- endif %}
     long_description=read('README.rst'),
     author='{{ cookiecutter.tryton_package_author }}',

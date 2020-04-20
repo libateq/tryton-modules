@@ -62,8 +62,8 @@ setup(
     name='trytonlq_account_personal',
     version='{major}.{minor}.{revision}'.format(**version),
     description=(
-        'Tryton module that provides a chart of accounts for personal '
-        'accounting'),
+        "Tryton module that provides a chart of accounts for personal "
+        "accounting"),
     long_description=read('README.rst'),
     author='David Harper',
     author_email='tryton@libateq.org',

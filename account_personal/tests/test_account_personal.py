@@ -9,7 +9,7 @@ from trytond.tests.test_tryton import suite as test_suite
 
 
 class AccountPersonalTestCase(ModuleTestCase):
-    'Test Account Personal module'
+    "Test Account Personal module"
     module = 'account_personal'
 
 
