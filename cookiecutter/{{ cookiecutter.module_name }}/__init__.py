@@ -3,8 +3,6 @@
 # package for full copyright notices, license terms and support information.
 from trytond.pool import Pool
 
-__all__ = ['register']
-
 
 def register():
     Pool.register(
