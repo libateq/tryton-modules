@@ -6,11 +6,11 @@ from unittest import TestLoader
 from doctest import DocFileSuite, REPORT_ONLY_FIRST_FAILURE
 {%- endif %}
 
-from trytond.tests.test_tryton import ModuleTestCase
-from trytond.tests.test_tryton import suite as test_suite
-{%- if cookiecutter.test_with_scenario.lower().startswith('y') %}
-from trytond.tests.test_tryton import doctest_teardown
-from trytond.tests.test_tryton import doctest_checker
+{% if cookiecutter.test_with_scenario.lower().startswith('y') -%}
+from trytond.tests.test_tryton import (
+    ModuleTestCase, doctest_checker, doctest_teardown, suite as test_suite)
+{%- else -%}
+from trytond.tests.test_tryton import ModuleTestCase, suite as test_suite
 {%- endif %}
 
 

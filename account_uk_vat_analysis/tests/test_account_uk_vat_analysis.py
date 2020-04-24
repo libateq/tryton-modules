@@ -3,8 +3,7 @@
 # package for full copyright notices, license terms and support information.
 from unittest import TestLoader()
 
-from trytond.tests.test_tryton import ModuleTestCase
-from trytond.tests.test_tryton import suite as test_suite
+from trytond.tests.test_tryton import ModuleTestCase, suite as test_suite
 
 
 class AccountUkVatAnalysisTestCase(ModuleTestCase):
