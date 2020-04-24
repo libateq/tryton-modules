@@ -53,7 +53,7 @@ def install_requires(third_party_packages={}):
 
 
 def tests_require():
-    {% if cookiecutter.test_with_scenario == 'y' -%}
+    {% if cookiecutter.test_with_scenario.lower().startswith('y') -%}
     return [required_version('proteus', version)]
     {%- else -%}
     return []
