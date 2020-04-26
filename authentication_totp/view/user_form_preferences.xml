@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the authentication_totp Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<data>
+    <xpath expr="/form/notebook/page[@id='authentication']" position="inside">
+        <separator string="Time-based One-Time Passwords" id="totp_sep" colspan="4"/>
+        <label name="totp_secret"/>
+        <field name="totp_secret" widget="password"/>
+        <group id="totp_buttons" colspan="2" col="-1">
+            <button name="totp_update_secret_preferences" confirm="Are you sure you want to change your TOTP secret?"/>
+            <button name="totp_clear_secret"/>
+        </group>
+        <label string="You will be prompted to update your time-based one-time password settings when you close this window." name="totp_update_pending" colspan="4" xfill="1" xalign="0.5"/>
+        <label id="gap" string="" xexpand="0"/>
+        <group string="QR Code" name="totp_qrcode" colspan="3" expandable="0">
+            <field name="totp_qrcode" widget="image" width="256" height="256" readonly="1" xfill="0" xexpand="0" xalign="0"/>
+        </group>
+    </xpath>
+</data>

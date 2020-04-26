@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the authentication_totp Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<form col="2">
+    <image name="tryton-totp-key" xexpand="0" xfill="0"/>
+    <label string="Time-based one-time passwords add an extra layer of security to your account." id="help_1" yalign="0.0" xalign="0.0" xexpand="1"/>
+    <separator id="header_sep" colspan="2"/>
+    <label id="gap" string="" xexpand="0"/>
+    <group id="header" col="1">
+        <label string="Scan this QR code with your two factor authenticator app or manually add" name="totp_qrcode" yalign="0.0" xalign="0.0" xexpand="1"/>
+        <label string="the secret key from below to it.  Then click on OK." name="totp_qrcode" yalign="0.0" xalign="0.0" xexpand="1"/>
+        <label string="Please enter the secret key from below into your two factor authenticator" name="totp_qrcode_disabled" yalign="0.0" xalign="0.0" xexpand="1"/>
+        <label string="app.  Then click on OK." name="totp_qrcode_disabled" yalign="0.0" xalign="0.0" xexpand="1"/>
+    </group>
+    <group id="totp" colspan="2" col="1">
+        <field name="user"/>
+        <field name="totp_qrcode" widget="image" width="256" height="256" readonly="1"/>
+        <field name="totp_secret" readonly="1"/>
+    </group>
+</form>
+

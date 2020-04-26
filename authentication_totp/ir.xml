@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the authentication_totp Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<tryton>
+    <data noupdate="1">
+        <record model="ir.trigger" id="add_totp_setup_wizard_to_actions_trigger">
+            <field name="name">Prompt new users to setup time-based one-time passwords</field>
+            <field name="model" search="[('model', '=', 'res.user')]"/>
+            <field name="on_create" eval="True"/>
+            <field name="condition">{"__class__":"Not","v":{"__class__":"Bool","v":{"__class__":"Eval","v":"self.totp_key","d":""}}}</field>
+            <field name="action">res.user|add_totp_setup_wizard_to_actions</field>
+        </record>
+    </data>
+</tryton>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the authentication_totp Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<form col="2">
+    <image name="tryton-info" xexpand="0" xfill="0"/>
+    <label string="Time-based one-time passwords are not enabled on your account." id="help_1" yalign="0" xalign="0" xexpand="1"/>
+    <separator id="help_sep_1" colspan="2"/>
+    <label id="gap" string="" xexpand="0"/>
+    <group id="message" col="1">
+        <label string="If you change your mind, these settings can be changed at any time in your" id="help_2" yalign="0" xalign="0" xexpand="1"/>
+        <label string="preferences." id="help_3" yalign="0" xalign="0" xexpand="1"/>
+    </group>
+</form>

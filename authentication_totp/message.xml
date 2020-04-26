@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the authentication_totp Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<tryton>
+    <data grouped="1">
+        <record model="ir.message" id="msg_user_totp_code">
+            <field name="text">Enter the Access Code from your Authentication App for %(login)s</field>
+        </record>
+        <record model="ir.message" id="msg_user_totp_code_reused">
+            <field name="text">WARNING - this Access Code has already been used, please enter the next Access Code for %(login)s</field>
+        </record>
+        <record model="ir.message" id="msg_user_invalid_totp_secret">
+            <field name="text">The TOTP secret for %(login)s must be a base32 encoded string, you can use the Generate Secret button to create a new secret.</field>
+        </record>
+        <record model="ir.message" id="msg_user_totp_key_required">
+            <field name="text">The TOTP secret key is required for %(login)s.</field>
+        </record>
+        <record model="ir.message" id="msg_user_totp_too_short">
+            <field name="text">The TOTP secret key for %(login)s is too short.  You can use the Generate Secret button to create a secret key of the right length.</field>
+        </record>
+    </data>
+</tryton>

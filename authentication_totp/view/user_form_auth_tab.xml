@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the authentication_totp Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<data>
+    <xpath expr="/form/notebook/page[@id='user']" position="after">
+        <page string="Authentication" id="authentication">
+            <separator string="Password" id="password_sep" colspan="4"/>
+            <label name="password"/>
+            <field name="password" widget="password"/>
+            <button name="reset_password" colspan="2" />
+        </page>
+    </xpath>
+    <xpath expr="/form/notebook/page[@id='user']/label[@name='password']" position="replace"/>
+    <xpath expr="/form/notebook/page[@id='user']/field[@name='password']" position="replace"/>
+    <xpath expr="/form/notebook/page[@id='user']/button[@name='reset_password']" position="replace"/>
+</data>

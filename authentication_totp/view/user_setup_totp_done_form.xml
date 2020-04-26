@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the authentication_totp Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<form col="2">
+    <image name="tryton-totp-key" xexpand="0" xfill="0"/>
+    <label string="Time-based one-time passwords are enabled for your account." id="help_1" yalign="0" xalign="0" xexpand="1"/>
+    <separator id="help_sep_1" colspan="2"/>
+    <label id="gap" string="" xexpand="0"/>
+    <group id="message" col="1">
+        <label string="You will need to enter an access code from your authenticator app each time" id="help_2" yalign="0" xalign="0" xexpand="1"/>
+        <label string="you login.  So make sure you don't delete the app or remove the key from it" id="help_3" yalign="0" xalign="0" xexpand="1"/>
+        <label string="without first setting up another way of accessing your account." id="help_4" yalign="0" xalign="0" xexpand="1"/>
+        <separator id="help_sep_2"/>
+        <label string="Changes to these settings can be made at any time in your preferences." id="help_5" yalign="0" xalign="0" xexpand="1"/>
+    </group>
+</form>
