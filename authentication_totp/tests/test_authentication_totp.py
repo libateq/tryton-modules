@@ -59,6 +59,22 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
         self.assertEqual(user_id, user.id)
 
     @with_transaction()
+    def test_user_get_login_no_secret(self):
+        User = Pool().get('res.user')
+        user = User(name='totp', login='totp')
+        user.save()
+
+        with self.assertRaises(LoginException) as cm:
+            User.get_login('totp', {})
+        self.assertEqual(cm.exception.name, 'totp_code')
+        self.assertEqual(cm.exception.type, 'char')
+
+        totp_code = TOTP(key=TOTP_SECRET_KEY).generate().token
+        self.assertFalse(User.get_login('totp', {
+                'totp_code': totp_code,
+                }))
+
+    @with_transaction()
     def test_user_set_totp_secret(self):
         User = Pool().get('res.user')
         user = User(name='totp', login='totp')

@@ -285,6 +285,9 @@ class UserLoginTOTP(ModelSQL):
             return record
 
     def check(self, code, _time=None):
+        if not self.user.totp_key:
+            return
+
         try:
             counter, _ = _TOTPFactory.verify(
                 code, self.user.totp_key, time=_time,
