@@ -22,5 +22,4 @@ def register():
     Pool.register(
         res.UserSetupTOTP,
         res.UserSetupTOTPDisplay,
-        res.UserSetupTOTPDisplayRequired,
         module='authentication_totp', type_='wizard')

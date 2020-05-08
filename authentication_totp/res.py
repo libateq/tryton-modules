@@ -1,8 +1,6 @@
 # This file is part of the authentication_totp Tryton module.
 # Please see the COPYRIGHT and README.rst files at the top level of this
 # package for full copyright notices, license terms and support information.
-from copy import deepcopy
-
 from trytond.config import config
 from trytond.i18n import gettext
 from trytond.model import ModelSQL, ModelView, fields
@@ -12,8 +10,8 @@ from trytond.transaction import Transaction
 from trytond.wizard import Button, StateView, StateTransition, Wizard
 
 from .exception import (
-    TOTPAccessCodeReuseError, TOTPInvalidSecretError, TOTPKeyRequiredError,
-    TOTPKeyTooShortError, TOTPKeyTooShortWarning, TOTPLoginException)
+    TOTPAccessCodeReuseError, TOTPInvalidSecretError, TOTPKeyTooShortError,
+    TOTPKeyTooShortWarning, TOTPLoginException)
 from .totp import TokenError, UsedTokenError, totp
 
 _totp_issuer = config.get(
@@ -28,18 +26,9 @@ class User(metaclass=PoolMeta):
     totp_key = fields.Char("TOTP Key")
     totp_secret = fields.Function(fields.Char(
             "TOTP Secret",
-            states={
-                'required': (
-                    Eval('totp_required', False) & Eval('totp_key', '')),
-            },
-            depends=['totp_key', 'totp_required'],
             help="Secret key used for time-based one-time password (TOTP) "
             "user authentication."),
         'on_change_with_totp_secret', setter='set_totp_secret')
-    totp_required = fields.Boolean(
-        "TOTP Required",
-        help="The user must use time-based one-time passwords "
-        "when logging in.")
     totp_qrcode = fields.Function(fields.Binary(
             "TOTP QR Code",
             states={
@@ -68,9 +57,7 @@ class User(metaclass=PoolMeta):
         cls._buttons.update({
             'totp_update_secret': {},
             'totp_update_secret_preferences': {},
-            'totp_clear_secret': {
-                'invisible': Eval('totp_required', False),
-                },
+            'totp_clear_secret': {},
             })
 
     @fields.depends('totp_key')
@@ -96,7 +83,7 @@ class User(metaclass=PoolMeta):
         key_length = totp.length(key)
         short_key = key_length and (key_length < _totp_key_length)
         for user in users:
-            if short_key and (admin or not user.totp_required):
+            if short_key and admin:
                 warning_name = 'authentication_totp.key_too_short'
                 if Warning.check(warning_name):
                     raise TOTPKeyTooShortWarning(warning_name, gettext(
@@ -130,18 +117,16 @@ class User(metaclass=PoolMeta):
     def totp_update_secret(cls, users):
         pass
 
-    @ModelView.button_change('actions', 'totp_required', 'totp_update_pending')
+    @ModelView.button_change('actions', 'totp_update_pending')
     def totp_update_secret_preferences(self):
         self.totp_update_pending = True
         self.add_totp_setup_wizard_to_actions([self], save=False)
 
-    @ModelView.button_change(
-        'totp_key', 'totp_qrcode', 'totp_required', 'totp_secret')
+    @ModelView.button_change('totp_key', 'totp_qrcode', 'totp_secret')
     def totp_clear_secret(self):
-        if not self.totp_required:
-            self.totp_key = None
-            self.totp_secret = None
-            self.totp_qrcode = None
+        self.totp_key = None
+        self.totp_secret = None
+        self.totp_qrcode = None
 
     @classmethod
     def add_totp_setup_wizard_to_actions(cls, users, trigger=None, save=True):
@@ -150,51 +135,13 @@ class User(metaclass=PoolMeta):
         WizardAction = pool.get('ir.action.wizard')
 
         wizards = WizardAction.search([
-            ('wiz_name', 'in', [
-                'res.user.setup_totp.display',
-                'res.user.setup_totp.display_required',
-                ])])
-        wizards = {('required' in w.wiz_name): w for w in wizards}
-
-        for user in users:
-            wizard = wizards[user.totp_required]
-            user.actions += (wizard.id, )
-
-        if save:
-            User.save(users)
-
-    @classmethod
-    def write(cls, *args):
-        WizardAction = Pool().get('ir.action.wizard')
-        wizard, = WizardAction.search([
-            ('wiz_name', '=', 'res.user.setup_totp.display_required')])
-
-        def ids_from_actions_remove(values):
-            for name, value in values.items():
-                if name != 'actions':
-                    continue
-                for operation in value:
-                    if operation[0] != 'remove':
-                        continue
-                    for ids in operation[1:]:
-                        yield ids
-
-        to_write = []
-        actions = iter(args)
-        for users, values in zip(actions, actions):
-            users_opt = [u for u in users if not u.totp_required]
-            if users_opt:
-                to_write.extend([users_opt, values])
-
-            users_req = [u for u in users if u.totp_required]
-            if users_req:
-                values_req = deepcopy(values)
-                for ids in ids_from_actions_remove(values_req):
-                    if wizard.id in ids:
-                        ids.remove(wizard.id)
-                to_write.extend([users_req, values_req])
-
-        super().write(*to_write)
+            ('wiz_name', '=', 'res.user.setup_totp.display')], limit=1)
+        if wizards:
+            wizard, = wizards
+            for user in users:
+                user.actions += (wizard.id, )
+            if save:
+                User.save(users)
 
     @classmethod
     def validate(cls, users):
@@ -202,30 +149,19 @@ class User(metaclass=PoolMeta):
         admin = ModelAccess.check(
             'res.user', mode='write', raise_exception=False)
         for user in users:
-            if not admin and user.totp_required and not user.totp_key:
-                raise TOTPKeyRequiredError(gettext(
-                    'authentication_totp.msg_user_totp_key_required',
-                    login=user.login))
-
             short_key = totp.length(user.totp_key) < _totp_key_length
-            if not admin and user.totp_required and short_key:
+            if not admin and short_key:
                 raise TOTPKeyTooShortError(gettext(
                     'authentication_totp.msg_user_totp_too_short',
                     login=user.login))
 
     @classmethod
     def _login_totp(cls, login, parameters):
-        pool = Pool()
-        TOTPLogin = pool.get('res.user.login.totp')
-        User = pool.get('res.user')
+        TOTPLogin = Pool().get('res.user.login.totp')
 
         user_id = cls._get_login(login)[0]
         if not user_id:
             return
-
-        user = User(user_id)
-        if not user.totp_key:
-            return user_id
 
         if TOTPLogin.parameter not in parameters:
             raise TOTPLoginException(TOTPLogin.parameter, login)
@@ -307,7 +243,6 @@ class UserSetupTOTP(Wizard):
             ('wiz_name', 'in', [
                 'res.user.setup_totp',
                 'res.user.setup_totp.display',
-                'res.user.setup_totp.display_required',
                 ])])
         return [w.id for w in wizards]
 
@@ -426,13 +361,3 @@ class UserSetupTOTPDisplay(UserSetupTOTP):
             'actions': [('remove', self.get_wizard_ids())],
             })
         return 'skipped' if not user.totp_secret else 'end'
-
-
-class UserSetupTOTPDisplayRequired(UserSetupTOTPDisplay):
-    "Setup Two-Factor Authentication"
-    __name__ = 'res.user.setup_totp.display_required'
-
-    @classmethod
-    def __setup__(cls):
-        super().__setup__()
-        cls.show.buttons = cls.show.buttons[-1:]

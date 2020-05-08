@@ -7,9 +7,6 @@ package for full copyright notices, license terms and support information.
 <data>
     <xpath expr="/form/notebook/page[@id='authentication']" position="inside">
         <separator string="Time-based One-Time Passwords" id="totp_sep" colspan="4"/>
-        <label name="totp_required"/>
-        <field name="totp_required"/>
-        <newline/>
         <label name="totp_secret"/>
         <field name="totp_secret" widget="password"/>
         <group id="totp_buttons" colspan="2" col="-1">

@@ -56,11 +56,6 @@ package for full copyright notices, license terms and support information.
             <field name="wiz_name">res.user.setup_totp.display</field>
             <field name="model">res.user</field>
         </record>
-        <record model="ir.action.wizard" id="wizard_user_setup_totp_display_required">
-            <field name="name">Setup Required Time-based One-Time Password Authentication</field>
-            <field name="wiz_name">res.user.setup_totp.display_required</field>
-            <field name="model">res.user</field>
-        </record>
 
         <record model="ir.ui.icon" id="totp_key_icon">
             <field name="name">tryton-totp-key</field>

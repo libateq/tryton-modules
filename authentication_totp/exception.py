@@ -32,7 +32,3 @@ class TOTPKeyTooShortWarning(UserWarning):
 
 class TOTPKeyTooShortError(UserError):
     "Raised when the TOTP secret key is too short"
-
-
-class TOTPKeyRequiredError(UserError):
-    "Raised when the TOTP secret key is required but is missing"

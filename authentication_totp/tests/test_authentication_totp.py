@@ -27,8 +27,17 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
     def setUp(self):
         super().setUp()
         methods = config.get('session', 'authentications', default='')
-        config.set('session', 'authentications', '_totp')
+        config.set('session', 'authentications', 'totp')
         self.addCleanup(config.set, 'session', 'authentications', methods)
+
+    def run_trigger_tasks(self):
+        pool = Pool()
+        Queue = pool.get('ir.queue')
+        transaction = Transaction()
+        self.assertTrue(transaction.tasks)
+        while transaction.tasks:
+            task = Queue(transaction.tasks.pop())
+            task.run()
 
     @with_transaction()
     def test_user_get_login(self):
@@ -45,89 +54,6 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
         user_id = User.get_login('totp', {
                 'totp_code': totp_code,
                 })
-        self.assertEqual(user_id, user.id)
-
-    @with_transaction()
-    def test_user_get_login_no_secret(self):
-        User = Pool().get('res.user')
-        user = User(name='totp', login='totp')
-        user.save()
-
-        user_id = User.get_login('totp', {})
-        self.assertEqual(user_id, user.id)
-
-
-class AuthenticationPasswordTOTPTestCase(ModuleTestCase):
-    "Test Authentication TOTP Module - password_totp Authentication Method"
-    module = 'authentication_totp'
-    extras = ['company']
-
-    def setUp(self):
-        super().setUp()
-        activate_module('company')
-
-        methods = config.get('session', 'authentications', default='')
-        config.set('session', 'authentications', 'password_totp')
-        self.addCleanup(config.set, 'session', 'authentications', methods)
-
-        length = config.get('password', 'length', default='')
-        config.set('password', 'length', '4')
-        self.addCleanup(config.set, 'password', 'length', length)
-
-        entropy = config.get('password', 'entropy', default='')
-        config.set('password', 'entropy', '0.8')
-        self.addCleanup(config.set, 'password', 'entropy', entropy)
-
-    def run_trigger_tasks(self):
-        pool = Pool()
-        Queue = pool.get('ir.queue')
-        transaction = Transaction()
-        self.assertTrue(transaction.tasks)
-        while transaction.tasks:
-            task = Queue(transaction.tasks.pop())
-            task.run()
-
-    @with_transaction()
-    def test_user_get_login(self):
-        User = Pool().get('res.user')
-        user = User(
-            name='totp', login='totp', password='secret',
-            totp_secret=TOTP_SECRET_KEY)
-        user.save()
-
-        with self.assertRaises(LoginException) as cm:
-            User.get_login('totp', {})
-        self.assertEqual(cm.exception.name, 'password')
-        self.assertEqual(cm.exception.type, 'password')
-
-        with self.assertRaises(LoginException) as cm:
-            User.get_login('totp', {
-                'password': 'secret',
-                })
-        self.assertEqual(cm.exception.name, 'totp_code')
-        self.assertEqual(cm.exception.type, 'char')
-
-        totp_code = TOTP(key=TOTP_SECRET_KEY).generate().token
-        user_id = User.get_login('totp', {
-                'password': 'secret',
-                'totp_code': totp_code,
-                })
-        self.assertEqual(user_id, user.id)
-
-    @with_transaction()
-    def test_user_get_login_no_secret(self):
-        User = Pool().get('res.user')
-        user = User(name='totp', login='totp', password='secret')
-        user.save()
-
-        with self.assertRaises(LoginException) as cm:
-            User.get_login('totp', {})
-        self.assertEqual(cm.exception.name, 'password')
-        self.assertEqual(cm.exception.type, 'password')
-
-        user_id = User.get_login('totp', {
-            'password': 'secret',
-            })
         self.assertEqual(user_id, user.id)
 
     @with_transaction()
@@ -149,31 +75,6 @@ class AuthenticationPasswordTOTPTestCase(ModuleTestCase):
             user.save()
 
     @with_transaction()
-    def test_user_set_totp_secret_required(self):
-        User = Pool().get('res.user')
-        user = User(name='totp', login='totp', totp_required=True)
-        user.save()
-
-        user.totp_secret = TOTP_SECRET_KEY
-        user.save()
-        self.assertEqual(user.totp_secret, TOTP_SECRET_KEY)
-
-        with Transaction().set_user(user.id):
-            user, = User.search([('login', '=', 'totp')])
-
-            with self.assertRaises(UserError):
-                user.totp_secret = None
-                user.save()
-
-            with self.assertRaises(UserError):
-                user.totp_secret = ''
-                user.save()
-
-            with self.assertRaises(UserError):
-                user.totp_secret = TOTP_SECRET_KEY[:19]
-                user.save()
-
-    @with_transaction()
     def test_clear_secret(self):
         User = Pool().get('res.user')
         user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
@@ -185,34 +86,11 @@ class AuthenticationPasswordTOTPTestCase(ModuleTestCase):
         self.assertFalse(user.totp_secret)
 
     @with_transaction()
-    def test_clear_secret_required(self):
-        User = Pool().get('res.user')
-        user = User(
-            name='totp', login='totp', totp_secret=TOTP_SECRET_KEY,
-            totp_required=True)
-        user.save()
-
-        user.totp_clear_secret()
-        user.save()
-
-        self.assertTrue(user.totp_secret)
-
-    @with_transaction()
-    def test_user_get_totp_issuer_no_company(self):
+    def test_user_get_totp_issuer(self):
         User = Pool().get('res.user')
         user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
         user.save()
         self.assertEqual(user.get_totp_issuer(), 'Tryton')
-
-    @with_transaction()
-    def test_user_get_totp_issuer_company(self):
-        User = Pool().get('res.user')
-        company = create_company()
-        user = User(
-            name='totp', login='totp', totp_secret=TOTP_SECRET_KEY,
-            main_company=company)
-        user.save()
-        self.assertEqual(user.get_totp_issuer(), 'Dunder Mifflin Tryton')
 
     @with_transaction()
     def test_user_get_totp_qrcode(self):
@@ -234,17 +112,6 @@ class AuthenticationPasswordTOTPTestCase(ModuleTestCase):
             'res.user.setup_totp.display')
 
     @with_transaction()
-    def test_user_create_action_required(self):
-        User = Pool().get('res.user')
-        user = User(name='totp', login='totp', totp_required=True)
-        user.save()
-        self.run_trigger_tasks()
-        self.assertEqual(len(user.actions), 1)
-        self.assertEqual(
-            user.actions[0].get_action_value()['wiz_name'],
-            'res.user.setup_totp.display_required')
-
-    @with_transaction()
     def test_user_create_action_with_secret(self):
         User = Pool().get('res.user')
         user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
@@ -252,27 +119,29 @@ class AuthenticationPasswordTOTPTestCase(ModuleTestCase):
         self.run_trigger_tasks()
         self.assertEqual(len(user.actions), 0)
 
+
+class AuthenticationTOTPCompanyTestCase(ModuleTestCase):
+    "Test Authentication TOTP Module with Company"
+    module = 'authentication_totp'
+    extras = ['company']
+
+    def setUp(self):
+        super().setUp()
+        activate_module('company')
+
+        methods = config.get('session', 'authentications', default='')
+        config.set('session', 'authentications', 'totp')
+        self.addCleanup(config.set, 'session', 'authentications', methods)
+
     @with_transaction()
-    def test_user_remove_optional_wizard(self):
+    def test_user_get_totp_issuer_company(self):
         User = Pool().get('res.user')
-        user = User(name='totp', login='totp')
+        company = create_company()
+        user = User(
+            name='totp', login='totp', totp_secret=TOTP_SECRET_KEY,
+            main_company=company)
         user.save()
-        self.run_trigger_tasks()
-
-        user.actions = tuple()
-        user.save()
-        self.assertEqual(len(user.actions), 0)
-
-    @with_transaction()
-    def test_user_remove_required_wizard(self):
-        User = Pool().get('res.user')
-        user = User(name='totp', login='totp', totp_required=True)
-        user.save()
-        self.run_trigger_tasks()
-
-        user.actions = tuple()
-        user.save()
-        self.assertEqual(len(user.actions), 1)
+        self.assertEqual(user.get_totp_issuer(), 'Dunder Mifflin Tryton')
 
 
 class UserLoginTOTPTestCase(ModuleTestCase):
@@ -316,7 +185,7 @@ def suite():
     suite.addTests(TestLoader().loadTestsFromTestCase(
         AuthenticationTOTPTestCase))
     suite.addTests(TestLoader().loadTestsFromTestCase(
-        AuthenticationPasswordTOTPTestCase))
+        AuthenticationTOTPCompanyTestCase))
     suite.addTests(TestLoader().loadTestsFromTestCase(
         UserLoginTOTPTestCase))
     return suite

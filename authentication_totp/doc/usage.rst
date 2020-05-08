@@ -43,20 +43,3 @@ a new user is created.  This trigger can easily be deactivated if desired.
 With this action in place, the wizard will run when the user logs in.  This
 will automatically generate a new secret for the user and will help them add
 it to their authenticator app.
-
-
-Requiring Users to Use TOTP
----------------------------
-
-Administrators can force users to use TOTP with their account by ticking the
-*TOTP Required* checkbox.  To force existing users to setup TOTP the *Setup
-Required Time-based One-Time Password Authentication* wizard should be added
-to their login *Actions*.  This will ensure a TOTP secret is created for these
-users the next time that they login.
-
-.. note::
-
-    Make sure users are prepared for this change.  With this setting they will
-    not be able to use the system until they have setup TOTP or they may end
-    up locking themselves out if they proceed without recording the TOTP
-    secret in their authenticator app.
