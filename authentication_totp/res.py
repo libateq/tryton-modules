@@ -140,9 +140,9 @@ class User(metaclass=PoolMeta):
         totp = _TOTPFactory(key=self.totp_secret)
         return totp.to_uri(label=self.login, issuer=issuer)
 
-    @fields.depends('totp_url')
+    @fields.depends('totp_secret', 'totp_url')
     def on_change_with_totp_qrcode(self, name=None):
-        url = self.totp_url
+        url = self.on_change_with_totp_url()
         if not url or not QRCode:
             return
 
