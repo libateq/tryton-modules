@@ -2,8 +2,7 @@ General Usage
 =============
 
 Time-based One-Time Passwords (TOTP) are useful as an additional means of
-authentication.  This module allows them to be used with Tryton as the second
-factor in a two-factor (2FA) scheme.
+authentication.  This module allows them to be used with Tryton.
 
 Once activated and :doc:`setup` the main TOTP settings can be found under the
 *Authentications* tab in your preferences.  Administrators can view and change

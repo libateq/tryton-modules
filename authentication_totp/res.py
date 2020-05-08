@@ -16,8 +16,6 @@ from .exception import (
     TOTPKeyTooShortError, TOTPKeyTooShortWarning, TOTPLoginException)
 from .totp import TokenError, UsedTokenError, totp
 
-_has_password_totp = 'password_totp' in config.get(
-    'session', 'authentications', default='password').split(',')
 _totp_issuer = config.get(
     'authentication_totp', 'issuer', default='{company} Tryton')
 _totp_key_length = config.get(
@@ -74,11 +72,6 @@ class User(metaclass=PoolMeta):
                 'invisible': Eval('totp_required', False),
                 },
             })
-        cls._buttons['reset_password']['invisible'] &= (
-            ~Eval('email', True) | (not _has_password_totp))
-        cls.password.states['invisible'] &= not _has_password_totp
-        cls.password_reset.states['invisible'] &= not _has_password_totp
-        cls.password_reset_expire.states['invisible'] &= not _has_password_totp
 
     @fields.depends('totp_key')
     def on_change_with_totp_secret(self, name=None):
@@ -221,7 +214,7 @@ class User(metaclass=PoolMeta):
                     login=user.login))
 
     @classmethod
-    def _login__totp(cls, login, parameters):
+    def _login_totp(cls, login, parameters):
         pool = Pool()
         TOTPLogin = pool.get('res.user.login.totp')
         User = pool.get('res.user')
@@ -241,12 +234,6 @@ class User(metaclass=PoolMeta):
         totp_login = TOTPLogin.get(user_id)
         if totp_login.check(access_code):
             return user_id
-
-    @classmethod
-    def _login_password_totp(cls, login, parameters):
-        user_id = cls._login_password(login, parameters)
-        if user_id:
-            return cls._login__totp(login, parameters)
 
 
 class UserCompany(metaclass=PoolMeta):

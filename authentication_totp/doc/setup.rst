@@ -2,19 +2,9 @@ Setup
 =====
 
 Once the module has been activated you can start using it by including the
-``password_totp`` authentication method in the `[session] authentications
+``totp`` authentication method in the `[session] authentications
 <https://docs.tryton.org/projects/server/en/latest/topics/configuration.html#authentications>`_
 configuration option.
-
-.. warning::
-
-    Remember to remove the ``password`` authentication method from the
-    ``[session] authentications`` option when enabling time-based one-time
-    passwords.  If the list of authentications is set to 
-    ``password_totp,password`` a user will be able to login without entering a
-    valid TOTP access code.  This is because each authentication method is
-    tried in turn.  So when the ``password_totp`` authentication fails the
-    system will then try the ``password`` authentication, which will succeed.
 
 
 Configuration Options
