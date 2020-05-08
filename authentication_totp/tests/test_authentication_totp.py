@@ -3,7 +3,7 @@
 # package for full copyright notices, license terms and support information.
 from time import time
 from passlib.totp import TOTP
-from unittest import TestLoader
+from unittest import TestLoader, skipIf
 
 from trytond.config import config
 from trytond.exceptions import LoginException, UserError, UserWarning
@@ -12,6 +12,8 @@ from trytond.pool import Pool
 from trytond.tests.test_tryton import (
     ModuleTestCase, activate_module, with_transaction, suite as test_suite)
 from trytond.transaction import Transaction
+
+from ..totp import QRCode
 
 TOTP_SECRET_KEY = 'GE3D-AYRA-KRHV-IUBA-KNSW-G4TF-OQQE-WZLZ'
 
@@ -93,6 +95,7 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
         self.assertEqual(user.get_totp_issuer(), 'Tryton')
 
     @with_transaction()
+    @skipIf(not QRCode, "qrcode not available")
     def test_user_get_totp_qrcode(self):
         User = Pool().get('res.user')
         user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
