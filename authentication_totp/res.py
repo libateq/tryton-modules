@@ -6,6 +6,7 @@ from io import BytesIO
 from math import ceil
 from passlib.exc import TokenError, UsedTokenError
 from passlib.totp import TOTP
+from re import split
 try:
     from qrcode import QRCode
     from qrcode.image.pil import PilImage
@@ -28,6 +29,9 @@ _totp_issuer = config.get(
     'authentication_totp', 'issuer', default='{company} Tryton')
 _totp_key_length = config.get(
     'authentication_totp', 'key_length', default=160)
+
+_totp_required = 'totp' in split('[,+]', config.get(
+    'session', 'authentications', default='password'))
 
 _TOTPFactory = TOTP.using(secrets_path=config.get(
     'authentication_totp', 'application_secrets_file', default=None))
@@ -78,7 +82,9 @@ class User(metaclass=PoolMeta):
         cls._buttons.update({
             'totp_update_secret': {},
             'totp_update_secret_preferences': {},
-            'totp_clear_secret': {},
+            'totp_clear_secret': {
+                'invisible': _totp_required,
+                },
             })
 
     @fields.depends('totp_key')
