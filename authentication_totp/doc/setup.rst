@@ -2,10 +2,15 @@ Setup
 =====
 
 Once the module has been activated you can start using it by including the
-``totp`` authentication method in the `[session] authentications
-<https://docs.tryton.org/projects/server/en/latest/topics/configuration.html#authentications>`_
+``totp``, or ``totp_optional`` authentication methods in the
+`[session] authentications <https://docs.tryton.org/projects/server/en/latest/topics/configuration.html#authentications>`_
 configuration option.
 
+The difference between the two authentication methods is that the ``totp``
+method always requires the user to enter a code to verify their identity, so
+a code must be setup for the user before they first login.  Whereas the
+``totp_optional`` method only requires a code if the user has already setup a
+*TOTP Secret*.
 
 Configuration Options
 ---------------------

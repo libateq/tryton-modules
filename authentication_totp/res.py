@@ -212,6 +212,19 @@ class User(metaclass=PoolMeta):
         if totp_login.check(access_code):
             return user_id
 
+    @classmethod
+    def _login_totp_optional(cls, login, parameters):
+        User = Pool().get('res.user')
+
+        user_id = cls._get_login(login)[0]
+        if not user_id:
+            return
+
+        user = User(user_id)
+        if user.totp_key:
+            return cls._login_totp(login, parameters)
+        return user_id
+
 
 class UserCompany(metaclass=PoolMeta):
     __name__ = 'res.user'

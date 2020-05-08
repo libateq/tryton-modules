@@ -123,6 +123,43 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
         self.assertEqual(len(user.actions), 0)
 
 
+class AuthenticationTOTPOptionalTestCase(ModuleTestCase):
+    "Test Authentication TOTP module - totp_optional Authentication Method"
+    module = 'authentication_totp'
+
+    def setUp(self):
+        super().setUp()
+        methods = config.get('session', 'authentications', default='')
+        config.set('session', 'authentications', 'totp_optional')
+        self.addCleanup(config.set, 'session', 'authentications', methods)
+
+    @with_transaction()
+    def test_user_get_login(self):
+        User = Pool().get('res.user')
+        user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
+        user.save()
+
+        with self.assertRaises(LoginException) as cm:
+            User.get_login('totp', {})
+        self.assertEqual(cm.exception.name, 'totp_code')
+        self.assertEqual(cm.exception.type, 'char')
+
+        totp_code = TOTP(key=TOTP_SECRET_KEY).generate().token
+        user_id = User.get_login('totp', {
+                'totp_code': totp_code,
+                })
+        self.assertEqual(user_id, user.id)
+
+    @with_transaction()
+    def test_user_get_login_no_key(self):
+        User = Pool().get('res.user')
+        user = User(name='totp', login='totp')
+        user.save()
+
+        user_id = User.get_login('totp', {})
+        self.assertEqual(user_id, user.id)
+
+
 class AuthenticationTOTPCompanyTestCase(ModuleTestCase):
     "Test Authentication TOTP Module with Company"
     module = 'authentication_totp'
@@ -187,6 +224,8 @@ def suite():
     suite = test_suite()
     suite.addTests(TestLoader().loadTestsFromTestCase(
         AuthenticationTOTPTestCase))
+    suite.addTests(TestLoader().loadTestsFromTestCase(
+        AuthenticationTOTPOptionalTestCase))
     suite.addTests(TestLoader().loadTestsFromTestCase(
         AuthenticationTOTPCompanyTestCase))
     suite.addTests(TestLoader().loadTestsFromTestCase(
