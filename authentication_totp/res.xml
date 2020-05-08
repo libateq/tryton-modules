@@ -6,20 +6,6 @@ package for full copyright notices, license terms and support information.
 -->
 <tryton>
     <data>
-        <record model="ir.ui.view" id="user_view_form_auth_tab">
-            <field name="model">res.user</field>
-            <field name="inherit" ref="res.user_view_form"/>
-            <field name="name">user_form_auth_tab</field>
-            <field name="priority">10</field>
-        </record>
-        <record model="ir.ui.view" id="user_preferences_auth_tab_form_view">
-            <field name="model">res.user</field>
-            <field name="inherit" ref="res.user_view_form_preferences"/>
-            <field name="name">user_form_preferences_auth_tab</field>
-            <field name="priority">10</field>
-        </record>
-    </data>
-    <data>
         <record model="ir.ui.view" id="user_view_form">
             <field name="model">res.user</field>
             <field name="inherit" ref="res.user_view_form"/>
