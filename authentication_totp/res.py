@@ -244,6 +244,22 @@ class User(metaclass=PoolMeta):
             return cls._login_totp(login, parameters)
         return user_id
 
+    @classmethod
+    def _login_password_totp(cls, login, parameters):
+        user_ids = {cls._login_password(login, parameters)}
+        if all(user_ids):
+            user_ids.add(cls._login_totp(login, parameters))
+            if len(user_ids) == 1:
+                return user_ids.pop()
+
+    @classmethod
+    def _login_password_totp_optional(cls, login, parameters):
+        user_ids = {cls._login_password(login, parameters)}
+        if all(user_ids):
+            user_ids.add(cls._login_totp_optional(login, parameters))
+            if len(user_ids) == 1:
+                return user_ids.pop()
+
 
 class UserCompany(metaclass=PoolMeta):
     __name__ = 'res.user'
