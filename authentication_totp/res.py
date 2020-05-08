@@ -37,6 +37,19 @@ _TOTPFactory = TOTP.using(secrets_path=config.get(
     'authentication_totp', 'application_secrets_file', default=None))
 
 
+# Buttons on models the user cannot write to are made readonly and disabled,
+# this hack avoids the button being made readonly in the user preferences.
+class _clickable_button_hack(dict):
+
+    def copy(self):
+        return self.__class__(self)
+
+    def __setitem__(self, key, value):
+        if key == 'readonly':
+            return
+        return super().__setitem__(key, value)
+
+
 class User(metaclass=PoolMeta):
     __name__ = 'res.user'
 
@@ -81,10 +94,10 @@ class User(metaclass=PoolMeta):
             ])
         cls._buttons.update({
             'totp_update_secret': {},
-            'totp_update_secret_preferences': {},
-            'totp_clear_secret': {
+            'totp_update_secret_preferences': _clickable_button_hack(),
+            'totp_clear_secret': _clickable_button_hack({
                 'invisible': _totp_required,
-                },
+                }),
             })
 
     @fields.depends('totp_key')
