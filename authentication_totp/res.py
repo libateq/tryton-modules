@@ -1,6 +1,17 @@
 # This file is part of the authentication_totp Tryton module.
 # Please see the COPYRIGHT and README.rst files at the top level of this
 # package for full copyright notices, license terms and support information.
+from binascii import Error as BinAsciiError
+from io import BytesIO
+from math import ceil
+from passlib.exc import TokenError, UsedTokenError
+from passlib.totp import TOTP
+try:
+    from qrcode import QRCode
+    from qrcode.image.pil import PilImage
+except ImportError:
+    QRCode = None
+
 from trytond.config import config
 from trytond.i18n import gettext
 from trytond.model import ModelSQL, ModelView, fields
@@ -12,12 +23,14 @@ from trytond.wizard import Button, StateView, StateTransition, Wizard
 from .exception import (
     TOTPAccessCodeReuseError, TOTPInvalidSecretError, TOTPKeyTooShortError,
     TOTPKeyTooShortWarning, TOTPLoginException)
-from .totp import TokenError, UsedTokenError, totp
 
 _totp_issuer = config.get(
     'authentication_totp', 'issuer', default='{company} Tryton')
 _totp_key_length = config.get(
     'authentication_totp', 'key_length', default=160)
+
+_TOTPFactory = TOTP.using(secrets_path=config.get(
+    'authentication_totp', 'application_secrets_file', default=None))
 
 
 class User(metaclass=PoolMeta):
@@ -32,13 +45,21 @@ class User(metaclass=PoolMeta):
     totp_qrcode = fields.Function(fields.Binary(
             "TOTP QR Code",
             states={
-                'invisible': (
-                    ~Eval('totp_secret', '') or (not totp.qrcode_available())),
+                'invisible': ~Eval('totp_secret', '') or (not QRCode),
                 },
             depends=['totp_secret'],
-            help="The QR code for the secret key for use with authenticator "
+            help="The QR code for the secret key. Used with authenticator "
             "apps."),
         'on_change_with_totp_qrcode')
+    totp_url = fields.Function(fields.Char(
+            "TOTP URL",
+            states={
+                'invisible': ~Eval('totp_secret', ''),
+                },
+            depends=['totp_secret'],
+            help="The URL that contains the secret key and which gets encoded "
+            "into a QR Code."),
+        'on_change_with_totp_url')
     totp_update_pending = fields.Function(
         fields.Boolean(
             "TOTP Update Pending",
@@ -63,32 +84,42 @@ class User(metaclass=PoolMeta):
     @fields.depends('totp_key')
     def on_change_with_totp_secret(self, name=None):
         if self.totp_key:
-            return totp.secret_from_key(self.totp_key)
+            totp = _TOTPFactory.from_json(self.totp_key)
+            return totp.pretty_key()
+
+    @classmethod
+    def _is_admin(cls):
+        ModelAccess = Pool().get('ir.model.access')
+        return ModelAccess.check(
+            'res.user', mode='write', raise_exception=False)
+
+    @classmethod
+    def _key_length_too_short(cls, key):
+        if key:
+            totp = _TOTPFactory.from_json(key)
+            key_length = len(totp.key) * 8
+            return key_length < _totp_key_length
 
     @classmethod
     def set_totp_secret(cls, users, name, value):
-        pool = Pool()
-        ModelAccess = pool.get('ir.model.access')
-        Warning = pool.get('res.user.warning')
+        Warning = Pool().get('res.user.warning')
 
-        try:
-            key = totp.key_from_secret(value)
-        except ValueError:
-            raise TOTPInvalidSecretError(gettext(
-                'authentication_totp.msg_user_invalid_totp_secret',
-                login=users[0].login))
+        if value:
+            try:
+                key = _TOTPFactory(key=value).to_json()
+            except BinAsciiError:
+                raise TOTPInvalidSecretError(gettext(
+                    'authentication_totp.msg_user_invalid_totp_secret',
+                    login=users[0].login))
+        else:
+            key = None
 
-        admin = ModelAccess.check(
-            'res.user', mode='write', raise_exception=False)
-        key_length = totp.length(key)
-        short_key = key_length and (key_length < _totp_key_length)
-        for user in users:
-            if short_key and admin:
-                warning_name = 'authentication_totp.key_too_short'
-                if Warning.check(warning_name):
-                    raise TOTPKeyTooShortWarning(warning_name, gettext(
-                        'authentication_totp.msg_user_totp_too_short',
-                        login=user.login))
+        if cls._is_admin() and cls._key_length_too_short(key):
+            warning_name = 'authentication_totp.key_too_short'
+            if Warning.check(warning_name):
+                raise TOTPKeyTooShortWarning(warning_name, gettext(
+                    'authentication_totp.msg_user_totp_too_short',
+                    login=users[0].login))
 
         cls.write(list(users), {
             'totp_key': key,
@@ -99,15 +130,28 @@ class User(metaclass=PoolMeta):
             'company': "",
             }
 
-    @fields.depends(methods=['_get_totp_issuer_fields'])
-    def get_totp_issuer(self):
+    @fields.depends(
+        'login', 'totp_secret', methods=['_get_totp_issuer_fields'])
+    def on_change_with_totp_url(self, name=None):
+        if not self.totp_secret:
+            return
         issuer = _totp_issuer.format(**self._get_totp_issuer_fields())
-        return issuer.strip()
+        issuer = issuer.strip()
+        totp = _TOTPFactory(key=self.totp_secret)
+        return totp.to_uri(label=self.login, issuer=issuer)
 
-    @fields.depends('login', 'totp_secret', methods=['get_totp_issuer'])
+    @fields.depends('totp_url')
     def on_change_with_totp_qrcode(self, name=None):
-        return totp.generate_qrcode(
-            self.totp_secret, self.login, self.get_totp_issuer())
+        url = self.totp_url
+        if not url or not QRCode:
+            return
+
+        data = BytesIO()
+        qr = QRCode(image_factory=PilImage)
+        qr.add_data(url)
+        image = qr.make_image()
+        image.save(data)
+        return data.getvalue()
 
     def get_totp_update_pending(self, name=None):
         return False
@@ -145,12 +189,9 @@ class User(metaclass=PoolMeta):
 
     @classmethod
     def validate(cls, users):
-        ModelAccess = Pool().get('ir.model.access')
-        admin = ModelAccess.check(
-            'res.user', mode='write', raise_exception=False)
+        admin = cls._is_admin()
         for user in users:
-            short_key = totp.length(user.totp_key) < _totp_key_length
-            if not admin and short_key:
+            if not admin and cls._key_length_too_short(user.totp_key):
                 raise TOTPKeyTooShortError(gettext(
                     'authentication_totp.msg_user_totp_too_short',
                     login=user.login))
@@ -213,7 +254,7 @@ class UserLoginTOTP(ModelSQL):
 
     def check(self, code, _time=None):
         try:
-            counter, _ = totp.verify(
+            counter, _ = _TOTPFactory.verify(
                 code, self.user.totp_key, time=_time,
                 last_counter=self.last_counter)
         except UsedTokenError:
@@ -252,7 +293,8 @@ class UserSetupTOTP(Wizard):
         return User(transaction.context.get('active_id', transaction.user))
 
     def get_totp_secret(self):
-        return totp.new_secret(_totp_key_length)
+        size = ceil(_totp_key_length / 8)
+        return _TOTPFactory.new(size=size).pretty_key()
 
     def transition_save(self):
         User = Pool().get('res.user')
@@ -276,12 +318,12 @@ class UserSetupTOTPShow(ModelView):
     totp_qrcode = fields.Binary(
         "TOTP QR Code",
         states={
-            'invisible': not totp.qrcode_available(),
+            'invisible': not QRCode,
             })
     totp_qrcode_disabled = fields.Binary(
         "TOTP QR Code Disabled",
         states={
-            'invisible': totp.qrcode_available(),
+            'invisible': bool(QRCode),
             })
 
     @classmethod
@@ -293,8 +335,8 @@ class UserSetupTOTPShow(ModelView):
     @fields.depends('totp_secret', 'user')
     def on_change_with_totp_qrcode(self, name=None):
         if self.totp_secret and self.user:
-            return totp.generate_qrcode(
-                self.totp_secret, self.user.login, self.user.get_totp_issuer())
+            self.user.totp_secret = self.totp_secret
+            return self.user.on_change_with_totp_qrcode()
 
 
 class UserSetupTOTPSkipped(ModelView):

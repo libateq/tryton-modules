@@ -13,7 +13,7 @@ from trytond.tests.test_tryton import (
     ModuleTestCase, activate_module, with_transaction, suite as test_suite)
 from trytond.transaction import Transaction
 
-from ..totp import QRCode
+from ..res import QRCode
 
 TOTP_SECRET_KEY = 'GE3D-AYRA-KRHV-IUBA-KNSW-G4TF-OQQE-WZLZ'
 
@@ -92,7 +92,7 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
         User = Pool().get('res.user')
         user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
         user.save()
-        self.assertEqual(user.get_totp_issuer(), 'Tryton')
+        self.assertIn('Tryton', user.totp_url)
 
     @with_transaction()
     @skipIf(not QRCode, "qrcode not available")
@@ -144,7 +144,7 @@ class AuthenticationTOTPCompanyTestCase(ModuleTestCase):
             name='totp', login='totp', totp_secret=TOTP_SECRET_KEY,
             main_company=company)
         user.save()
-        self.assertEqual(user.get_totp_issuer(), 'Dunder Mifflin Tryton')
+        self.assertIn('issuer=Dunder%20Mifflin%20Tryton', user.totp_url)
 
 
 class UserLoginTOTPTestCase(ModuleTestCase):
