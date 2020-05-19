@@ -18,9 +18,9 @@ package for full copyright notices, license terms and support information.
     </data>
 
     <data depends="account">
-        <!-- Account Journal move -->
+        <!-- Account journal Move -->
         <record model="ir.sequence" id="account.sequence_account_journal">
-            <field name="prefix">AJ/</field>
+            <field name="prefix">AM/</field>
             <field name="padding" eval="6"/>
         </record>
         <!-- Account move Reconciliation -->
@@ -30,11 +30,11 @@ package for full copyright notices, license terms and support information.
         </record>
     </data>
     <data depends="account" noupdate="1">
-        <!-- Account Move -->
+        <!-- Account Post move -->
         <record model="ir.sequence" id="sequence_account_move">
             <field name="name">Account Post Move</field>
             <field name="code">account.move</field>
-            <field name="prefix">AM/</field>
+            <field name="prefix">AP/</field>
             <field name="padding" eval="6"/>
         </record>
     </data>
@@ -79,15 +79,15 @@ package for full copyright notices, license terms and support information.
     </data>
 
     <data depends="account_payment">
-        <!-- Account Payment group -->
+        <!-- Account payment Group -->
         <record model="ir.sequence" id="account_payment.sequence_account_payment_group">
-            <field name="prefix">AP/</field>
+            <field name="prefix">AG/</field>
             <field name="padding" eval="6"/>
         </record>
     </data>
 
     <data depends="account_payment_sepa" noupdate="1">
-        <!-- Account payment sepa Mandate-->
+        <!-- Account payment Sepa mandate-->
         <record model="ir.sequence" id="sequence_sepa_mandate">
             <field name="name">SEPA Mandate</field>
             <field name="code">account.payment.sepa.mandate</field>
