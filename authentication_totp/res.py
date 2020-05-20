@@ -30,6 +30,8 @@ _totp_issuer = config.get(
 _totp_key_length = config.get(
     'authentication_totp', 'key_length', default=160)
 
+_has_password_totp = 'password_totp' in config.get(
+    'session', 'authentications', default='password').split(',')
 _totp_required = 'totp' in split('[,+]', config.get(
     'session', 'authentications', default='password'))
 
@@ -99,6 +101,11 @@ class User(metaclass=PoolMeta):
                 'invisible': _totp_required,
                 }),
             })
+        cls._buttons['reset_password']['invisible'] &= (
+            ~Eval('email', True) | (not _has_password_totp))
+        cls.password.states['invisible'] &= not _has_password_totp
+        cls.password_reset.states['invisible'] &= not _has_password_totp
+        cls.password_reset_expire.states['invisible'] &= not _has_password_totp
 
     @fields.depends('totp_key')
     def on_change_with_totp_secret(self, name=None):
