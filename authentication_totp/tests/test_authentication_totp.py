@@ -11,7 +11,6 @@ from trytond.modules.company.tests import create_company
 from trytond.pool import Pool
 from trytond.tests.test_tryton import (
     ModuleTestCase, activate_module, with_transaction, suite as test_suite)
-from trytond.transaction import Transaction
 
 from ..res import QRCode
 
@@ -31,15 +30,6 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
         methods = config.get('session', 'authentications', default='')
         config.set('session', 'authentications', 'totp')
         self.addCleanup(config.set, 'session', 'authentications', methods)
-
-    def run_trigger_tasks(self):
-        pool = Pool()
-        Queue = pool.get('ir.queue')
-        transaction = Transaction()
-        self.assertTrue(transaction.tasks)
-        while transaction.tasks:
-            task = Queue(transaction.tasks.pop())
-            task.run()
 
     @with_transaction()
     def test_user_get_login(self):
@@ -93,17 +83,6 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
             user.save()
 
     @with_transaction()
-    def test_clear_secret(self):
-        User = Pool().get('res.user')
-        user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
-        user.save()
-
-        user.totp_clear_secret()
-        user.save()
-
-        self.assertFalse(user.totp_secret)
-
-    @with_transaction()
     def test_user_get_totp_issuer(self):
         User = Pool().get('res.user')
         user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
@@ -118,62 +97,6 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
         user.save()
         qrcode = user.totp_qrcode
         self.assertGreater(len(qrcode), 0)
-
-    @with_transaction()
-    def test_user_create_action(self):
-        User = Pool().get('res.user')
-        user = User(name='totp', login='totp')
-        user.save()
-        self.run_trigger_tasks()
-        self.assertEqual(len(user.actions), 1)
-        self.assertEqual(
-            user.actions[0].get_action_value()['wiz_name'],
-            'res.user.setup_totp.display')
-
-    @with_transaction()
-    def test_user_create_action_with_secret(self):
-        User = Pool().get('res.user')
-        user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
-        user.save()
-        self.run_trigger_tasks()
-        self.assertEqual(len(user.actions), 0)
-
-
-class AuthenticationTOTPOptionalTestCase(ModuleTestCase):
-    "Test Authentication TOTP module - totp_optional Authentication Method"
-    module = 'authentication_totp'
-
-    def setUp(self):
-        super().setUp()
-        methods = config.get('session', 'authentications', default='')
-        config.set('session', 'authentications', 'totp_optional')
-        self.addCleanup(config.set, 'session', 'authentications', methods)
-
-    @with_transaction()
-    def test_user_get_login(self):
-        User = Pool().get('res.user')
-        user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
-        user.save()
-
-        with self.assertRaises(LoginException) as cm:
-            User.get_login('totp', {})
-        self.assertEqual(cm.exception.name, 'totp_code')
-        self.assertEqual(cm.exception.type, 'char')
-
-        totp_code = TOTP(key=TOTP_SECRET_KEY).generate().token
-        user_id = User.get_login('totp', {
-                'totp_code': totp_code,
-                })
-        self.assertEqual(user_id, user.id)
-
-    @with_transaction()
-    def test_user_get_login_no_key(self):
-        User = Pool().get('res.user')
-        user = User(name='totp', login='totp')
-        user.save()
-
-        user_id = User.get_login('totp', {})
-        self.assertEqual(user_id, user.id)
 
 
 class AuthenticationTOTPCompanyTestCase(ModuleTestCase):
@@ -240,8 +163,6 @@ def suite():
     suite = test_suite()
     suite.addTests(TestLoader().loadTestsFromTestCase(
         AuthenticationTOTPTestCase))
-    suite.addTests(TestLoader().loadTestsFromTestCase(
-        AuthenticationTOTPOptionalTestCase))
     suite.addTests(TestLoader().loadTestsFromTestCase(
         AuthenticationTOTPCompanyTestCase))
     suite.addTests(TestLoader().loadTestsFromTestCase(

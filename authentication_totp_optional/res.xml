@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the authentication_totp Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<tryton>
+    <data>
+        <record model="ir.ui.view" id="user_view_form">
+            <field name="model">res.user</field>
+            <field name="inherit" ref="res.user_view_form"/>
+            <field name="name">user_form</field>
+        </record>
+        <record model="ir.ui.view" id="user_view_form_preferences">
+            <field name="model">res.user</field>
+            <field name="inherit" ref="res.user_view_form_preferences"/>
+            <field name="name">user_form_preferences</field>
+        </record>
+
+        <record model="ir.ui.icon" id="totp_key_icon">
+            <field name="name">tryton-totp-key</field>
+            <field name="path">icons/tryton-totp-key.svg</field>
+        </record>
+
+        <record model="ir.ui.view" id="user_setup_totp_start_view_form">
+            <field name="model">res.user.setup_totp.start</field>
+            <field name="type">form</field>
+            <field name="name">user_setup_totp_start_form</field>
+        </record>
+        <record model="ir.ui.view" id="user_setup_totp_skipped_view_form">
+            <field name="model">res.user.setup_totp.skipped</field>
+            <field name="type">form</field>
+            <field name="name">user_setup_totp_skipped_form</field>
+        </record>
+        <record model="ir.ui.view" id="user_setup_totp_done_view_form">
+            <field name="model">res.user.setup_totp.done</field>
+            <field name="type">form</field>
+            <field name="name">user_setup_totp_done_form</field>
+        </record>
+        <record model="ir.action.wizard" id="wizard_user_setup_totp">
+            <field name="name">Setup Time-based One-Time Password Authentication</field>
+            <field name="wiz_name">res.user.setup_totp</field>
+            <field name="model">res.user</field>
+        </record>
+
+        <record model="ir.model.button" id="setup_totp_secret_button">
+            <field name="name">setup_totp_secret</field>
+            <field name="string">Update Secret</field>
+            <field name="help">Update the TOTP secret and enable TOTP two-factor authentication.</field>
+            <field name="model" search="[('model', '=', 'res.user')]"/>
+        </record>
+        <record model="ir.model.button" id="clear_totp_secret_button">
+            <field name="name">clear_totp_secret</field>
+            <field name="string">Disable</field>
+            <field name="help">Remove the TOTP secret and disable TOTP two-factor authentication.</field>
+            <field name="model" search="[('model', '=', 'res.user')]"/>
+        </record>
+    </data>
+</tryton>

@@ -24,10 +24,8 @@ guide.
 Setting the TOTP Secret
 -----------------------
 
-Your TOTP secret is found in the *Authentications* tab in your preferences.
+Your *TOTP Secret* is found in the *Authentications* tab in your preferences.
 Here the secret can be manually changed if required, or the *Update Secret*
-button can be used to run the *Setup Time-based One-Time Password
-Authentication* wizard when the preferences window is closed.
-If available the QR code for the secret can also be displayed, and this allows
-the secret to be easily re-entered into your authenticator app.
-
+button can be used to create a new random *TOTP Secret*.  You can then use
+the QR Code, if available, to re-share the secret with your authenticator
+app.

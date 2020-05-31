@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the authentication_totp Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<data>
+    <xpath expr="/form/notebook/page[@id='totp']/group[@id='totp_buttons']/button[@name='update_totp_secret']" position="replace"/>
+    <xpath expr="/form/notebook/page[@id='totp']/group[@id='totp_buttons']" position="inside">
+        <button name="setup_totp_secret"/>
+        <button name="clear_totp_secret"/>
+    </xpath>
+</data>

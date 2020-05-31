@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# This file is part of the authentication_totp Tryton module.
+# This file is part of the authentication_totp_optional Tryton module.
 # Please see the COPYRIGHT and README.rst files at the top level of this
 # package for full copyright notices, license terms and support information.
 from configparser import ConfigParser
@@ -42,7 +42,7 @@ def required_version(name, version):
 
 
 def install_requires(third_party_packages={}):
-    python_packages = ['passlib']
+    python_packages = []
     trytond_requires = [required_version('trytond', version)]
     for module in tryton_cfg.get('depends', []):
         if not match(r'(ir|res)(\W|$)', module):
@@ -53,17 +53,17 @@ def install_requires(third_party_packages={}):
 
 
 def tests_require():
-    return ['qrcode', 'pillow']
+    return []
 
 
 setup_tryton_cfg()
 setup_version()
 setup(
-    name='trytonlq_authentication_totp',
+    name='trytonlq_authentication_totp_optional',
     version='{major}.{minor}.{revision}'.format(**version),
     description=(
-        "Tryton module that allows use of time based one time passwords as an "
-        "authentication method"),
+        "Tryton module that allows users to optionally use time based one time"
+        "passwords as an authentication method"),
     long_description=read('README.rst'),
     author='David Harper',
     author_email='tryton@libateq.org',
@@ -72,15 +72,17 @@ setup(
         "Bug Tracker": 'https://bitbucket.org/libateq/tryton-modules/issues',
         "Source Code": 'https://bitbucket.org/libateq/tryton-modules',
         },
-    keywords='tryton authentication totp one-time password two-factor 2fa mfa',
-    package_dir={'trytond.modules.authentication_totp': '.'},
+    keywords=(
+        'tryton authentication totp optional '
+        'one-time password two-factor 2fa mfa'),
+    package_dir={'trytond.modules.authentication_totp_optional': '.'},
     packages=(
-        ['trytond.modules.authentication_totp'] +
-        ['trytond.modules.authentication_totp.{}'.format(p)
+        ['trytond.modules.authentication_totp_optional'] +
+        ['trytond.modules.authentication_totp_optional.{}'.format(p)
          for p in find_packages()]
         ),
     package_data={
-        'trytond.modules.authentication_totp': (
+        'trytond.modules.authentication_totp_optional': (
             tryton_cfg.get('xml', []) + [
                 '*.fodt', 'icons/*.svg', 'locale/*.po', 'tests/*.rst',
                 'tryton.cfg', 'view/*.xml']),
@@ -114,7 +116,7 @@ setup(
     zip_safe=False,
     entry_points="""
     [trytond.modules]
-    authentication_totp = trytond.modules.authentication_totp
+    authentication_totp_optional = trytond.modules.authentication_totp_optional
     """,
     test_suite='tests',
     test_loader='trytond.test_loader:Loader',

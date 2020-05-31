@@ -2,14 +2,8 @@ Setup
 =====
 
 Once the module has been activated you can start using it by including the
-``totp``, or ``totp_optional`` authentication methods in the
-`[session] authentications`_ configuration option.
-
-The difference between the two authentication methods is that the ``totp``
-method always requires the user to enter a code to verify their identity, so
-a code must be setup for the user before they first login.  Whereas the
-``totp_optional`` method only requires a code if the user has already setup a
-*TOTP Secret*.
+``totp`` authentication method in the `[session] authentications`_
+configuration option.
 
 .. _`[session] authentications`: https://docs.tryton.org/projects/server/en/latest/topics/configuration.html#authentications
 
@@ -73,16 +67,3 @@ key_length
     .. _`RFC 6238`: https://tools.ietf.org/html/rfc6238.html
 
     Default value: ``160``
-
-
-Prompting Users to Setup TOTP
------------------------------
-
-You can prompt users to setup TOTP by adding the *Setup Time-based One-Time
-Password Authentication* wizard to their login *Actions*.  To help make this
-process simpler a trigger is provided that will automatically do this when
-a new user is created.  This trigger can easily be deactivated if desired.
-
-With this action in place, the wizard will run when the user logs in.  This
-will automatically generate a new secret for the user and will help them add
-it to their authenticator app.

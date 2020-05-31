@@ -11,8 +11,7 @@ package for full copyright notices, license terms and support information.
             <label name="totp_secret"/>
             <field name="totp_secret" widget="password"/>
             <group id="totp_buttons" colspan="2" col="-1">
-                <button name="totp_update_secret" confirm="Are you sure you want to change your TOTP secret?"/>
-                <button name="totp_clear_secret"/>
+                <button name="update_totp_secret"/>
             </group>
             <label id="gap" string="" xexpand="0"/>
             <group string="QR Code" name="totp_qrcode" colspan="3" expandable="0">

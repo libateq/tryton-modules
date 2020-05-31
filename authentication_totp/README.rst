@@ -1,8 +1,8 @@
 Authentication TOTP Tryton Module
 #################################
 
-A module for the Tryton application platform that allows users to use time
-based one time passwords as an authentication method.
+A module for the Tryton application platform that allows use of time based one
+time passwords as an authentication method.
 
 .. start-of-readme-only-text
 
