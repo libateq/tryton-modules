@@ -1,7 +1,6 @@
 .. include:: ../README.rst
     :end-before: .. start-of-readme-only-text
 
-
 Contents
 ========
 
