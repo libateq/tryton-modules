@@ -5,18 +5,18 @@ Please see the COPYRIGHT and README.rst files at the top level of this
 package for full copyright notices, license terms and support information.
 -->
 <data>
-    <xpath expr="/form/notebook/page[@id='user']" position="after">
-        <page string="TOTP" id="totp">
-            <separator string="Time-based One-Time Passwords" id="totp_sep" colspan="4"/>
-            <label name="totp_secret"/>
-            <field name="totp_secret" widget="password"/>
-            <group id="totp_buttons" colspan="2" col="-1">
-                <button name="update_totp_secret"/>
-            </group>
-            <label id="gap" string="" xexpand="0"/>
-            <group string="QR Code" name="totp_qrcode" colspan="3" expandable="0">
-                <field name="totp_qrcode" widget="image" width="256" height="256" readonly="1" xfill="0" xexpand="0" xalign="0"/>
-            </group>
-        </page>
-    </xpath>
+  <xpath expr="/form/notebook/page[@id='user']" position="after">
+    <page string="TOTP" id="totp">
+      <separator string="Time-based One-Time Passwords" id="totp_sep" colspan="4"/>
+      <label name="totp_secret"/>
+      <field name="totp_secret" widget="password"/>
+      <group id="totp_buttons" colspan="2" col="-1">
+        <button name="update_totp_secret"/>
+      </group>
+      <label id="gap" string="" xexpand="0"/>
+      <group string="QR Code" name="totp_qrcode" colspan="3" expandable="0">
+        <field name="totp_qrcode" widget="image" width="256" height="256" readonly="1" xfill="0" xexpand="0" xalign="0"/>
+      </group>
+    </page>
+  </xpath>
 </data>
