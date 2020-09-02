@@ -36,7 +36,7 @@ module from there:
 
 .. code-block:: bash
 
-    hg clone https://bitbucket.org/libateq/tryton-modules
+    git clone https://bitbucket.org/libateq/tryton-modules
     cd tryton-modules/authentication_totp_optional
     python3 setup.py install
 

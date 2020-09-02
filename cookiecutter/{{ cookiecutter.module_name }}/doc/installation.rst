@@ -28,7 +28,7 @@ module from there:
 
 .. code-block:: bash
 
-    hg clone {{ cookiecutter.tryton_modules_repository_url }}
+    git clone {{ cookiecutter.tryton_modules_repository_url }}
     cd {{ cookiecutter.tryton_modules_repository_name }}/{{ cookiecutter.module_name }}
     python3 setup.py install
 

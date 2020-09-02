@@ -28,7 +28,7 @@ module from there:
 
 .. code-block:: bash
 
-    hg clone https://bitbucket.org/libateq/tryton-modules
+    git clone https://bitbucket.org/libateq/tryton-modules
     cd tryton-modules/account_personal
     python3 setup.py install
 
