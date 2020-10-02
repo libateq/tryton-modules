@@ -207,3 +207,4 @@ class UpdateChart(metaclass=PoolMeta):
                 ], limit=2)
         if len(charts) == 1:
             defaults['account'] = charts[0].id
+        return defaults
