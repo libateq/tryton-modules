@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the account_uk_variants Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<tryton>
+  <data>
+    <record model="account.chart_variant" id="variant_sole_trader">
+      <field name="name">Sole Trader</field>
+    </record>
+
+    <record model="account.account.type.template" id="capital_owners_capital">
+      <field name="name">Capital</field>
+      <field name="sequence" eval="1"/>
+      <field name="parent" ref="account_uk.capital_reserve"/>
+      <field name="statement">balance</field>
+    </record>
+    <record model="account.account.type.template-account.chart_variant" id="capital_owners_capital_variant_sole_trader">
+      <field name="account_type" ref="capital_owners_capital"/>
+      <field name="variant" ref="variant_sole_trader"/>
+    </record>
+    <record model="account.account.type.template" id="capital_owners_introduced">
+      <field name="name">Capital introduced</field>
+      <field name="sequence" eval="2"/>
+      <field name="parent" ref="account_uk.capital_reserve"/>
+      <field name="statement">balance</field>
+    </record>
+    <record model="account.account.type.template-account.chart_variant" id="capital_owners_introduced_variant_sole_trader">
+      <field name="account_type" ref="capital_owners_introduced"/>
+      <field name="variant" ref="variant_sole_trader"/>
+    </record>
+    <record model="account.account.type.template" id="capital_owners_drawings">
+      <field name="name">Drawings</field>
+      <field name="sequence" eval="3"/>
+      <field name="parent" ref="account_uk.capital_reserve"/>
+      <field name="statement">balance</field>
+    </record>
+    <record model="account.account.type.template-account.chart_variant" id="capital_owners_drawings_variant_sole_trader">
+      <field name="account_type" ref="capital_owners_drawings"/>
+      <field name="variant" ref="variant_sole_trader"/>
+    </record>
+
+    <record model="account.account.template" id="owner_capital">
+      <field name="name">Capital</field>
+      <field name="code">3000</field>
+      <field name="type" ref="capital_owners_capital"/>
+      <field name="parent" ref="account_uk.account_capital_reserve"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="owner_capital_variant_sole_trader">
+      <field name="account" ref="owner_capital"/>
+      <field name="variant" ref="variant_sole_trader"/>
+    </record>
+    <record model="account.account.template" id="owner_capital_introduced">
+      <field name="name">Capital Introduced</field>
+      <field name="code">3100</field>
+      <field name="type" ref="capital_owners_introduced"/>
+      <field name="parent" ref="account_uk.account_capital_reserve"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="owner_capital_introduced_variant_sole_trader">
+      <field name="account" ref="owner_capital_introduced"/>
+      <field name="variant" ref="variant_sole_trader"/>
+    </record>
+    <record model="account.account.template" id="owner_drawings">
+      <field name="name">Drawings</field>
+      <field name="code">3150</field>
+      <field name="type" ref="capital_owners_drawings"/>
+      <field name="parent" ref="account_uk.account_capital_reserve"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="owner_drawings_variant_sole_trader">
+      <field name="account" ref="owner_drawings"/>
+      <field name="variant" ref="variant_sole_trader"/>
+    </record>
+
+    <record model="account.chart_variant" id="variant_partnership">
+      <field name="name">Partnership</field>
+    </record>
+
+    <record model="account.account.type.template" id="capital_partners_capital">
+      <field name="name">Capital accounts</field>
+      <field name="sequence" eval="6"/>
+      <field name="parent" ref="account_uk.capital_reserve"/>
+      <field name="statement">balance</field>
+    </record>
+    <record model="account.account.type.template-account.chart_variant" id="capital_partners_capital_variant_partnership">
+      <field name="account_type" ref="capital_partners_capital"/>
+      <field name="variant" ref="variant_partnership"/>
+    </record>
+    <record model="account.account.type.template" id="capital_partners_current">
+      <field name="name">Current accounts</field>
+      <field name="sequence" eval="7"/>
+      <field name="parent" ref="account_uk.capital_reserve"/>
+      <field name="statement">balance</field>
+    </record>
+    <record model="account.account.type.template-account.chart_variant" id="capital_partners_current_variant_partnership">
+      <field name="account_type" ref="capital_partners_current"/>
+      <field name="variant" ref="variant_partnership"/>
+    </record>
+
+    <record model="account.account.template" id="partner_capital">
+      <field name="name">Capital Accounts</field>
+      <field name="code">30</field>
+      <field name="type" ref="capital_partners_capital"/>
+      <field name="party_required" eval="True"/>
+      <field name="parent" ref="account_uk.account_capital_reserve"/>
+      <field name="closed" eval="True"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="partner_capital_variant_partnership">
+      <field name="account" ref="partner_capital"/>
+      <field name="variant" ref="variant_partnership"/>
+    </record>
+    <record model="account.account.template" id="partner_current">
+      <field name="name">Current Accounts</field>
+      <field name="code">31</field>
+      <field name="type" ref="capital_partners_current"/>
+      <field name="party_required" eval="True"/>
+      <field name="parent" ref="account_uk.account_capital_reserve"/>
+      <field name="closed" eval="True"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="partner_current_variant_partnership">
+      <field name="account" ref="partner_current"/>
+      <field name="variant" ref="variant_partnership"/>
+    </record>
+
+    <record model="account.chart_variant" id="variant_limited_company">
+      <field name="name">Limited Company</field>
+    </record>
+
+    <record model="account.account.type.template-account.chart_variant" id="capital_called_up_share_limited_company">
+      <field name="account_type" ref="account_uk.capital_called_up_share"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.type.template-account.chart_variant" id="capital_share_premium_limited_company">
+      <field name="account_type" ref="account_uk.capital_share_premium"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.type.template-account.chart_variant" id="capital_reserve_revaluation_limited_company">
+      <field name="account_type" ref="account_uk.capital_reserve_revaluation"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.type.template-account.chart_variant" id="capital_reserve_group_limited_company">
+      <field name="account_type" ref="account_uk.capital_reserve_group"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.type.template-account.chart_variant" id="capital_reserve_redemption_limited_company">
+      <field name="account_type" ref="account_uk.capital_reserve_redemption"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.type.template-account.chart_variant" id="capital_reserve_own_shares_limited_company">
+      <field name="account_type" ref="account_uk.capital_reserve_own_shares"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.type.template-account.chart_variant" id="capital_reserve_association_limited_company">
+      <field name="account_type" ref="account_uk.capital_reserve_association"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.type.template-account.chart_variant" id="capital_reserve_other_limited_company">
+      <field name="account_type" ref="account_uk.capital_reserve_other"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+
+    <record model="account.account.template-account.chart_variant" id="taxation_corporation_tax_variant_limited_company">
+      <field name="account" ref="account_uk.taxation_corporation_tax"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="share_capital_variant_limited_company">
+      <field name="account" ref="account_uk.share_capital"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="shares_ordinary_variant_limited_company">
+      <field name="account" ref="account_uk.shares_ordinary"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="shares_preference_variant_limited_company">
+      <field name="account" ref="account_uk.shares_preference"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="reserve_variant_limited_company">
+      <field name="account" ref="account_uk.reserve"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="reserve_share_premium_variant_limited_company">
+      <field name="account" ref="account_uk.reserve_share_premium"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="reserve_revaluation_variant_limited_company">
+      <field name="account" ref="account_uk.reserve_revaluation"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="reserve_capital_redemption_variant_limited_company">
+      <field name="account" ref="account_uk.reserve_capital_redemption"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="reserve_own_shares_variant_limited_company">
+      <field name="account" ref="account_uk.reserve_own_shares"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="reserve_association_article_variant_limited_company">
+      <field name="account" ref="account_uk.reserve_association_article"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="reserve_other_variant_limited_company">
+      <field name="account" ref="account_uk.reserve_other"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="expense_salary_directors_variant_limited_company">
+      <field name="account" ref="account_uk.expense_salary_directors"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+    <record model="account.account.template-account.chart_variant" id="expense_remuneration_directors_variant_limited_company">
+      <field name="account" ref="account_uk.expense_remuneration_directors"/>
+      <field name="variant" ref="variant_limited_company"/>
+    </record>
+  </data>
+</tryton>
