@@ -107,7 +107,9 @@ setup(
         ],
     license='GPL-3',
     python_requires='>=3.5',
-    install_requires=install_requires(),
+    install_requires=install_requires({
+        'account_chart_variant': 'trytonlq_account_chart_variant',
+        }),
     zip_safe=False,
     entry_points="""
     [trytond.modules]
