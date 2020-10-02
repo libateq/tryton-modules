@@ -80,6 +80,13 @@ class AccountTemplate(VariantMixin, metaclass=PoolMeta):
         template2account.update({e: None for e in self._get_excluded([self])})
         super().create_account(company_id, template2account, template2type)
 
+    def update_account2(
+            self, template2account, template2tax, template_done=None):
+        if template_done is None:
+            template_done = []
+        template_done.extend(self._get_excluded([self]))
+        super().update_account2(template2account, template2tax, template_done)
+
 
 class TypeTemplateVariant(ModelSQL):
     "Account Type Template - Chart Variant"
