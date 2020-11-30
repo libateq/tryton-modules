@@ -431,8 +431,9 @@ class PerformVisit(Wizard):
         pool = Pool()
         Address = pool.get('party.address')
 
-        if isinstance(self.record, Address):
-            return self.record
+        context = Transaction().context
+        if context.get('active_model', '') == 'party.address':
+            return Address(context['active_id'])
 
         address = getattr(self.address, 'address', None)
         if address:
