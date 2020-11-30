@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the sale_direct Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<form>
+  <label name="name"/>
+  <field name="name"/>
+  <group id="flags" colspan="2" col="-1">
+    <label name="active"/>
+    <field name="active"/>
+    <label name="default_event"/>
+    <field name="default_event"/>
+  </group>
+  <label name="revisit_time"/>
+  <field name="revisit_time"/>
+  <newline/>
+  <label name="collect_sales_material"/>
+  <field name="collect_sales_material"/>
+  <label name="lost_sales_material"/>
+  <field name="lost_sales_material"/>
+  <field name="leave_sales_material" colspan="4"/>
+  <button name="set_default_event" colspan="4"/>
+</form>

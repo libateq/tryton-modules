@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the sale_direct Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<tryton>
+  <data>
+    <record model="ir.ui.view" id="visit_event_sales_material_view_list">
+      <field name="model">sale.direct.visit.event.sales_material</field>
+      <field name="type">tree</field>
+      <field name="priority" eval="10"/>
+      <field name="name">visit_event_sales_material_list</field>
+    </record>
+    <record model="ir.ui.view" id="visit_event_sales_material_view_form">
+      <field name="model">sale.direct.visit.event.sales_material</field>
+      <field name="type">form</field>
+      <field name="name">visit_event_sales_material_form</field>
+    </record>
+
+    <record model="ir.ui.view" id="visit_event_view_list">
+      <field name="model">sale.direct.visit.event</field>
+      <field name="type">tree</field>
+      <field name="priority" eval="10"/>
+      <field name="name">visit_event_list</field>
+    </record>
+    <record model="ir.ui.view" id="visit_event_view_form">
+      <field name="model">sale.direct.visit.event</field>
+      <field name="type">form</field>
+      <field name="name">visit_event_form</field>
+    </record>
+    <record model="ir.action.act_window" id="visit_event_act_list">
+      <field name="name">Visit Events</field>
+      <field name="res_model">sale.direct.visit.event</field>
+    </record>
+    <record model="ir.action.act_window.view" id="visit_event_act_list_view1">
+      <field name="sequence" eval="10"/>
+      <field name="view" ref="visit_event_view_list"/>
+      <field name="act_window" ref="visit_event_act_list"/>
+    </record>
+    <record model="ir.action.act_window.view" id="visit_event_act_list_view2">
+      <field name="sequence" eval="20"/>
+      <field name="view" ref="visit_event_view_form"/>
+      <field name="act_window" ref="visit_event_act_list"/>
+    </record>
+    <menuitem parent="sale.menu_configuration" sequence="70" action="visit_event_act_list" id="visit_event_list_menu"/>
+
+    <record model="ir.model.button" id="visit_event_set_default_event_button">
+      <field name="name">set_default_event</field>
+      <field name="string">Make Default</field>
+      <field name="model" search="[('model', '=', 'sale.direct.visit.event')]"/>
+    </record>
+
+    <record model="ir.ui.view" id="perform_visit_address_view_form">
+      <field name="model">sale.direct.visit.perform.address</field>
+      <field name="type">form</field>
+      <field name="name">perform_visit_address_form</field>
+    </record>
+    <record model="ir.ui.view" id="perform_visit_sales_material_view_list">
+      <field name="model">sale.direct.visit.perform.sales_material</field>
+      <field name="type">tree</field>
+      <field name="name">perform_visit_sales_material_list</field>
+    </record>
+    <record model="ir.ui.view" id="perform_visit_sales_material_view_form">
+      <field name="model">sale.direct.visit.perform.sales_material</field>
+      <field name="type">form</field>
+      <field name="name">perform_visit_sales_material_form</field>
+    </record>
+    <record model="ir.ui.view" id="perform_visit_event_view_form">
+      <field name="model">sale.direct.visit.perform.event</field>
+      <field name="type">form</field>
+      <field name="name">perform_visit_event_form</field>
+    </record>
+    <record model="ir.action.wizard" id="perform_visit_wizard">
+      <field name="name">Visit</field>
+      <field name="wiz_name">sale.direct.visit.perform</field>
+    </record>
+    <menuitem name="New Visit" parent="sale.menu_sale" sequence="71" action="perform_visit_wizard" id="perform_visit_wizard_menu"/>
+
+    <record model="ir.ui.view" id="visit_view_list">
+      <field name="model">sale.direct.visit</field>
+      <field name="type">tree</field>
+      <field name="priority" eval="10"/>
+      <field name="name">visit_list</field>
+    </record>
+    <record model="ir.ui.view" id="visit_view_form">
+      <field name="model">sale.direct.visit</field>
+      <field name="type">form</field>
+      <field name="name">visit_form</field>
+    </record>
+    <record model="ir.action.act_window" id="visit_act_list">
+      <field name="name">Visits</field>
+      <field name="res_model">sale.direct.visit</field>
+    </record>
+    <record model="ir.action.act_window.view" id="visit_act_list_view1">
+      <field name="sequence" eval="10"/>
+      <field name="view" ref="visit_view_list"/>
+      <field name="act_window" ref="visit_act_list"/>
+    </record>
+    <record model="ir.action.act_window.view" id="visit_act_list_view2">
+      <field name="sequence" eval="20"/>
+      <field name="view" ref="visit_view_form"/>
+      <field name="act_window" ref="visit_act_list"/>
+    </record>
+    <menuitem parent="last_visit_list_menu" sequence="10" action="visit_act_list" id="visit_list_menu"/>
+  </data>
+</tryton>

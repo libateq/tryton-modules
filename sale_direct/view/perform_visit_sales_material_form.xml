@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the sale_direct Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<form>
+  <label name="product"/>
+  <field name="product"/>
+  <newline/>
+  <label name="quantity"/>
+  <field name="quantity"/>
+  <label name="unit"/>
+  <field name="unit"/>
+</form>

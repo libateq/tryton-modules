@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the sale_direct Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<form col="6">
+  <label name="name"/>
+  <field name="name"/>
+  <newline/>
+  <label name="street"/>
+  <field name="street" colspan="3"/>
+  <newline/>
+  <label name="zip"/>
+  <field name="zip"/>
+  <label name="city"/>
+  <field name="city"/>
+  <newline/>
+  <label name="country"/>
+  <field name="country" widget="selection"/>
+  <label name="subdivision"/>
+  <field name="subdivision" widget="selection"/>
+</form>

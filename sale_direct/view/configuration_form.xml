@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the sale_direct Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<data>
+  <xpath expr="/form/field[@name='sale_process_after']" position="after">
+    <separator string="Visits" id="visits" colspan="4"/>
+    <label name="general_address_party"/>
+    <field name="general_address_party"/>
+    <newline/>
+    <label name="visit_location_parent"/>
+    <field name="visit_location_parent"/>
+  </xpath>
+</data>

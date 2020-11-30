@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the sale_direct Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<tryton>
+  <data>
+    <record model="ir.ui.view" id="configuration_view_form">
+      <field name="model">sale.configuration</field>
+      <field name="inherit" ref="sale.sale_configuration_view_form"/>
+      <field name="name">configuration_form</field>
+    </record>
+  </data>
+</tryton>
