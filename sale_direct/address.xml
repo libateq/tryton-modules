@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the sale_direct Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<tryton>
+  <data>
+    <record model="ir.ui.view" id="last_visit_view_list">
+      <field name="model">party.address</field>
+      <field name="type">tree</field>
+      <field name="priority" eval="20"/>
+      <field name="name">last_visit_list</field>
+    </record>
+    <record model="ir.ui.view" id="last_visit_view_form">
+      <field name="model">party.address</field>
+      <field name="type">form</field>
+      <field name="priority" eval="30"/>
+      <field name="name">last_visit_form</field>
+    </record>
+    <record model="ir.action.act_window" id="last_visit_act_list">
+      <field name="name">Last Visits</field>
+      <field name="res_model">party.address</field>
+      <field name="domain" eval="[('name', 'not in', ['', None]), ('street', 'not in', ['', None])]" pyson="1"/>
+      <field name="order" eval="[('last_visit_time', 'DESC NULLS LAST')]" pyson="1"/>
+    </record>
+    <record model="ir.action.act_window.domain" id="last_visit_act_list_domain_revisit_today">
+      <field name="name">Revisit Today</field>
+      <field name="sequence" eval="10"/>
+      <field name="domain" eval="[('revisit_today', '=', True)]" pyson="1"/>
+      <field name="count" eval="True"/>
+      <field name="act_window" ref="last_visit_act_list"/>
+    </record>
+    <record model="ir.action.act_window.domain" id="last_visit_act_list_domain_revisit">
+      <field name="name">Revisit</field>
+      <field name="sequence" eval="20"/>
+      <field name="domain" eval="[('revisit_required', '=', True)]" pyson="1"/>
+      <field name="count" eval="True"/>
+      <field name="act_window" ref="last_visit_act_list"/>
+    </record>
+    <record model="ir.action.act_window.domain" id="last_visit_act_list_domain_all">
+      <field name="name">All</field>
+      <field name="sequence" eval="9999"/>
+      <field name="domain"></field>
+      <field name="act_window" ref="last_visit_act_list"/>
+    </record>
+    <record model="ir.action.act_window.view" id="last_visit_act_list_view1">
+      <field name="sequence" eval="10"/>
+      <field name="view" ref="last_visit_view_list"/>
+      <field name="act_window" ref="last_visit_act_list"/>
+    </record>
+    <record model="ir.action.act_window.view" id="last_visit_act_list_view2">
+      <field name="sequence" eval="20"/>
+      <field name="view" ref="last_visit_view_form"/>
+      <field name="act_window" ref="last_visit_act_list"/>
+    </record>
+    <menuitem parent="sale.menu_sale" sequence="70" action="last_visit_act_list" id="last_visit_list_menu"/>
+
+    <record model="ir.model.button" id="last_visit_visit_button">
+      <field name="name">visit</field>
+      <field name="string">Visit</field>
+      <field name="model" search="[('model', '=', 'party.address')]"/>
+    </record>
+
+    <record model="ir.action.act_window" id="address_visit_act">
+      <field name="name">Visits</field>
+      <field name="res_model">sale.direct.visit</field>
+      <field name="domain" eval="[('address', 'in', Eval('active_ids', []))]" pyson="1"/>
+    </record>
+    <record model="ir.action.keyword" id="address_visit_act_keyword">
+      <field name="keyword">form_relate</field>
+      <field name="model">party.address,-1</field>
+      <field name="action" ref="address_visit_act"/>
+    </record>
+  </data>
+</tryton>

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the sale_direct Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<form>
+  <label name="party"/>
+  <field name="party" colspan="3"/>
+  <newline/>
+  <label name="name"/>
+  <field name="name"/>
+  <newline/>
+  <label name="street"/>
+  <field name="street" colspan="3"/>
+  <label name="zip"/>
+  <field name="zip"/>
+  <label name="city"/>
+  <field name="city"/>
+  <label name="country"/>
+  <field name="country" widget="selection"/>
+  <label name="subdivision"/>
+  <field name="subdivision" widget="selection"/>
+  <label name="last_visit_event"/>
+  <field name="last_visit_event"/>
+  <label name="last_visit_time"/>
+  <field name="last_visit_time"/>
+  <label name="revisit_required"/>
+  <field name="revisit_required"/>
+  <label name="revisit_due"/>
+  <field name="revisit_due"/>
+  <separator name="last_visit_notes" colspan="4"/>
+  <field name="last_visit_notes" colspan="4"/>
+  <group col="-1" colspan="4" id="buttons">
+    <button name="visit"/>
+  </group>
+</form>
