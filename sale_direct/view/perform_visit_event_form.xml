@@ -5,14 +5,16 @@ Please see the COPYRIGHT and README.rst files at the top level of this
 package for full copyright notices, license terms and support information.
 -->
 <form>
-  <label name="event"/>
-  <field name="event"/>
-  <label name="time"/>
-  <field name="time"/>
   <notebook>
+    <page name="event">
+      <label name="event"/>
+      <field name="event"/>
+    </page>
     <page string="Info" id="info">
       <label name="address"/>
       <field name="address" colspan="3"/>
+      <label name="time"/>
+      <field name="time"/>
       <label name="revisit_time"/>
       <field name="revisit_time"/>
       <separator name="notes" colspan="4"/>
