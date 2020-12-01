@@ -199,7 +199,10 @@ class PerformVisitAddress(ModelView):
     _depends = ['new_address']
 
     name = fields.Char(
-        "Building Name", required=True, states=_states, depends=_depends)
+        "Building Name", states={
+            'invisible': ~Eval('new_address', False),
+            'required': Eval('new_address', False),
+        }, depends=_depends)
     street = fields.Text("Street", states=_states, depends=_depends)
     zip = fields.Char("Zip", states=_states, depends=_depends)
     city = fields.Char("City", states=_states, depends=_depends)
