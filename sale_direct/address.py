@@ -46,12 +46,18 @@ class Address(metaclass=PoolMeta):
             }, depends=['revisit_required']),
         'get_last_visit', searcher='search_last_visit')
 
+    general_address = fields.Function(
+        fields.Boolean("General Address"),
+        'get_general_address')
+
     @classmethod
     def __setup__(cls):
         super().__setup__()
         cls._buttons.update({
             'visit': {},
             })
+        cls.party.states['readonly'] &= ~Eval('general_address', False)
+        cls.party.depends.append('general_address')
 
     def get_building_address(self, name):
         if self.street:
@@ -144,6 +150,11 @@ class Address(metaclass=PoolMeta):
     @classmethod
     def order_revisit_due(cls, tables):
         return cls.order(tables, 'revisit_due')
+
+    @fields.depends('party')
+    def get_general_address(self, name):
+        if self.party:
+            return self.party.general_address_party
 
     @classmethod
     def get_visit_address(cls, address):
