@@ -64,13 +64,16 @@ class Address(metaclass=PoolMeta):
             country = self.country.code
         else:
             country = None
-        return ', '.join(filter(None, [
+        result = ', '.join(filter(None, [
                     self.name,
                     street,
                     locality,
                     self.zip,
                     self.city,
                     country]))
+        if not result:
+            result = self.party.rec_name
+        return result
 
     @classmethod
     def order_building_address(cls, tables):
@@ -81,6 +84,7 @@ class Address(metaclass=PoolMeta):
             address.city,
             address.street,
             address.name,
+            address.party.id,
             ]
 
     @classmethod
