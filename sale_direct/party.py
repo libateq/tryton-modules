@@ -12,7 +12,7 @@ class Party(metaclass=PoolMeta):
         fields.Boolean("General Address Party"),
         'get_general_address_party', searcher='search_general_address_party')
 
-    def get_general_address_party(self):
+    def get_general_address_party(self, name):
         pool = Pool()
         Configuration = pool.get('sale.configuration')
         config = Configuration(1)
