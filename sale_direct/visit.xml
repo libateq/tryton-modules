@@ -77,6 +77,11 @@ package for full copyright notices, license terms and support information.
       <field name="name">Visit</field>
       <field name="wiz_name">sale.direct.visit.perform</field>
     </record>
+    <record model="ir.action.keyword" id="perform_visit_wizard_keyword">
+      <field name="keyword">form_action</field>
+      <field name="model">party.address,-1</field>
+      <field name="action" ref="perform_visit_wizard"/>
+    </record>
     <menuitem name="New Visit" parent="visit_menu" sequence="30" action="perform_visit_wizard" id="perform_visit_wizard_menu"/>
 
     <record model="ir.ui.view" id="visit_view_list">
