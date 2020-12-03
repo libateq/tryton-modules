@@ -21,7 +21,7 @@ package for full copyright notices, license terms and support information.
     <record model="ir.action.act_window" id="last_visit_act_list">
       <field name="name">Last Visits</field>
       <field name="res_model">party.address</field>
-      <field name="domain" eval="[('name', 'not in', ['', None]), ('street', 'not in', ['', None])]" pyson="1"/>
+      <field name="domain" eval="['OR', [('last_visit_time', '!=', None)], [('name', 'not in', ['', None]), ('street', 'not in', ['', None])]]" pyson="1"/>
       <field name="order" eval="[('revisit_due', 'ASC NULLS LAST'), ('last_visit_time', 'DESC NULLS LAST')]" pyson="1"/>
     </record>
     <record model="ir.action.act_window.domain" id="last_visit_act_list_domain_revisit_today">
