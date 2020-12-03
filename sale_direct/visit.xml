@@ -6,6 +6,8 @@ package for full copyright notices, license terms and support information.
 -->
 <tryton>
   <data>
+    <menuitem name="Visits" parent="sale.menu_sale" sequence="70" id="visit_menu"/>
+
     <record model="ir.ui.view" id="visit_event_sales_material_view_list">
       <field name="model">sale.direct.visit.event.sales_material</field>
       <field name="type">tree</field>
@@ -75,7 +77,7 @@ package for full copyright notices, license terms and support information.
       <field name="name">Visit</field>
       <field name="wiz_name">sale.direct.visit.perform</field>
     </record>
-    <menuitem name="New Visit" parent="sale.menu_sale" sequence="71" action="perform_visit_wizard" id="perform_visit_wizard_menu"/>
+    <menuitem name="New Visit" parent="visit_menu" sequence="30" action="perform_visit_wizard" id="perform_visit_wizard_menu"/>
 
     <record model="ir.ui.view" id="visit_view_list">
       <field name="model">sale.direct.visit</field>
@@ -102,6 +104,6 @@ package for full copyright notices, license terms and support information.
       <field name="view" ref="visit_view_form"/>
       <field name="act_window" ref="visit_act_list"/>
     </record>
-    <menuitem parent="last_visit_list_menu" sequence="10" action="visit_act_list" id="visit_list_menu"/>
+    <menuitem parent="visit_menu" sequence="10" action="visit_act_list" id="visit_list_menu"/>
   </data>
 </tryton>
