@@ -69,12 +69,8 @@ class Location(metaclass=PoolMeta):
             raise MissingVisitLocationParentError(gettext(
                     'sale_direct.msg_missing_visit_location_parent'))
 
-        location_name = address.building_address
-        if not location_name:
-            location_name = address.party.rec_name
-
         location = cls(
-            name=location_name,
+            name=address.building_address,
             address=address,
             type='storage',
             parent=config.visit_location_parent,
