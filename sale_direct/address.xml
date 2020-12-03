@@ -54,7 +54,7 @@ package for full copyright notices, license terms and support information.
       <field name="view" ref="last_visit_view_form"/>
       <field name="act_window" ref="last_visit_act_list"/>
     </record>
-    <menuitem parent="sale.menu_sale" sequence="70" action="last_visit_act_list" id="last_visit_list_menu"/>
+    <menuitem parent="visit_menu" sequence="20" action="last_visit_act_list" id="last_visit_list_menu"/>
 
     <record model="ir.model.button" id="last_visit_visit_button">
       <field name="name">visit</field>
