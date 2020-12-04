@@ -40,11 +40,9 @@ class Address(metaclass=PoolMeta):
         fields.Boolean("Revisit Today"),
         'get_last_visit', searcher='search_last_visit')
     revisit_due = fields.Function(
-        fields.DateTime(
-            "Revisit Due", states={
-                'invisible': ~Eval('revisit_required'),
-            }, depends=['revisit_required']),
-        'get_last_visit', searcher='search_last_visit')
+        fields.DateTime("Revisit Due"),
+        'get_last_visit', setter='set_revisit_due',
+        searcher='search_last_visit')
 
     general_address = fields.Function(
         fields.Boolean("General Address"),
@@ -126,6 +124,21 @@ class Address(metaclass=PoolMeta):
             last_visit.address,
             where=Operator(getattr(last_visit, name), value))
         return [('id', 'in', query)]
+
+    @classmethod
+    def set_revisit_due(cls, addresses, name, value):
+        pool = Pool()
+        Visit = pool.get('sale.direct.visit')
+
+        to_save = []
+        visits = cls.get_last_visit(addresses, ['id'])
+        for visit_id in visits['id'].values():
+            visit = Visit(visit_id)
+            visit.revisit_time = value
+            to_save.append(visit)
+
+        if to_save:
+            Visit.save(to_save)
 
     @classmethod
     def order(cls, tables, name):
@@ -219,6 +232,7 @@ class Address(metaclass=PoolMeta):
                     (visit.address == last_visit.address)
                     & (visit.time == last_visit.time))
             ).select(
+                visit.id.as_('id'),
                 visit.address.as_('address'),
                 visit.time.as_('last_visit_time'),
                 visit.event.as_('last_visit_event'),
