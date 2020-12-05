@@ -88,7 +88,7 @@ class Address(metaclass=PoolMeta):
             address.city,
             address.street,
             address.name,
-            address.party.id,
+            address.party,
             ]
 
     @classmethod
