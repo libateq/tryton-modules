@@ -159,6 +159,11 @@ class Visit(ModelSQL, ModelView):
             ('id', 'DESC'),
             ]
 
+    def get_rec_name(self, name):
+        if self.address and self.time:
+            return ' to '.join([str(self.time), self.address.building_address])
+        return '[{}]'.format(self.id)
+
     @classmethod
     def get_last_street_address(cls):
         visits = cls.search([], order=[('time', 'DESC')], limit=1)
