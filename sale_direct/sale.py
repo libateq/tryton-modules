@@ -37,7 +37,7 @@ class Sale(metaclass=PoolMeta):
 
     @classmethod
     def get_origin_models(cls):
-        return cls.fields_get(['origin'])['origin']['selection']
+        return cls.get_origin()
 
     @fields.depends('origin')
     def on_change_with_origin_model(self, name=None):
