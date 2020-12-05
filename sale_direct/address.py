@@ -243,6 +243,24 @@ class Address(metaclass=PoolMeta):
             )
 
     @classmethod
+    def write(cls, *args):
+        pool = Pool()
+        Configuration = pool.get('sale.configuration')
+        Party = pool.get('party.party')
+
+        config = Configuration(1)
+        general_party = config.general_address_party
+
+        # Skip error when changing from the general address party
+        actions = iter(args)
+        for addresses, values in zip(actions, actions):
+            for address in addresses:
+                if 'party' in values and address.party == general_party:
+                    address.party = Party(values['party'])
+
+        super(Address, cls).write(*args)
+
+    @classmethod
     @ModelView.button_action('sale_direct.perform_visit_wizard')
     def visit(cls, addresses):
         pass
