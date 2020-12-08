@@ -79,6 +79,11 @@ package for full copyright notices, license terms and support information.
     </record>
     <menuitem name="New Visit" parent="visit_menu" sequence="30" action="perform_visit_wizard" id="perform_visit_wizard_menu"/>
 
+    <record model="ir.action.wizard" id="register_order_wizard">
+      <field name="name">Register Order</field>
+      <field name="wiz_name">sale.direct.visit.register_order</field>
+    </record>
+
     <record model="ir.ui.view" id="visit_view_list">
       <field name="model">sale.direct.visit</field>
       <field name="type">tree</field>
@@ -105,5 +110,11 @@ package for full copyright notices, license terms and support information.
       <field name="act_window" ref="visit_act_list"/>
     </record>
     <menuitem parent="visit_menu" sequence="10" action="visit_act_list" id="visit_list_menu"/>
+
+    <record model="ir.model.button" id="visit_register_order_button">
+      <field name="name">register_order</field>
+      <field name="string">Register Order</field>
+      <field name="model" search="[('model', '=', 'sale.direct.visit')]"/>
+    </record>
   </data>
 </tryton>

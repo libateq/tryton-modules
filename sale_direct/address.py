@@ -53,6 +53,7 @@ class Address(metaclass=PoolMeta):
         super().__setup__()
         cls._buttons.update({
             'visit': {},
+            'register_order': {},
             })
         cls.party.states['readonly'] &= ~Eval('general_address', False)
         cls.party.depends.append('general_address')
@@ -263,4 +264,9 @@ class Address(metaclass=PoolMeta):
     @classmethod
     @ModelView.button_action('sale_direct.perform_visit_wizard')
     def visit(cls, addresses):
+        pass
+
+    @classmethod
+    @ModelView.button_action('sale_direct.register_order_wizard')
+    def register_order(cls, addresses):
         pass
