@@ -61,6 +61,11 @@ package for full copyright notices, license terms and support information.
       <field name="string">Visit</field>
       <field name="model" search="[('model', '=', 'party.address')]"/>
     </record>
+    <record model="ir.model.button" id="last_visit_register_order_button">
+      <field name="name">register_order</field>
+      <field name="string">Register Order</field>
+      <field name="model" search="[('model', '=', 'party.address')]"/>
+    </record>
 
     <record model="ir.action.act_window" id="address_visit_act">
       <field name="name">Visits</field>

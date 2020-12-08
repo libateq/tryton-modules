@@ -26,4 +26,5 @@ package for full copyright notices, license terms and support information.
       <field name="sales_material_moves" view_ids="sale_direct.sales_material_move_view_list"/>
     </page>
   </notebook>
+  <button name="register_order" colspan="4"/>
 </form>

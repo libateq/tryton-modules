@@ -8,9 +8,10 @@ from sql.functions import CurrentTimestamp
 
 from trytond.model import DeactivableMixin, ModelSQL, ModelView, fields
 from trytond.pool import Pool
-from trytond.pyson import Eval, If
+from trytond.pyson import Eval, If, PYSONEncoder
 from trytond.transaction import Transaction
-from trytond.wizard import Button, StateTransition, StateView, Wizard
+from trytond.wizard import (
+    Button, StateAction, StateTransition, StateView, Wizard)
 
 
 class VisitEvent(DeactivableMixin, ModelSQL, ModelView):
@@ -158,6 +159,9 @@ class Visit(ModelSQL, ModelView):
             ('time', 'DESC'),
             ('id', 'DESC'),
             ]
+        cls._buttons.update({
+            'register_order': {},
+            })
 
     def get_rec_name(self, name):
         if self.address and self.time:
@@ -185,6 +189,11 @@ class Visit(ModelSQL, ModelView):
             revisit_time=event.revisit_time,
             notes=event.notes,
             )
+
+    @classmethod
+    @ModelView.button_action('sale_direct.register_order_wizard')
+    def register_order(cls, visits):
+        pass
 
 
 class PerformVisitAddress(ModelView):
@@ -532,3 +541,84 @@ class PerformVisit(Wizard):
             Move.do(moves)
 
         return 'end'
+
+
+class RegisterOrder(Wizard):
+    "Register Order"
+    __name__ = 'sale.direct.visit.register_order'
+
+    start = StateTransition()
+    create_party = StateTransition()
+    create_order = StateAction('sale.act_sale_form')
+
+    def _get_address(self):
+        pool = Pool()
+        Address = pool.get('party.address')
+        Visit = pool.get('sale.direct.visit')
+
+        context = Transaction().context
+        if context.get('active_model') == Visit.__name__:
+            return Visit(context.get('active_id')).address
+        if context.get('active_model') == Address.__name__:
+            return Address(context.get('active_id'))
+
+    def _get_visit(self):
+        pool = Pool()
+        Address = pool.get('party.address')
+        Visit = pool.get('sale.direct.visit')
+
+        context = Transaction().context
+
+        if context.get('active_model') == Visit.__name__:
+            return Visit(context.get('active_id'))
+
+        if context.get('active_model') == Address.__name__:
+            address_id = context.get('active_id')
+            last_visits = Address.get_last_visit([Address(address_id)], ['id'])
+            if last_visits['id'][address_id]:
+                return Visit(last_visits['id'][address_id])
+
+    def transition_start(self):
+        pool = Pool()
+        Configuration = pool.get('sale.configuration')
+
+        config = Configuration(1)
+        if self._get_address().party == config.general_address_party:
+            return 'create_party'
+        return 'create_order'
+
+    def transition_create_party(self):
+        pool = Pool()
+        Party = pool.get('party.party')
+
+        party = Party()
+        party.addresses = [self._get_address()]
+        party.save()
+
+        return 'create_order'
+
+    def do_create_order(self, action):
+        pool = Pool()
+        Sale = pool.get('sale.sale')
+
+        address = self._get_address()
+        visit = self._get_visit()
+
+        sale = Sale()
+        sale.party = address.party
+        sale.invoice_address = address
+        sale.shipment_address = address
+        if visit:
+            sale.sale_date = visit.time.date()
+            sale.origin = visit
+        sale.save()
+
+        encoder = PYSONEncoder()
+        action['views'].reverse()
+        action['domains'] = []
+        action['pyson_domain'] = encoder.encode([
+                ('id', '=', sale.id),
+                ])
+        return action, {
+            'res_id': [sale.id],
+            }

@@ -10,4 +10,5 @@ package for full copyright notices, license terms and support information.
   <field name="time" widget="date" string="Date"/>
   <field name="revisit_time" widget="date" string="Revisit On"/>
   <field name="sales"/>
+  <button name="register_order" tree_invisible="1"/>
 </tree>
