@@ -33,5 +33,6 @@ package for full copyright notices, license terms and support information.
   <field name="last_visit_notes" colspan="4"/>
   <group col="-1" colspan="4" id="buttons">
     <button name="visit"/>
+    <button name="register_order"/>
   </group>
 </form>

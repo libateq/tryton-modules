@@ -28,4 +28,5 @@ def register():
         module='sale_direct', type_='model')
     Pool.register(
         visit.PerformVisit,
+        visit.RegisterOrder,
         module='sale_direct', type_='wizard')
