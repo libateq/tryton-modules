@@ -1,11 +1,10 @@
 Installation
 ============
 
-
 Prerequisites
 -------------
 
-* Python 3.5 or later (http://www.python.org/)
+* Python 3.6 or later (http://www.python.org/)
 * See the ``setup.py`` file for python package dependencies.
 * See the ``tryton.cfg`` file for tryton module dependencies.
 

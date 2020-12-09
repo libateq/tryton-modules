@@ -104,7 +104,6 @@ setup(
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
@@ -113,7 +112,7 @@ setup(
         'Topic :: Office/Business',
         ],
     license='GPL-3',
-    python_requires='>=3.5',
+    python_requires='>=3.6',
     install_requires=install_requires(),
     zip_safe=False,
     entry_points="""
