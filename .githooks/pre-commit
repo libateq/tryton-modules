@@ -28,9 +28,17 @@ fi
 # Check xml files to ensure that they are valid
 if git diff --cached --name-only --diff-filter=ACM | grep -q '.*\.xml'; then
     xmllint --noout $( \
-        git diff --cached --name-only --diff-filter=ACM "${AGAINST}" |
+        git diff --cached --name-only --diff-filter=ACM "${AGAINST}" | \
         grep '.*\.xml' )
     [ $? != 0 ] && exit 1
+fi
+
+# Check for TODOs
+if git diff --cached --name-only --diff-filter=ACM | grep -q -v 'cookiecutter'; then
+    grep -i todo $( \
+        git diff --cached --name-only --diff-filter=ACM "${AGAINST}" | \
+        grep -v 'cookiecutter' )
+    [ $? != 1 ] && exit 1
 fi
 
 exit 0
