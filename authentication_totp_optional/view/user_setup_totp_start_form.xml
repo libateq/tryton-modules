@@ -10,9 +10,9 @@ package for full copyright notices, license terms and support information.
   <separator id="header_sep" colspan="2"/>
   <label id="gap" string="" xexpand="0"/>
   <group id="header" col="1">
-    <label string="Scan this QR code with your two factor authenticator app or manually add" name="totp_qrcode" yalign="0.0" xalign="0.0" xexpand="1"/>
+    <label string="Scan this QR code with your authenticator app or manually add" name="totp_qrcode" yalign="0.0" xalign="0.0" xexpand="1"/>
     <label string="the secret key from below to it.  Then click on OK." name="totp_qrcode" yalign="0.0" xalign="0.0" xexpand="1"/>
-    <label string="Please enter the secret key from below into your two factor authenticator" name="totp_qrcode_disabled" yalign="0.0" xalign="0.0" xexpand="1"/>
+    <label string="Please enter the secret key from below into your authenticator" name="totp_qrcode_disabled" yalign="0.0" xalign="0.0" xexpand="1"/>
     <label string="app.  Then click on OK." name="totp_qrcode_disabled" yalign="0.0" xalign="0.0" xexpand="1"/>
   </group>
   <group id="totp" colspan="2" col="1">

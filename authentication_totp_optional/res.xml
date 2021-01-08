@@ -46,13 +46,13 @@ package for full copyright notices, license terms and support information.
     <record model="ir.model.button" id="setup_totp_secret_button">
       <field name="name">setup_totp_secret</field>
       <field name="string">Update Secret</field>
-      <field name="help">Update the TOTP secret and enable TOTP two-factor authentication.</field>
+      <field name="help">Update the TOTP secret and enable TOTP authentication.</field>
       <field name="model" search="[('model', '=', 'res.user')]"/>
     </record>
     <record model="ir.model.button" id="clear_totp_secret_button">
       <field name="name">clear_totp_secret</field>
       <field name="string">Disable</field>
-      <field name="help">Remove the TOTP secret and disable TOTP two-factor authentication.</field>
+      <field name="help">Remove the TOTP secret and disable TOTP authentication.</field>
       <field name="model" search="[('model', '=', 'res.user')]"/>
     </record>
   </data>

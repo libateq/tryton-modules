@@ -88,7 +88,7 @@ class User(metaclass=PoolMeta):
 
 
 class UserSetupTOTPStart(ModelView):
-    "Setup Two-Factor Authentication"
+    "Setup TOTP Authentication"
     __name__ = 'res.user.setup_totp.start'
 
     user = fields.Many2One(
@@ -122,17 +122,17 @@ class UserSetupTOTPStart(ModelView):
 
 
 class UserSetupTOTPSkipped(ModelView):
-    "Setup Two-Factor Authentication"
+    "Setup TOTP Authentication"
     __name__ = 'res.user.setup_totp.skipped'
 
 
 class UserSetupTOTPDone(ModelView):
-    "Setup Two-Factor Authentication"
+    "Setup TOTP Authentication"
     __name__ = 'res.user.setup_totp.done'
 
 
 class UserSetupTOTP(Wizard):
-    "Setup Two-Factor Authentication"
+    "Setup TOTP Authentication"
     __name__ = 'res.user.setup_totp'
 
     start = StateView(
