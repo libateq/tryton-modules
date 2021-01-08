@@ -108,7 +108,9 @@ setup(
         ],
     license='GPL-3',
     python_requires='>=3.6',
-    install_requires=install_requires(),
+    install_requires=install_requires({
+        'authentication_totp': 'trytonlq_authentication_totp',
+        }),
     extras_require={
         'qrcode': ['qrcode', 'pillow'],
         },
