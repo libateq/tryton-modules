@@ -1,15 +1,16 @@
-.. include:: ../README.rst
-    :end-before: .. start-of-readme-only-text
+###################################
+Authentication TOTP Optional Module
+###################################
 
-Contents
-========
+The *Authentication TOTP Optional Module* allows users to optionally use
+Time-based One Time Passwords (TOTP) as an authentication method.
 
 .. toctree::
-    :maxdepth: 2
+   :maxdepth: 2
 
-    installation
-    setup
-    usage
-    support
-    changelog
-    license
+   installation
+   setup
+   usage
+   design
+   support
+   license

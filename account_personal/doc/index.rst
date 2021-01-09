@@ -1,13 +1,15 @@
-.. include:: ../README.rst
-    :end-before: .. start-of-readme-only-text
+#######################
+Account Personal Module
+#######################
 
-Contents
-========
+The *Account Personal Module* provides a chart of accounts for personal
+accounting.
 
 .. toctree::
-    :maxdepth: 2
+   :maxdepth: 2
 
-    installation
-    support
-    changelog
-    license
+   installation
+   usage
+   design
+   support
+   license

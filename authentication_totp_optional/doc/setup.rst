@@ -1,25 +1,36 @@
+*****
 Setup
-=====
+*****
 
-Once the module has been activated you can start using it by including the
-``totp_optional`` authentication method in the `[session] authentications`_
-configuration option.
+.. _Enabling optional TOTP authentication:
+
+Enabling optional TOTP authentication
+=====================================
+
+Once the *Authentication TOTP Optional Module* has been activated you can start
+using it by including the ``totp_optional`` authentication method in the
+`authentications <trytond:config-session.authentications>` setting in the
+``session`` section of the
+:doc:`configuration file <trytond:topics/configuration>`.
 
 You will also need to make sure you have correctly setup the
-authentication_totp_ module as well.
+:doc:`Authentication TOTP Module <authentication_totp:index>` as well.
 
-.. _`[session] authentications`: https://docs.tryton.org/projects/server/en/latest/topics/configuration.html#authentications
-.. _authentication_totp: https://bitbucket.org/libateq/tryton-modules/src/development/authentication_totp/
+.. _Prompting users to setup TOTP:
 
+Prompting users to setup TOTP
+=============================
 
-Prompting Users to Setup TOTP
------------------------------
+You can prompt users to setup :abbr:`TOTP (Time-based One Time Passwords)` by
+adding the `Setup TOTP Authentication <wizard-res.user.setup_totp>` wizard to
+their login :guilabel:`Actions`.
+This will automatically run the wizard when the user logs in.
 
-You can prompt users to setup TOTP by adding the *Setup Time-based One-Time
-Password Authentication* wizard to their login *Actions*.  To help make this
-process simpler a trigger is provided that will automatically do this when
-a new user is created.  This trigger can easily be deactivated if desired.
+To help make this process simpler a `Trigger <trytond:model-ir.trigger>` is
+provided that automatically does this when a new user is created.
 
-With this action in place, the wizard will run when the user logs in.  This
-will automatically generate a new secret for the user and will help them add
-it to their authenticator app.
+.. tip::
+
+   The trigger that puts the *Setup TOTP Authentication* wizard in a user's
+   login :guilabel:`Actions` can easily be deactivated if desired from the
+   [:menuselection:`Administration --> Models --> Triggers`] menu.

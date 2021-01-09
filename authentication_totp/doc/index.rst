@@ -1,15 +1,17 @@
-.. include:: ../README.rst
-    :end-before: .. start-of-readme-only-text
+##########################
+Authentication TOTP Module
+##########################
 
-Contents
-========
+The *Authentication TOTP Module* allows Time-based One-Time Passwords (TOTP)
+to be used as a user authentication method in Tryton.
 
 .. toctree::
-    :maxdepth: 2
+   :maxdepth: 2
 
-    installation
-    setup
-    usage
-    support
-    changelog
-    license
+   installation
+   setup
+   usage
+   configuration
+   design
+   support
+   license

@@ -1,13 +1,15 @@
-.. include:: ../README.rst
-    :end-before: .. start-of-readme-only-text
+##########################
+Account UK Variants Module
+##########################
 
-Contents
-========
+The *Account UK Variants Module* provides variants to the UK charts of account
+for different company types and industry sectors.
 
 .. toctree::
-    :maxdepth: 2
+   :maxdepth: 2
 
-    installation
-    support
-    changelog
-    license
+   installation
+   usage
+   design
+   support
+   license

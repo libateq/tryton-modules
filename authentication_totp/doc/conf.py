@@ -1,81 +1,85 @@
-# Configuration file for the Sphinx Documentation.
 # This file is part of the authentication_totp Tryton module.
 # Please see the COPYRIGHT and README.rst files at the top level of this
 # package for full copyright notices, license terms and support information.
-from datetime import date
-from os import chdir
-from os.path import join, dirname
+
+trytond_url = 'https://docs.tryton.org/projects/server/en/{series}/'
+modules_url = 'https://docs.tryton.org/projects/modules-{module}/en/{series}/'
+modules_third_party_url = {}
 
 
-def get_copyright(first_year, current_year, author):
-    years = first_year
-    if first_year != current_year:
-        years = '{}-{}'.format(first_year, current_year)
-    return '{}, {}'.format(years, author)
+def get_copyright(first_year, author):
+    import datetime
+
+    current_year = datetime.date.today().year
+    if first_year == current_year:
+        return '{}, {}'.format(first_year, author)
+    return '{}-{}, {}'.format(first_year, current_year, author)
 
 
-def get_setup_argument(arg):
-    global _setup_arguments_cache
-    try:
-        return _setup_arguments_cache.get(arg, None)
-    except NameError:
-        _setup_arguments_cache = {}
+def get_info():
+    import configparser
+    import os
+    import subprocess
+    import sys
 
-    def mock_setup(**kwargs):
-        global _setup_arguments_cache
-        _setup_arguments_cache = kwargs
-    import setuptools
-    setuptools.setup = mock_setup
+    module_dir = os.path.dirname(os.path.dirname(__file__))
 
-    chdir(join(dirname(__file__), '..'))
-    setup_py = 'setup.py'
-    with open(setup_py, 'r', encoding='utf-8') as file:
-        exec(file.read(), {'__file__': setup_py})
+    config = configparser.ConfigParser()
+    config.read_file(open(os.path.join(module_dir, 'tryton.cfg')))
+    info = dict(config.items('tryton'))
 
-    return _setup_arguments_cache.get(arg, None)
+    result = subprocess.run(
+        [sys.executable, 'setup.py', '--name'],
+        stdout=subprocess.PIPE, check=True, cwd=module_dir)
+    info['name'] = result.stdout.decode('utf-8').strip()
+
+    result = subprocess.run(
+        [sys.executable, 'setup.py', '--author'],
+        stdout=subprocess.PIPE, check=True, cwd=module_dir)
+    info['author'] = result.stdout.decode('utf-8').strip()
+
+    result = subprocess.run(
+        [sys.executable, 'setup.py', '--version'],
+        stdout=subprocess.PIPE, check=True, cwd=module_dir)
+    version = result.stdout.decode('utf-8').strip()
+    if 'dev' in version:
+        info['series'] = 'latest'
+    else:
+        info['series'] = '.'.join(version.split('.', 2)[:2])
+
+    for key in {'depends', 'extras_depend'}:
+        info[key] = info.get(key, '').strip().splitlines()
+    info['modules'] = set(info['depends'] + info['extras_depend'])
+    info['modules'] -= {'ir', 'res'}
+
+    return info
 
 
-def get_version(release):
-    second_point = release.find('.', release.find('.')+1)
-    return release[:second_point]
+info = get_info()
 
-
-# Project information
-project = get_setup_argument('name')
-author = get_setup_argument('author')
-copyright = get_copyright(2020, date.today().year, author)
-release = get_setup_argument('version')
-version = get_version(release)
-
-# General settings
-extensions = []
-exclude_patterns = []
-language = None
-master_doc = 'index'
-pygments_style = None
-source_suffix = {'.rst': 'restructuredtext'}
-templates_path = []
-
-# HTML output settings
-html_static_path = []
-
-# LaTeX output settings
-latex_elements = {'papersize': 'a4paper'}
-latex_documents = [
-    (master_doc, project + '.tex', project, author, 'manual', False),
+project = info['name']
+release = version = info['series']
+author = info['author']
+copyright = get_copyright(2020, author)
+default_role = 'ref'
+highlight_language = 'none'
+extensions = [
+    'sphinx.ext.intersphinx',
     ]
+intersphinx_mapping = {
+    'trytond': (trytond_url.format(series=version), None),
+    }
+intersphinx_mapping.update({
+        m: (modules_url.format(
+                module=m.replace('_', '-'), series=version), None)
+        for m in info['modules']
+        if m not in modules_third_party_url
+        })
+intersphinx_mapping.update({
+        m: (modules_third_party_url[m].format(series=version), None)
+        for m in info['modules']
+        if m in modules_third_party_url
+        })
 
-# Man page output settings
-man_pages = [
-    (master_doc, project.replace('-', ''), project, [author], 1),
-    ]
-
-# Texinfo output settings
-texinfo_documents = [
-    (master_doc, project, project, author, project,
-     get_setup_argument('description'), 'Miscellaneous', False),
-    ]
-
-# Epub output settings
-epub_title = project
-epub_exclude_files = ['search.html']
+del get_copyright, get_info, info
+del modules_url, modules_third_party_url, trytond_url

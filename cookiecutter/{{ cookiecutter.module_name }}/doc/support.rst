@@ -1,5 +1,6 @@
+*******
 Support
-========
+*******
 
 Any issues or bugs with this package can be reported using the bug tracker:
 {{ cookiecutter.tryton_modules_bugtracker_url }}

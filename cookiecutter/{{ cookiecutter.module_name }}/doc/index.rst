@@ -1,13 +1,16 @@
-.. include:: ../README.rst
-    :end-before: .. start-of-readme-only-text
+{{ '#' * (cookiecutter.module_title|length + 7) }}
+{{ cookiecutter.module_title }} Module
+{{ '#' * (cookiecutter.module_title|length + 7) }}
 
-Contents
-========
+{{ ('The *' + cookiecutter.module_title '* ' + cookiecutter.purpose + '.') | wordwrap }}
 
 .. toctree::
     :maxdepth: 2
 
     installation
+    setup
+    usage
+    configuration
+    design
     support
-    changelog
     license

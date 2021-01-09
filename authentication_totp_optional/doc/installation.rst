@@ -1,58 +1,56 @@
+************
 Installation
-============
+************
 
 Prerequisites
--------------
+=============
 
 * Python 3.6 or later (http://www.python.org/)
-* See the ``setup.py`` file for python package dependencies.
-* See the ``tryton.cfg`` file for tryton module dependencies.
+* See the :file:`setup.py` file for Python package dependencies.
+* See the :file:`tryton.cfg` file for Tryton module dependencies.
 
-
-Using pip
----------
+Using ``pip``
+=============
 
 The easiest way to install this module and it's dependencies is directly from
 the Python Package Index:
 
 .. code-block:: bash
 
-    pip3 install trytonlq_authentication_totp_optional
+   pip3 install trytonlq_authentication_totp_optional
 
-If you want to display QR codes for use with authenticator apps, then you
-will need some additional packages installed on your system.
+If you want to display :abbr:`QR (Quick Response)` codes for use with
+authenticator apps, then you will need some additional packages installed on
+your system.
 This is done automatically if you run:
 
 .. code-block:: bash
 
-    pip3 install trytonlq_authentication_totp_optional[qrcode]
+   pip3 install trytonlq_authentication_totp_optional[qrcode]
 
-
-Using Sources
--------------
+Using sources
+=============
 
 Alternatively, you can clone the *tryton-modules* repository, and install the
 module from there:
 
 .. code-block:: bash
 
-    git clone https://bitbucket.org/libateq/tryton-modules
-    cd tryton-modules/authentication_totp_optional
-    python3 setup.py install
-
+   git clone https://bitbucket.org/libateq/tryton-modules
+   cd tryton-modules/authentication_totp_optional
+   python3 setup.py install
 
 Other Information
------------------
+=================
 
 You may need administrator/root privileges to perform the installation, as the
 install commands will by default attempt to install the module to the system
 wide Python site-packages directory on your system.
 
-For advanced options, please refer to the easy_install and/or the distutils
-documentation:
+For advanced options, please refer to the standard Python packaging and
+installation documentation:
 
 * https://docs.python.org/3/installing/index.html
-* http://peak.telecommunity.com/DevCenter/EasyInstall
 
-To use without installation, extract the archive into ``trytond/modules`` with
-the directory name ``authentication_totp_optional``.
+To use without installation, extract the archive into :file:`trytond/modules`
+with the directory name :file:`authentication_totp_optional`.

@@ -1,13 +1,15 @@
-.. include:: ../README.rst
-    :end-before: .. start-of-readme-only-text
+############################
+Account Chart Variant Module
+############################
 
-Contents
-========
+The *Account Chart Variant Module* makes it easy to define variants of account
+templates for specific industry sectors or company types.
 
 .. toctree::
-    :maxdepth: 2
+   :maxdepth: 2
 
-    installation
-    support
-    changelog
-    license
+   installation
+   usage
+   design
+   support
+   license

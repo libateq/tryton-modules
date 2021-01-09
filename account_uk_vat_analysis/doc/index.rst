@@ -1,13 +1,15 @@
-.. include:: ../README.rst
-    :end-before: .. start-of-readme-only-text
+##############################
+Account UK VAT Analysis Module
+##############################
 
-Contents
-========
+The *Account UK VAT Analysis Module* adds tax codes which give an alternative
+breakdown of UK VAT, sales and purchases.
 
 .. toctree::
-    :maxdepth: 2
+   :maxdepth: 2
 
-    installation
-    support
-    changelog
-    license
+   installation
+   usage
+   design
+   support
+   license

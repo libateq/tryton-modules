@@ -1,14 +1,15 @@
-.. include:: ../README.rst
-    :end-before: .. start-of-readme-only-text
+##################
+Sale Direct Module
+##################
 
-
-Contents
-========
+The *Sale Direct Module* helps manage and track direct selling.
 
 .. toctree::
-    :maxdepth: 2
+   :maxdepth: 2
 
-    installation
-    support
-    changelog
-    license
+   installation
+   setup
+   usage
+   design
+   support
+   license
