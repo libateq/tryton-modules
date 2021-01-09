@@ -6,6 +6,7 @@ from datetime import datetime
 from sql import Literal, Null
 from sql.functions import CurrentTimestamp
 
+from trytond.config import config
 from trytond.model import DeactivableMixin, ModelSQL, ModelView, fields
 from trytond.pool import Pool
 from trytond.pyson import Eval, If, PYSONEncoder
@@ -14,22 +15,22 @@ from trytond.wizard import (
     Button, StateAction, StateTransition, StateView, Wizard)
 
 
-class VisitEvent(DeactivableMixin, ModelSQL, ModelView):
-    "Visit Event"
-    __name__ = 'sale.direct.visit.event'
+class VisitType(DeactivableMixin, ModelSQL, ModelView):
+    "Visit Type"
+    __name__ = 'sale.direct.visit.type'
 
     name = fields.Char("Name", required=True)
 
-    default_event = fields.Boolean(
-        "Default Event", readonly=True,
-        help="Checked if this is the default event for new visits.")
+    default_type = fields.Boolean(
+        "Default Type", readonly=True,
+        help="Checked if this is the default type for new visits.")
 
     revisit_time = fields.TimeDelta("Revisit Time")
 
     leave_sales_material = fields.One2Many(
-        'sale.direct.visit.event.sales_material', 'visit_event',
+        'sale.direct.visit.type.sales_material', 'visit_type',
         "Leave Sales Material",
-        help="The sales material that is normally left during the visit.")
+        help="The sales material that is left, by default, during the visit.")
     collect_sales_material = fields.Boolean(
         "Collect Sales Material",
         help="Check to automatically collect the sales material, by default, "
@@ -40,38 +41,59 @@ class VisitEvent(DeactivableMixin, ModelSQL, ModelView):
         "by default, after the visit.")
 
     @classmethod
+    def __register__(cls, module_name):
+        table_handler = cls.__table_handler__(module_name)
+
+        # Migration from 5.8: Rename from sale.direct.visit.event
+        event_table = config.get(
+            'table', 'sale.direct.visit.event',
+            default='sale.direct.visit.event'.replace('.', '_'))
+        if table_handler.table_exist(event_table):
+            type_table = config.get(
+                'table', 'sale.direct.visit.type',
+                default='sale.direct.visit.type'.replace('.', '_'))
+            table_handler.table_rename(event_table, type_table)
+
+        # Migration from 5.8: Rename default_event to default_type
+        if (table_handler.column_exist('default_event')
+                and not table_handler.column_exist('default_type')):
+            table_handler.column_rename('default_event', 'default_type')
+
+        super().__register__(module_name)
+
+    @classmethod
     def __setup__(cls):
         super().__setup__()
         cls._buttons.update({
-            'set_default_event': {
-                'invisible': Eval('default_event', False),
-                'depends': ['default_event'],
+            'set_default_type': {
+                'invisible': Eval('default_type', False),
+                'depends': ['default_type'],
                 },
             })
 
     @classmethod
-    def get_default_event(cls):
-        event = cls.search([('default_event', '=', True)], limit=1)
-        if event:
-            return event[0]
+    def get_default_type(cls):
+        type = cls.search([('default_type', '=', True)], limit=1)
+        if type:
+            return type[0]
 
     @classmethod
     @ModelView.button
-    def set_default_event(cls, visit_events):
-        if visit_events:
-            default_event = visit_events[0]
+    def set_default_type(cls, visit_types):
+        if visit_types:
+            default_type = visit_types[0]
         else:
-            default_event = None
+            default_type = None
 
         to_write = []
-        if default_event:
-            to_write.extend([[default_event], {'default_event': True}])
+        if default_type:
+            to_write.extend([[default_type], {'default_type': True}])
 
-        default_events = cls.search([('default_event', '=', True)])
+        default_types = cls.search([('default_type', '=', True)])
         with suppress(ValueError):
-            default_events.remove(default_event)
-        if default_events:
-            to_write.extend([default_events, {'default_event': False}])
+            default_types.remove(default_type)
+        if default_types:
+            to_write.extend([default_types, {'default_type': False}])
 
         if to_write:
             cls.write(*to_write)
@@ -115,15 +137,37 @@ class SalesMaterialMixin:
             return self.product.default_uom_category.id
 
 
-class VisitEventSalesMaterial(SalesMaterialMixin, ModelSQL, ModelView):
-    "Visit Event Sales Material"
-    __name__ = 'sale.direct.visit.event.sales_material'
+class VisitTypeSalesMaterial(SalesMaterialMixin, ModelSQL, ModelView):
+    "Visit Type Sales Material"
+    __name__ = 'sale.direct.visit.type.sales_material'
 
-    visit_event = fields.Many2One(
-        'sale.direct.visit.event', "Visit Event", required=True)
+    visit_type = fields.Many2One(
+        'sale.direct.visit.type', "Visit Type", required=True)
     quantity = fields.Float(
         "Quantity", required=True, digits=(16, Eval('unit_digits', 2)),
         depends=['unit_digits'])
+
+    @classmethod
+    def __register__(cls, module_name):
+        table_handler = cls.__table_handler__(module_name)
+
+        # Migration from 5.8: Rename sale.direct.visit.event.sales_material
+        event_table = config.get(
+            'table', 'sale.direct.visit.event.sales_material',
+            default='sale.direct.visit.event.sales_material'.replace('.', '_'))
+        if table_handler.table_exist(event_table):
+            type_table = config.get(
+                'table', 'sale.direct.visit.type.sales_material',
+                default=(
+                    'sale.direct.visit.type.sales_material'.replace('.', '_')))
+            table_handler.table_rename(event_table, type_table)
+
+        # Migration from 5.8: Rename visit_event to visit_type
+        if (table_handler.column_exist('visit_event')
+                and not table_handler.column_exist('visit_type')):
+            table_handler.column_rename('visit_event', 'visit_type')
+
+        super().__register__(module_name)
 
 
 class Visit(ModelSQL, ModelView):
@@ -133,8 +177,8 @@ class Visit(ModelSQL, ModelView):
     address = fields.Many2One(
         'party.address', "Address", required=True, ondelete='RESTRICT')
     time = fields.DateTime("Time", required=True)
-    event = fields.Many2One(
-        'sale.direct.visit.event', "Event", required=True, ondelete='RESTRICT')
+    type = fields.Many2One(
+        'sale.direct.visit.type', "Type", required=True, ondelete='RESTRICT')
 
     revisit_time = fields.DateTime("Revisit Time")
 
@@ -151,6 +195,17 @@ class Visit(ModelSQL, ModelView):
         }, depends=['sales_material_moves'])
 
     notes = fields.Text("Notes")
+
+    @classmethod
+    def __register__(cls, module_name):
+        table_handler = cls.__table_handler__(module_name)
+
+        # Migration from 5.8: Rename event to type
+        if (table_handler.column_exist('event')
+                and not table_handler.column_exist('type')):
+            table_handler.column_rename('event', 'type')
+
+        super().__register__(module_name)
 
     @classmethod
     def __setup__(cls):
@@ -185,7 +240,7 @@ class Visit(ModelSQL, ModelView):
         return cls(
             address=address,
             time=event.time,
-            event=event.event,
+            type=event.type,
             revisit_time=event.revisit_time,
             notes=event.notes,
             )
@@ -321,7 +376,7 @@ class PerformVisitEvent(ModelView):
     __name__ = 'sale.direct.visit.perform.event'
 
     address = fields.Many2One('party.address', "Address", readonly=True)
-    event = fields.Many2One('sale.direct.visit.event', "Event", required=True)
+    type = fields.Many2One('sale.direct.visit.type', "Type", required=True)
     time = fields.DateTime("Time", required=True)
 
     revisit_time = fields.DateTime("Revisit Time")
@@ -373,21 +428,21 @@ class PerformVisitEvent(ModelView):
         Location = Pool().get('stock.location')
         return Location.get_default_warehouse()
 
-    @fields.depends('event')
+    @fields.depends('type')
     def on_change_with_revisit_time(self, name=None):
-        if self.event and self.event.revisit_time:
-            return datetime.now() + self.event.revisit_time
+        if self.type and self.type.revisit_time:
+            return datetime.now() + self.type.revisit_time
 
-    @fields.depends('event')
+    @fields.depends('type')
     def on_change_with_sales_material_left(self, name=None):
-        if self.event and self.event.leave_sales_material:
+        if self.type and self.type.leave_sales_material:
             return [{
                 'product': s.product.id,
                 'product_name': s.product.rec_name,
                 'quantity': s.quantity,
                 'unit': s.unit.id,
                 'unit_name': s.unit.rec_name,
-                } for s in self.event.leave_sales_material]
+                } for s in self.type.leave_sales_material]
         return []
 
     def _sales_material_at(self, location):
@@ -407,15 +462,15 @@ class PerformVisitEvent(ModelView):
             'unit_name': p.default_uom.rec_name,
             } for p in products]
 
-    @fields.depends('event', 'location')
+    @fields.depends('type', 'location')
     def on_change_with_sales_material_collected(self, name=None):
-        if self.event and self.event.collect_sales_material:
+        if self.type and self.type.collect_sales_material:
             return self._sales_material_at(self.location)
         return []
 
-    @fields.depends('event', 'location')
+    @fields.depends('type', 'location')
     def on_change_with_sales_material_lost(self, name=None):
-        if self.event and self.event.lost_sales_material:
+        if self.type and self.type.lost_sales_material:
             return self._sales_material_at(self.location)
         return []
 
@@ -480,16 +535,16 @@ class PerformVisit(Wizard):
     def default_event(self, fields):
         pool = Pool()
         Location = pool.get('stock.location')
-        VisitEvent = pool.get('sale.direct.visit.event')
+        VisitType = pool.get('sale.direct.visit.type')
 
         defaults = {}
         address = self.get_address()
         if address:
             defaults['address'] = address.id
 
-        event = VisitEvent.get_default_event()
-        if event and (not address or not address.revisit_required):
-            defaults['event'] = event.id
+        type = VisitType.get_default_type()
+        if type and (not address or not address.revisit_required):
+            defaults['type'] = type.id
 
         location = Location.find_visit_location(address)
         if location:

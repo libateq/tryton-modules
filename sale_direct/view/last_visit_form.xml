@@ -21,8 +21,8 @@ package for full copyright notices, license terms and support information.
   <field name="country" widget="selection"/>
   <label name="subdivision"/>
   <field name="subdivision" widget="selection"/>
-  <label name="last_visit_event"/>
-  <field name="last_visit_event"/>
+  <label name="last_visit_type"/>
+  <field name="last_visit_type"/>
   <label name="last_visit_time"/>
   <field name="last_visit_time"/>
   <label name="revisit_required"/>

@@ -21,8 +21,8 @@ def register():
         visit.PerformVisitEvent,
         visit.PerformVisitSalesMaterial,
         visit.Visit,
-        visit.VisitEvent,
-        visit.VisitEventSalesMaterial,
+        visit.VisitType,
+        visit.VisitTypeSalesMaterial,
         module='sale_direct', type_='model')
     Pool.register(
         visit.PerformVisit,

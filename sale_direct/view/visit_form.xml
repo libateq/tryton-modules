@@ -10,8 +10,8 @@ package for full copyright notices, license terms and support information.
   <newline/>
   <notebook colspan="4">
     <page id="general" string="General">
-      <label name="event"/>
-      <field name="event"/>
+      <label name="type"/>
+      <field name="type"/>
       <label name="time"/>
       <field name="time"/>
       <label name="revisit_time"/>

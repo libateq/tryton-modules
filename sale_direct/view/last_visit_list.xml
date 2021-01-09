@@ -6,7 +6,7 @@ package for full copyright notices, license terms and support information.
 -->
 <tree>
   <field name="building_address" expand="1"/>
-  <field name="last_visit_event"/>
+  <field name="last_visit_type"/>
   <field name="last_visit_time" widget="date" string="Last Visit"/>
   <field name="revisit_due" widget="date"/>
   <button name="visit"/>

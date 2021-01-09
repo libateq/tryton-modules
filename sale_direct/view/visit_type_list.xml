@@ -10,5 +10,5 @@ package for full copyright notices, license terms and support information.
   <field name="leave_sales_material"/>
   <field name="collect_sales_material"/>
   <field name="lost_sales_material"/>
-  <field name="default_event"/>
+  <field name="default_type"/>
 </tree>

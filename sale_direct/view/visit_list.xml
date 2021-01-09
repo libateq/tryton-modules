@@ -6,7 +6,7 @@ package for full copyright notices, license terms and support information.
 -->
 <tree>
   <field name="address" expand="1"/>
-  <field name="event"/>
+  <field name="type"/>
   <field name="time" widget="date" string="Date"/>
   <field name="revisit_time" widget="date" string="Revisit On"/>
   <field name="sales"/>

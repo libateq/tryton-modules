@@ -23,8 +23,8 @@ class Address(metaclass=PoolMeta):
     last_visit_time = fields.Function(
         fields.DateTime("Last Visit Time"),
         'get_last_visit', searcher='search_last_visit')
-    last_visit_event = fields.Function(
-        fields.Many2One('sale.direct.visit.event', "Last Visit Event"),
+    last_visit_type = fields.Function(
+        fields.Many2One('sale.direct.visit.type', "Last Visit Type"),
         'get_last_visit', searcher='search_last_visit')
     last_visit_notes = fields.Function(
         fields.Text("Last Visit Notes"),
@@ -215,7 +215,7 @@ class Address(metaclass=PoolMeta):
                 visit.id.as_('id'),
                 visit.address.as_('address'),
                 visit.time.as_('last_visit_time'),
-                visit.event.as_('last_visit_event'),
+                visit.type.as_('last_visit_type'),
                 visit.notes.as_('last_visit_notes'),
                 revisit_required.as_('revisit_required'),
                 revisit_today.as_('revisit_today'),

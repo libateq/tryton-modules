@@ -10,8 +10,8 @@ package for full copyright notices, license terms and support information.
   <group id="flags" colspan="2" col="-1">
     <label name="active"/>
     <field name="active"/>
-    <label name="default_event"/>
-    <field name="default_event"/>
+    <label name="default_type"/>
+    <field name="default_type"/>
   </group>
   <label name="revisit_time"/>
   <field name="revisit_time"/>
@@ -21,5 +21,5 @@ package for full copyright notices, license terms and support information.
   <label name="lost_sales_material"/>
   <field name="lost_sales_material"/>
   <field name="leave_sales_material" colspan="4"/>
-  <button name="set_default_event" colspan="4"/>
+  <button name="set_default_type" colspan="4"/>
 </form>
