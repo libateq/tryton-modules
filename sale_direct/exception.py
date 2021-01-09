@@ -4,9 +4,5 @@
 from trytond.exceptions import UserError
 
 
-class MissingGeneralAddressPartyError(UserError):
-    "Raised when the party for general addresses is needed but not configured"
-
-
 class MissingVisitLocationParentError(UserError):
     "Raised when the visit location parent is needed but not configured"

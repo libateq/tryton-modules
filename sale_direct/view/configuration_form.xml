@@ -7,10 +7,8 @@ package for full copyright notices, license terms and support information.
 <data>
   <xpath expr="/form/field[@name='sale_process_after']" position="after">
     <separator string="Visits" id="visits" colspan="4"/>
-    <label name="general_address_party"/>
-    <field name="general_address_party"/>
-    <newline/>
     <label name="visit_location_parent"/>
     <field name="visit_location_parent"/>
+    <newline/>
   </xpath>
 </data>

@@ -570,11 +570,7 @@ class RegisterOrder(Wizard):
                 return Visit(last_visits['id'][self.record.id])
 
     def transition_start(self):
-        pool = Pool()
-        Configuration = pool.get('sale.configuration')
-
-        config = Configuration(1)
-        if self._get_address().party == config.general_address_party:
+        if self._get_address().party is None:
             return 'create_party'
         return 'create_order'
 

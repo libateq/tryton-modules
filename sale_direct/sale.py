@@ -16,7 +16,6 @@ class Sale(metaclass=PoolMeta):
     @classmethod
     def __setup__(cls):
         super().__setup__()
-        cls.party.domain = [('general_address_party', '!=', True)]
         cls.origin.domain = [
             cls.origin.domain,
             If(Eval('origin_model') == 'sale.direct.visit',

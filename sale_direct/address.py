@@ -6,14 +6,11 @@ from datetime import date, datetime, timedelta
 from sql import Literal, Null
 from sql.aggregate import Max
 
-from trytond.i18n import gettext
 from trytond.model import ModelView, fields
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval
 from trytond.tools import reduce_ids, grouped_slice
 from trytond.transaction import Transaction
-
-from .exception import MissingGeneralAddressPartyError
 
 
 class Address(metaclass=PoolMeta):
@@ -44,10 +41,6 @@ class Address(metaclass=PoolMeta):
         'get_last_visit', setter='set_revisit_due',
         searcher='search_last_visit')
 
-    general_address = fields.Function(
-        fields.Boolean("General Address"),
-        'get_general_address')
-
     @classmethod
     def __setup__(cls):
         super().__setup__()
@@ -55,8 +48,8 @@ class Address(metaclass=PoolMeta):
             'visit': {},
             'register_order': {},
             })
-        cls.party.states['readonly'] &= ~Eval('general_address', False)
-        cls.party.depends.append('general_address')
+        cls.party.required = False
+        cls.party.states['readonly'] &= Eval('party')
 
     def get_building_address(self, name):
         if self.street:
@@ -165,27 +158,13 @@ class Address(metaclass=PoolMeta):
     def order_revisit_due(cls, tables):
         return cls.order(tables, 'revisit_due')
 
-    @fields.depends('party')
-    def get_general_address(self, name):
-        if self.party:
-            return self.party.general_address_party
-
     @classmethod
     def get_visit_address(cls, address):
-        pool = Pool()
-        Configuration = pool.get('sale.configuration')
-
         existing_address = cls.search_visit_address(address)
         if existing_address:
             return existing_address
 
-        config = Configuration(1)
-        if not config.general_address_party:
-            raise MissingGeneralAddressPartyError(gettext(
-                    'sale_direct.msg_missing_general_address_party'))
-
         new_address = cls(
-            party=config.general_address_party,
             name=address.name,
             street=address.street,
             city=address.city,
@@ -246,17 +225,13 @@ class Address(metaclass=PoolMeta):
     @classmethod
     def write(cls, *args):
         pool = Pool()
-        Configuration = pool.get('sale.configuration')
         Party = pool.get('party.party')
 
-        config = Configuration(1)
-        general_party = config.general_address_party
-
-        # Skip error when changing from the general address party
+        # Skip error when setting the address party
         actions = iter(args)
         for addresses, values in zip(actions, actions):
             for address in addresses:
-                if 'party' in values and address.party == general_party:
+                if 'party' in values and address.party is None:
                     address.party = Party(values['party'])
 
         super(Address, cls).write(*args)

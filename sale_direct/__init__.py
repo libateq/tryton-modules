@@ -5,7 +5,6 @@ from trytond.pool import Pool
 
 from . import address
 from . import configuration
-from . import party
 from . import sale
 from . import stock
 from . import visit
@@ -15,7 +14,6 @@ def register():
     Pool.register(
         address.Address,
         configuration.Configuration,
-        party.Party,
         sale.Sale,
         stock.Move,
         stock.Location,
