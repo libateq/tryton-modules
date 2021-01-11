@@ -4,7 +4,7 @@
     "package_name": "trytonlq_{{ cookiecutter.module_name }}",
     "purpose": "",
     "keywords": "tryton {{ cookiecutter.module_name.replace('_', ' ').lower() }}",
-    "test_with_scenario": "no",
+    "test_with_scenario": "yes",
     "copyright_name": "",
     "support_email_name": "",
     "support_email": "",

@@ -1,10 +1,10 @@
 # This file is part of the {{ cookiecutter.module_name }} Tryton module.
 # Please see the COPYRIGHT and README.rst files at the top level of this
 # package for full copyright notices, license terms and support information.
-from unittest import TestLoader
 {%- if cookiecutter.test_with_scenario.lower().startswith('y') %}
 from doctest import DocFileSuite, REPORT_ONLY_FIRST_FAILURE
 {%- endif %}
+from unittest import TestLoader
 
 {% if cookiecutter.test_with_scenario.lower().startswith('y') -%}
 from trytond.tests.test_tryton import (
