@@ -17,7 +17,7 @@ the Python Package Index:
 
 .. code-block:: bash
 
-    pip3 install trytonlq_sale_direct
+   pip3 install trytonlq_sale_direct
 
 Using sources
 =============
@@ -27,9 +27,9 @@ module from there:
 
 .. code-block:: bash
 
-    git clone https://bitbucket.org/libateq/tryton-modules
-    cd tryton-modules/sale_direct
-    python3 setup.py install
+   git clone https://bitbucket.org/libateq/tryton-modules
+   cd tryton-modules/sale_direct
+   python3 setup.py install
 
 Other information
 =================

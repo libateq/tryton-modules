@@ -17,7 +17,7 @@ the Python Package Index:
 
 .. code-block:: bash
 
-    pip3 install trytonlq_account_uk_vat_analysis
+   pip3 install trytonlq_account_uk_vat_analysis
 
 Using sources
 =============
@@ -27,9 +27,9 @@ module from there:
 
 .. code-block:: bash
 
-    git clone https://bitbucket.org/libateq/tryton-modules
-    cd tryton-modules/account_uk_vat_analysis
-    python3 setup.py install
+   git clone https://bitbucket.org/libateq/tryton-modules
+   cd tryton-modules/account_uk_vat_analysis
+   python3 setup.py install
 
 Other information
 =================

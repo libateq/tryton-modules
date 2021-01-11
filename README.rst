@@ -17,4 +17,4 @@ them is to use pip, e.g.:
 
 .. code:: bash
 
-    pip3 install ${PYPI_PROJECT_NAME}
+   pip3 install ${PYPI_PROJECT_NAME}

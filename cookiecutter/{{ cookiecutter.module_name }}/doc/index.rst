@@ -5,12 +5,12 @@
 {{ ('The *' + cookiecutter.module_title '* ' + cookiecutter.purpose + '.') | wordwrap }}
 
 .. toctree::
-    :maxdepth: 2
+   :maxdepth: 2
 
-    installation
-    setup
-    usage
-    configuration
-    design
-    support
-    license
+   installation
+   setup
+   usage
+   configuration
+   design
+   support
+   license

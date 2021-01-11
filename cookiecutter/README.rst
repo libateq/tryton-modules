@@ -12,5 +12,5 @@ Usage
 
 .. code-block:: bash
 
-    pip3 install cookiecutter
-    cookiecutter cookiecutter
+   pip3 install cookiecutter
+   cookiecutter cookiecutter

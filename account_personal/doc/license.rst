@@ -11,4 +11,4 @@ GNU General Public License
 ==========================
 
 .. include:: ../LICENSE
-    :start-line: 2
+   :start-line: 2
