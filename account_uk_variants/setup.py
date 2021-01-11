@@ -5,7 +5,7 @@
 from configparser import ConfigParser
 from io import open
 from os.path import dirname, join
-from re import match
+from re import match, sub
 from setuptools import find_packages, setup
 
 
@@ -31,7 +31,10 @@ def setup_version():
 
 def read(fname):
     with open(join(dirname(__file__), fname), 'r', encoding='utf-8') as file:
-        return file.read()
+        content = file.read()
+    content = sub(
+        r'(?m)^\.\. toctree::\r?\n((^$|^\s.*$)\r?\n)*', '', content)
+    return content
 
 
 def required_version(name, version):
