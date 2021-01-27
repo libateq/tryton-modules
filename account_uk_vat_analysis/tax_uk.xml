@@ -215,7 +215,7 @@ package for full copyright notices, license terms and support information.
     </record>
     <record model="account.tax.code.template" id="tax_code_exports_goods">
       <field name="code">B6:5</field>
-      <field name="name">Non-EU Exports</field>
+      <field name="name">Exports</field>
       <field name="parent" ref="tax_code_exports_dispatches"/>
       <field name="account" ref="account_uk.root"/>
     </record>
@@ -249,26 +249,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.tax.code.line.template" id="tax_code_line_non_uk_sales_services_2">
       <field name="code" ref="tax_code_non_uk_sales_services"/>
       <field name="tax" ref="account_uk.tax_vat_non_uk_sales_services"/>
-      <field name="operator">-</field>
-      <field name="amount">base</field>
-      <field name="type">credit</field>
-    </record>
-    <record model="account.tax.code.template" id="tax_code_eu_dispatches">
-      <field name="code">B8:1</field>
-      <field name="name">EU Dispatches to VAT Registered Customers</field>
-      <field name="parent" ref="tax_code_exports_dispatches"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_dispatches_1">
-      <field name="code" ref="tax_code_eu_dispatches"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_dispatches"/>
-      <field name="operator">+</field>
-      <field name="amount">base</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_dispatches_2">
-      <field name="code" ref="tax_code_eu_dispatches"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_dispatches"/>
       <field name="operator">-</field>
       <field name="amount">base</field>
       <field name="type">credit</field>
@@ -430,20 +410,6 @@ package for full copyright notices, license terms and support information.
       <field name="amount">tax</field>
       <field name="type">credit</field>
     </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_dispatches_1">
-      <field name="code" ref="tax_code_vat_sales_zero"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_dispatches"/>
-      <field name="operator">+</field>
-      <field name="amount">tax</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_dispatches_2">
-      <field name="code" ref="tax_code_vat_sales_zero"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_dispatches"/>
-      <field name="operator">-</field>
-      <field name="amount">tax</field>
-      <field name="type">credit</field>
-    </record>
     <record model="account.tax.code.line.template" id="tax_code_line_vat_exports_goods_1">
       <field name="code" ref="tax_code_vat_sales_zero"/>
       <field name="tax" ref="account_uk.tax_vat_exports_goods"/>
@@ -570,7 +536,7 @@ package for full copyright notices, license terms and support information.
     </record>
     <record model="account.tax.code.template" id="tax_code_imports_goods_standard">
       <field name="code">B7:61</field>
-      <field name="name">Standard Rated Non-EU Imports</field>
+      <field name="name">Standard Rated Imports</field>
       <field name="parent" ref="tax_code_purchases_standard"/>
       <field name="account" ref="account_uk.root"/>
     </record>
@@ -604,26 +570,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.tax.code.line.template" id="tax_code_line_non_uk_purchases_services_standard_2">
       <field name="code" ref="tax_code_non_uk_purchases_services_standard"/>
       <field name="tax" ref="account_uk.tax_vat_non_uk_purchases_services_standard_input"/>
-      <field name="operator">-</field>
-      <field name="amount">base</field>
-      <field name="type">credit</field>
-    </record>
-    <record model="account.tax.code.template" id="tax_code_eu_acquisitions_standard">
-      <field name="code">B9:1</field>
-      <field name="name">Standard Rated EU Acquisitions</field>
-      <field name="parent" ref="tax_code_purchases_standard"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_standard_1">
-      <field name="code" ref="tax_code_eu_acquisitions_standard"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_standard_input"/>
-      <field name="operator">+</field>
-      <field name="amount">base</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_standard_2">
-      <field name="code" ref="tax_code_eu_acquisitions_standard"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_standard_input"/>
       <field name="operator">-</field>
       <field name="amount">base</field>
       <field name="type">credit</field>
@@ -677,7 +623,7 @@ package for full copyright notices, license terms and support information.
     </record>
     <record model="account.tax.code.template" id="tax_code_imports_goods_reduced">
       <field name="code">B7:62</field>
-      <field name="name">Reduced Rated Non-EU Imports</field>
+      <field name="name">Reduced Rated Imports</field>
       <field name="parent" ref="tax_code_purchases_reduced"/>
       <field name="account" ref="account_uk.root"/>
     </record>
@@ -711,26 +657,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.tax.code.line.template" id="tax_code_line_non_uk_purchases_services_reduced_2">
       <field name="code" ref="tax_code_non_uk_purchases_services_reduced"/>
       <field name="tax" ref="account_uk.tax_vat_non_uk_purchases_services_reduced_input"/>
-      <field name="operator">-</field>
-      <field name="amount">base</field>
-      <field name="type">credit</field>
-    </record>
-    <record model="account.tax.code.template" id="tax_code_eu_acquisitions_reduced">
-      <field name="code">B9:2</field>
-      <field name="name">Reduced Rated EU Acquisitions</field>
-      <field name="parent" ref="tax_code_purchases_reduced"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_reduced_1">
-      <field name="code" ref="tax_code_eu_acquisitions_reduced"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_reduced_input"/>
-      <field name="operator">+</field>
-      <field name="amount">base</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_reduced_2">
-      <field name="code" ref="tax_code_eu_acquisitions_reduced"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_reduced_input"/>
       <field name="operator">-</field>
       <field name="amount">base</field>
       <field name="type">credit</field>
@@ -824,7 +750,7 @@ package for full copyright notices, license terms and support information.
     </record>
     <record model="account.tax.code.template" id="tax_code_imports_goods_zero">
       <field name="code">B7:63</field>
-      <field name="name">Zero Rated Non-EU Imports</field>
+      <field name="name">Zero Rated Imports</field>
       <field name="parent" ref="tax_code_purchases_zero"/>
       <field name="account" ref="account_uk.root"/>
     </record>
@@ -858,26 +784,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.tax.code.line.template" id="tax_code_line_non_uk_purchases_services_zero_2">
       <field name="code" ref="tax_code_non_uk_purchases_services_zero"/>
       <field name="tax" ref="account_uk.tax_vat_non_uk_purchases_services_zero"/>
-      <field name="operator">-</field>
-      <field name="amount">base</field>
-      <field name="type">credit</field>
-    </record>
-    <record model="account.tax.code.template" id="tax_code_eu_acquisitions_zero">
-      <field name="code">B9:3</field>
-      <field name="name">Zero Rated EU Acquisitions</field>
-      <field name="parent" ref="tax_code_purchases_zero"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_zero_1">
-      <field name="code" ref="tax_code_eu_acquisitions_zero"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_zero"/>
-      <field name="operator">+</field>
-      <field name="amount">base</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_zero_2">
-      <field name="code" ref="tax_code_eu_acquisitions_zero"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_zero"/>
       <field name="operator">-</field>
       <field name="amount">base</field>
       <field name="type">credit</field>
@@ -1004,29 +910,9 @@ package for full copyright notices, license terms and support information.
       <field name="amount">tax</field>
       <field name="type">credit</field>
     </record>
-    <record model="account.tax.code.template" id="tax_code_vat_eu_acquisitions_standard">
-      <field name="code">B4:31</field>
-      <field name="name">VAT on Standard Rated EU Acquisitions</field>
-      <field name="parent" ref="tax_code_vat_purchases_standard"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_standard_1">
-      <field name="code" ref="tax_code_vat_eu_acquisitions_standard"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_standard_input"/>
-      <field name="operator">+</field>
-      <field name="amount">tax</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_standard_2">
-      <field name="code" ref="tax_code_vat_eu_acquisitions_standard"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_standard_input"/>
-      <field name="operator">-</field>
-      <field name="amount">tax</field>
-      <field name="type">credit</field>
-    </record>
     <record model="account.tax.code.template" id="tax_code_vat_imports_standard">
-      <field name="code">B4:41</field>
-      <field name="name">VAT on Standard Rated Non-EU Imports</field>
+      <field name="code">B4:31</field>
+      <field name="name">VAT on Standard Rated Imports</field>
       <field name="parent" ref="tax_code_vat_purchases_standard"/>
       <field name="account" ref="account_uk.root"/>
     </record>
@@ -1045,7 +931,7 @@ package for full copyright notices, license terms and support information.
       <field name="type">credit</field>
     </record>
     <record model="account.tax.code.template" id="tax_code_vat_non_uk_purchases_services_standard">
-      <field name="code">B4:51</field>
+      <field name="code">B4:41</field>
       <field name="name">VAT on Standard Rated Non-UK Purchases of Services</field>
       <field name="parent" ref="tax_code_vat_purchases_standard"/>
       <field name="account" ref="account_uk.root"/>
@@ -1111,29 +997,9 @@ package for full copyright notices, license terms and support information.
       <field name="amount">tax</field>
       <field name="type">credit</field>
     </record>
-    <record model="account.tax.code.template" id="tax_code_vat_eu_acquisitions_reduced">
-      <field name="code">B4:32</field>
-      <field name="name">VAT on Reduced Rated EU Acquisitions</field>
-      <field name="parent" ref="tax_code_vat_purchases_reduced"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_reduced_1">
-      <field name="code" ref="tax_code_vat_eu_acquisitions_reduced"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_reduced_input"/>
-      <field name="operator">+</field>
-      <field name="amount">tax</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_reduced_2">
-      <field name="code" ref="tax_code_vat_eu_acquisitions_reduced"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_reduced_input"/>
-      <field name="operator">-</field>
-      <field name="amount">tax</field>
-      <field name="type">credit</field>
-    </record>
     <record model="account.tax.code.template" id="tax_code_vat_imports_reduced">
-      <field name="code">B4:42</field>
-      <field name="name">VAT on Reduced Rated Non-EU Imports</field>
+      <field name="code">B4:32</field>
+      <field name="name">VAT on Reduced Rated Imports</field>
       <field name="parent" ref="tax_code_vat_purchases_reduced"/>
       <field name="account" ref="account_uk.root"/>
     </record>
@@ -1152,7 +1018,7 @@ package for full copyright notices, license terms and support information.
       <field name="type">credit</field>
     </record>
     <record model="account.tax.code.template" id="tax_code_vat_non_uk_purchases_services_reduced">
-      <field name="code">B4:52</field>
+      <field name="code">B4:42</field>
       <field name="name">VAT on Reduced Rated Non-UK Purchases of Services</field>
       <field name="parent" ref="tax_code_vat_purchases_reduced"/>
       <field name="account" ref="account_uk.root"/>
@@ -1202,20 +1068,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.tax.code.line.template" id="tax_code_line_vat_purchases_services_zero_2">
       <field name="code" ref="tax_code_vat_purchases_zero"/>
       <field name="tax" ref="account_uk.tax_vat_purchases_services_zero"/>
-      <field name="operator">-</field>
-      <field name="amount">tax</field>
-      <field name="type">credit</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_zero_1">
-      <field name="code" ref="tax_code_vat_purchases_zero"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_zero"/>
-      <field name="operator">+</field>
-      <field name="amount">tax</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_zero_2">
-      <field name="code" ref="tax_code_vat_purchases_zero"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_zero"/>
       <field name="operator">-</field>
       <field name="amount">tax</field>
       <field name="type">credit</field>
@@ -1326,210 +1178,15 @@ package for full copyright notices, license terms and support information.
       <field name="account" ref="account_uk.root"/>
     </record>
 
-    <record model="account.tax.code.template" id="tax_code_reverse_eu_acquisitions">
-      <field name="code">XC1</field>
-      <field name="name">EU Acquisitions</field>
-      <field name="parent" ref="tax_code_reverse"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-
-    <record model="account.tax.code.template" id="tax_code_reverse_eu_acquisitions_standard">
-      <field name="code">XC11</field>
-      <field name="name">Standard Rated EU Acquisitions</field>
-      <field name="parent" ref="tax_code_reverse_eu_acquisitions"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.template" id="tax_code_eu_acquisitions_standard_input">
-      <field name="code">N9:1</field>
-      <field name="name">Standard Rated EU Acquisitions Input</field>
-      <field name="parent" ref="tax_code_reverse_eu_acquisitions_standard"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_standard_input_1">
-      <field name="code" ref="tax_code_eu_acquisitions_standard_input"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_standard_input"/>
-      <field name="operator">-</field>
-      <field name="amount">base</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_standard_input_2">
-      <field name="code" ref="tax_code_eu_acquisitions_standard_input"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_standard_input"/>
-      <field name="operator">+</field>
-      <field name="amount">base</field>
-      <field name="type">credit</field>
-    </record>
-    <record model="account.tax.code.template" id="tax_code_eu_acquisitions_standard_output">
-      <field name="code">B6:71</field>
-      <field name="name">Standard Rated EU Acquisitions Reversed</field>
-      <field name="parent" ref="tax_code_reverse_eu_acquisitions_standard"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_standard_output_1">
-      <field name="code" ref="tax_code_eu_acquisitions_standard_output"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_standard_output"/>
-      <field name="operator">-</field>
-      <field name="amount">base</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_standard_output_2">
-      <field name="code" ref="tax_code_eu_acquisitions_standard_output"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_standard_output"/>
-      <field name="operator">+</field>
-      <field name="amount">base</field>
-      <field name="type">credit</field>
-    </record>
-
-    <record model="account.tax.code.template" id="tax_code_reverse_eu_acquisitions_reduced">
-      <field name="code">XC12</field>
-      <field name="name">Reduced Rated EU Acquisitions</field>
-      <field name="parent" ref="tax_code_reverse_eu_acquisitions"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.template" id="tax_code_eu_acquisitions_reduced_input">
-      <field name="code">N9:2</field>
-      <field name="name">Reduced Rated EU Acquisitions Input</field>
-      <field name="parent" ref="tax_code_reverse_eu_acquisitions_reduced"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_reduced_input_1">
-      <field name="code" ref="tax_code_eu_acquisitions_reduced_input"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_reduced_input"/>
-      <field name="operator">-</field>
-      <field name="amount">base</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_reduced_input_2">
-      <field name="code" ref="tax_code_eu_acquisitions_reduced_input"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_reduced_input"/>
-      <field name="operator">+</field>
-      <field name="amount">base</field>
-      <field name="type">credit</field>
-    </record>
-    <record model="account.tax.code.template" id="tax_code_eu_acquisitions_reduced_output">
-      <field name="code">B6:72</field>
-      <field name="name">Reduced Rated EU Acquisitions Reversed</field>
-      <field name="parent" ref="tax_code_reverse_eu_acquisitions_reduced"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_reduced_output_1">
-      <field name="code" ref="tax_code_eu_acquisitions_reduced_output"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_reduced_output"/>
-      <field name="operator">-</field>
-      <field name="amount">base</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_eu_acquisitions_reduced_output_2">
-      <field name="code" ref="tax_code_eu_acquisitions_reduced_output"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_reduced_output"/>
-      <field name="operator">+</field>
-      <field name="amount">base</field>
-      <field name="type">credit</field>
-    </record>
-
-    <record model="account.tax.code.template" id="tax_code_reverse_vat_eu_acquisitions_standard">
-      <field name="code">XC13</field>
-      <field name="name">VAT on Standard Rated EU Acquisitions</field>
-      <field name="parent" ref="tax_code_reverse_eu_acquisitions"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.template" id="tax_code_vat_eu_acquisitions_standard_input">
-      <field name="code">N4:31</field>
-      <field name="name">Input VAT on Standard Rated EU Acquisitions</field>
-      <field name="parent" ref="tax_code_reverse_vat_eu_acquisitions_standard"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_standard_input_1">
-      <field name="code" ref="tax_code_vat_eu_acquisitions_standard_input"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_standard_input"/>
-      <field name="operator">-</field>
-      <field name="amount">tax</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_standard_input_2">
-      <field name="code" ref="tax_code_vat_eu_acquisitions_standard_input"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_standard_input"/>
-      <field name="operator">+</field>
-      <field name="amount">tax</field>
-      <field name="type">credit</field>
-    </record>
-    <record model="account.tax.code.template" id="tax_code_vat_eu_acquisitions_standard_output">
-      <field name="code">B2:1</field>
-      <field name="name">Output VAT on Standard Rated EU Acquisitions</field>
-      <field name="parent" ref="tax_code_reverse_vat_eu_acquisitions_standard"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_standard_output_1">
-      <field name="code" ref="tax_code_vat_eu_acquisitions_standard_output"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_standard_output"/>
-      <field name="operator">-</field>
-      <field name="amount">tax</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_standard_output_2">
-      <field name="code" ref="tax_code_vat_eu_acquisitions_standard_output"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_standard_output"/>
-      <field name="operator">+</field>
-      <field name="amount">tax</field>
-      <field name="type">credit</field>
-    </record>
-
-    <record model="account.tax.code.template" id="tax_code_reverse_vat_eu_acquisitions_reduced">
-      <field name="code">XC14</field>
-      <field name="name">VAT on Reduced Rated EU Acquisitions</field>
-      <field name="parent" ref="tax_code_reverse_eu_acquisitions"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.template" id="tax_code_vat_eu_acquisitions_reduced_input">
-      <field name="code">N4:32</field>
-      <field name="name">Input VAT on Reduced Rated EU Acquisitions</field>
-      <field name="parent" ref="tax_code_reverse_vat_eu_acquisitions_reduced"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_reduced_input_1">
-      <field name="code" ref="tax_code_vat_eu_acquisitions_reduced_input"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_reduced_input"/>
-      <field name="operator">-</field>
-      <field name="amount">tax</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_reduced_input_2">
-      <field name="code" ref="tax_code_vat_eu_acquisitions_reduced_input"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_reduced_input"/>
-      <field name="operator">+</field>
-      <field name="amount">tax</field>
-      <field name="type">credit</field>
-    </record>
-    <record model="account.tax.code.template" id="tax_code_vat_eu_acquisitions_reduced_output">
-      <field name="code">B2:2</field>
-      <field name="name">Output VAT on Reduced Rated EU Acquisitions</field>
-      <field name="parent" ref="tax_code_reverse_vat_eu_acquisitions_reduced"/>
-      <field name="account" ref="account_uk.root"/>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_reduced_output_1">
-      <field name="code" ref="tax_code_vat_eu_acquisitions_reduced_output"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_reduced_output"/>
-      <field name="operator">-</field>
-      <field name="amount">tax</field>
-      <field name="type">invoice</field>
-    </record>
-    <record model="account.tax.code.line.template" id="tax_code_line_vat_eu_acquisitions_reduced_output_2">
-      <field name="code" ref="tax_code_vat_eu_acquisitions_reduced_output"/>
-      <field name="tax" ref="account_uk.tax_vat_eu_acquisitions_reduced_output"/>
-      <field name="operator">+</field>
-      <field name="amount">tax</field>
-      <field name="type">credit</field>
-    </record>
-
     <record model="account.tax.code.template" id="tax_code_reverse_non_uk_purchases_services">
-      <field name="code">XC2</field>
+      <field name="code">XC1</field>
       <field name="name">Non-UK Purchases of Services</field>
       <field name="parent" ref="tax_code_reverse"/>
       <field name="account" ref="account_uk.root"/>
     </record>
 
     <record model="account.tax.code.template" id="tax_code_reverse_non_uk_purchases_services_standard">
-      <field name="code">XC21</field>
+      <field name="code">XC11</field>
       <field name="name">Standard Rated Non-UK Purchases of Services</field>
       <field name="parent" ref="tax_code_reverse_non_uk_purchases_services"/>
       <field name="account" ref="account_uk.root"/>
@@ -1555,7 +1212,7 @@ package for full copyright notices, license terms and support information.
       <field name="type">credit</field>
     </record>
     <record model="account.tax.code.template" id="tax_code_non_uk_purchases_services_standard_reverse">
-      <field name="code">B6:73</field>
+      <field name="code">B6:71</field>
       <field name="name">Standard Rated Non-UK Purchases of Services Reversed</field>
       <field name="parent" ref="tax_code_reverse_non_uk_purchases_services_standard"/>
       <field name="account" ref="account_uk.root"/>
@@ -1576,7 +1233,7 @@ package for full copyright notices, license terms and support information.
     </record>
 
     <record model="account.tax.code.template" id="tax_code_reverse_non_uk_purchases_services_reduced">
-      <field name="code">XC22</field>
+      <field name="code">XC12</field>
       <field name="name">Reduced Rated Non-UK Purchases of Services</field>
       <field name="parent" ref="tax_code_reverse_non_uk_purchases_services"/>
       <field name="account" ref="account_uk.root"/>
@@ -1602,7 +1259,7 @@ package for full copyright notices, license terms and support information.
       <field name="type">credit</field>
     </record>
     <record model="account.tax.code.template" id="tax_code_non_uk_purchases_services_reduced_reverse">
-      <field name="code">B6:74</field>
+      <field name="code">B6:72</field>
       <field name="name">Reduced Rated Non-UK Purchases of Services Reversed</field>
       <field name="parent" ref="tax_code_reverse_non_uk_purchases_services_reduced"/>
       <field name="account" ref="account_uk.root"/>
@@ -1623,13 +1280,13 @@ package for full copyright notices, license terms and support information.
     </record>
 
     <record model="account.tax.code.template" id="tax_code_reverse_vat_non_uk_purchases_services_standard">
-      <field name="code">XC23</field>
+      <field name="code">XC13</field>
       <field name="name">VAT on Standard Rated Non-UK Purchases of Services</field>
       <field name="parent" ref="tax_code_reverse_non_uk_purchases_services"/>
       <field name="account" ref="account_uk.root"/>
     </record>
     <record model="account.tax.code.template" id="tax_code_vat_non_uk_purchases_services_standard_input">
-      <field name="code">N4:51</field>
+      <field name="code">N4:41</field>
       <field name="name">VAT on Standard Rated Non-UK Purchases of Services</field>
       <field name="parent" ref="tax_code_reverse_vat_non_uk_purchases_services_standard"/>
       <field name="account" ref="account_uk.root"/>
@@ -1670,13 +1327,13 @@ package for full copyright notices, license terms and support information.
     </record>
 
     <record model="account.tax.code.template" id="tax_code_reverse_vat_non_uk_purchases_services_reduced">
-      <field name="code">XC24</field>
+      <field name="code">XC14</field>
       <field name="name">VAT on Reduced Rated Non-UK Purchases of Services</field>
       <field name="parent" ref="tax_code_reverse_non_uk_purchases_services"/>
       <field name="account" ref="account_uk.root"/>
     </record>
     <record model="account.tax.code.template" id="tax_code_vat_non_uk_purchases_services_reduced_input">
-      <field name="code">N4:52</field>
+      <field name="code">N4:42</field>
       <field name="name">VAT on Reduced Rated Non-UK Purchases of Services</field>
       <field name="parent" ref="tax_code_reverse_vat_non_uk_purchases_services_reduced"/>
       <field name="account" ref="account_uk.root"/>
