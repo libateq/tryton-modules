@@ -5,10 +5,9 @@ from re import split
 
 from trytond.config import config
 from trytond.model import ModelView, fields
-from trytond.modules.authentication_totp.model import UserPreferencesButton
 from trytond.modules.authentication_totp.res import QRCode, User as TOTPUser
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import Eval
+from trytond.pyson import Eval, PYSONEncoder
 from trytond.transaction import Transaction
 from trytond.wizard import Button, StateTransition, StateView, Wizard
 
@@ -32,10 +31,10 @@ class User(metaclass=PoolMeta):
     def __setup__(cls):
         super().__setup__()
         cls._buttons.update({
-            'setup_totp_secret': UserPreferencesButton(),
-            'clear_totp_secret': UserPreferencesButton({
+            'setup_totp_secret': {},
+            'clear_totp_secret': {
                 'invisible': _totp_required,
-                }),
+                },
             })
 
     def get_totp_update_pending(self, name=None):
@@ -85,6 +84,18 @@ class User(metaclass=PoolMeta):
         if user.totp_key:
             return cls._login_totp(login, parameters)
         return user_id
+
+    @classmethod
+    def _ModelView__view_look_dom(
+            cls, element, type, fields_width=None, _fields_attrs=None):
+        result = super()._ModelView__view_look_dom(
+            element, type, fields_width, _fields_attrs)
+        name = element.get('name')
+        if name in {'clear_totp_secret', 'setup_totp_secret'}:
+            encoder = PYSONEncoder()
+            states = cls._buttons[name]
+            element.set('states', encoder.encode(states))
+        return result
 
 
 class UserSetupTOTPStart(ModelView):
