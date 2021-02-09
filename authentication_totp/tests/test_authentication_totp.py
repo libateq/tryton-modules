@@ -74,6 +74,10 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
         user.save()
         self.assertEqual(user.totp_secret, TOTP_SECRET_KEY)
 
+        user.totp_secret = None
+        user.save()
+        self.assertIsNone(user.totp_secret)
+
         with self.assertRaises(UserError):
             user.totp_secret = 'an_invalid_key'
             user.save()

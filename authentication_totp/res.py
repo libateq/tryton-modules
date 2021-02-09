@@ -77,12 +77,15 @@ class User(metaclass=PoolMeta):
     @classmethod
     def set_totp_secret(cls, users, name, value):
         for user in users:
-            try:
-                user.totp_key = _TOTPFactory(key=value).to_json()
-            except BinAsciiError:
-                raise TOTPInvalidSecretError(gettext(
-                    'authentication_totp.msg_user_invalid_totp_secret',
-                    login=user.login))
+            if value:
+                try:
+                    user.totp_key = _TOTPFactory(key=value).to_json()
+                except BinAsciiError:
+                    raise TOTPInvalidSecretError(gettext(
+                        'authentication_totp.msg_user_invalid_totp_secret',
+                        login=user.login))
+            else:
+                user.totp_key = None
         cls.save(users)
 
     def _get_totp_issuer_fields(self):
