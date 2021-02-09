@@ -144,7 +144,8 @@ class User(metaclass=PoolMeta):
 
     @classmethod
     def _login_totp(cls, login, parameters):
-        TOTPLogin = Pool().get('res.user.login.totp')
+        pool = Pool()
+        TOTPLogin = pool.get('res.user.login.totp')
 
         user_id = cls._get_login(login)[0]
         if not user_id:

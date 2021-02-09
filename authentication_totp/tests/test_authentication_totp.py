@@ -33,7 +33,8 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
 
     @with_transaction()
     def test_user_get_login(self):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
         user.save()
 
@@ -50,7 +51,8 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
 
     @with_transaction()
     def test_user_get_login_no_secret(self):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         user = User(name='totp', login='totp')
         user.save()
 
@@ -66,7 +68,8 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
 
     @with_transaction()
     def test_user_set_totp_secret(self):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         user = User(name='totp', login='totp')
         user.save()
 
@@ -88,7 +91,8 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
 
     @with_transaction()
     def test_user_get_totp_issuer(self):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
         user.save()
         self.assertIn('Tryton', user.totp_url)
@@ -96,7 +100,8 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
     @with_transaction()
     @skipIf(not QRCode, "qrcode not available")
     def test_user_get_totp_qrcode(self):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
         user.save()
         qrcode = user.totp_qrcode
@@ -118,7 +123,8 @@ class AuthenticationTOTPCompanyTestCase(ModuleTestCase):
 
     @with_transaction()
     def test_user_get_totp_issuer_company(self):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         company = create_company()
         user = User(
             name='totp', login='totp', totp_secret=TOTP_SECRET_KEY,
@@ -133,7 +139,8 @@ class UserLoginTOTPTestCase(ModuleTestCase):
 
     @with_transaction()
     def test_totp_get(self):
-        TOTPLogin = Pool().get('res.user.login.totp')
+        pool = Pool()
+        TOTPLogin = pool.get('res.user.login.totp')
         record, = TOTPLogin.create([{'user_id': 1}])
         totp_login = TOTPLogin.get(1)
         self.assertEqual(record, totp_login)

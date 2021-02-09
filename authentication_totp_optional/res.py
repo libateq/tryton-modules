@@ -77,7 +77,8 @@ class User(metaclass=PoolMeta):
 
     @classmethod
     def _login_totp_optional(cls, login, parameters):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
 
         user_id = cls._get_login(login)[0]
         if not user_id:
@@ -171,7 +172,8 @@ class UserSetupTOTP(Wizard):
 
     @classmethod
     def get_totp_setup_wizards(cls):
-        WizardAction = Pool().get('ir.action.wizard')
+        pool = Pool()
+        WizardAction = pool.get('ir.action.wizard')
         wizards = WizardAction.search([
             ('wiz_name', 'in', [
                 'res.user.setup_totp',
@@ -179,7 +181,8 @@ class UserSetupTOTP(Wizard):
         return [w.id for w in wizards]
 
     def default_start(self, fields=None):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         transaction = Transaction()
         return {
             'user': transaction.context.get('active_id', transaction.user),
@@ -187,7 +190,8 @@ class UserSetupTOTP(Wizard):
             }
 
     def transition_save(self):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         user = self.start.user
         User.write([user], {
             'totp_secret': self.start.totp_secret,
@@ -196,7 +200,8 @@ class UserSetupTOTP(Wizard):
         return 'done'
 
     def transition_skip(self):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         user = self.start.user
         User.write([user], {
             'actions': [('remove', self.get_totp_setup_wizards())],

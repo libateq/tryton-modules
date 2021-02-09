@@ -425,7 +425,8 @@ class PerformVisitEvent(ModelView):
 
     @classmethod
     def default_warehouse(cls):
-        Location = Pool().get('stock.location')
+        pool = Pool()
+        Location = pool.get('stock.location')
         return Location.get_default_warehouse()
 
     @fields.depends('type')

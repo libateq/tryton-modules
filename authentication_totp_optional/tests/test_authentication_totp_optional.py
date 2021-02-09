@@ -40,7 +40,8 @@ class AuthenticationTotpOptionalTestCase(ModuleTestCase):
 
     @with_transaction()
     def test_user_get_login(self):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
         user.save()
 
@@ -57,7 +58,8 @@ class AuthenticationTotpOptionalTestCase(ModuleTestCase):
 
     @with_transaction()
     def test_user_get_login_no_secret(self):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         user = User(name='totp', login='totp')
         user.save()
 
@@ -66,7 +68,8 @@ class AuthenticationTotpOptionalTestCase(ModuleTestCase):
 
     @with_transaction()
     def test_user_create_action(self):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         user = User(name='totp', login='totp')
         user.save()
         self.run_trigger_tasks()
@@ -77,7 +80,8 @@ class AuthenticationTotpOptionalTestCase(ModuleTestCase):
 
     @with_transaction()
     def test_user_create_action_with_secret(self):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
         user.save()
         self.run_trigger_tasks()
@@ -85,7 +89,8 @@ class AuthenticationTotpOptionalTestCase(ModuleTestCase):
 
     @with_transaction()
     def test_clear_secret(self):
-        User = Pool().get('res.user')
+        pool = Pool()
+        User = pool.get('res.user')
         user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
         user.save()
 
