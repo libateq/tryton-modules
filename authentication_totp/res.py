@@ -43,7 +43,7 @@ class User(metaclass=PoolMeta):
     totp_qrcode = fields.Function(fields.Binary(
             "TOTP QR Code",
             states={
-                'invisible': ~Eval('totp_secret', '') or (not QRCode),
+                'invisible': ~Eval('totp_secret', '') | (not QRCode),
                 },
             depends=['totp_secret'],
             help="The QR code for the secret key. Used with authenticator "
