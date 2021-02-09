@@ -39,7 +39,7 @@ class User(metaclass=PoolMeta):
             "TOTP Secret",
             help="Secret key used for time-based one-time password (TOTP) "
             "user authentication."),
-        'on_change_with_totp_secret', setter='set_totp_secret')
+        'get_totp_secret', setter='set_totp_secret')
     totp_qrcode = fields.Function(fields.Binary(
             "TOTP QR Code",
             states={
@@ -69,52 +69,10 @@ class User(metaclass=PoolMeta):
             'update_totp_secret': {},
             })
 
-    @fields.depends('totp_key')
-    def on_change_with_totp_secret(self, name=None):
+    def get_totp_secret(self, name):
         if self.totp_key:
             totp = _TOTPFactory.from_json(self.totp_key)
             return totp.pretty_key()
-
-    def _get_totp_issuer_fields(self):
-        return {
-            'company': "",
-            }
-
-    @fields.depends(
-        'login', 'totp_secret', methods=['_get_totp_issuer_fields'])
-    def on_change_with_totp_url(self, name=None):
-        if not self.totp_secret:
-            return
-        issuer = _totp_issuer.format(**self._get_totp_issuer_fields())
-        issuer = issuer.strip()
-        totp = _TOTPFactory(key=self.totp_secret)
-        return totp.to_uri(label=self.login, issuer=issuer)
-
-    @fields.depends('totp_secret', 'totp_url')
-    def on_change_with_totp_qrcode(self, name=None):
-        url = self.on_change_with_totp_url()
-        if not url or not QRCode:
-            return
-
-        data = BytesIO()
-        qr = QRCode(image_factory=PilImage)
-        qr.add_data(url)
-        image = qr.make_image()
-        image.save(data)
-        return data.getvalue()
-
-    @classmethod
-    def _totp_admin(cls):
-        ModelAccess = Pool().get('ir.model.access')
-        return ModelAccess.check(
-            'res.user', mode='write', raise_exception=False)
-
-    @classmethod
-    def _totp_key_length_too_short(cls, key):
-        if key:
-            totp = _TOTPFactory.from_json(key)
-            key_length = len(totp.key) * 8
-            return key_length < _totp_key_length
 
     @classmethod
     def set_totp_secret(cls, users, name, value):
@@ -141,14 +99,58 @@ class User(metaclass=PoolMeta):
             'totp_key': key,
             })
 
+    def _get_totp_issuer_fields(self):
+        return {
+            'company': "",
+            }
+
+    @fields.depends(
+        'login', 'totp_secret', methods=['_get_totp_issuer_fields'])
+    def on_change_with_totp_url(self, name=None):
+        if not self.totp_secret:
+            return
+        issuer = _totp_issuer.format(**self._get_totp_issuer_fields())
+        issuer = issuer.strip()
+        totp = _TOTPFactory(key=self.totp_secret)
+        return totp.to_uri(label=self.login, issuer=issuer)
+
+    @fields.depends('totp_secret', methods=['on_change_with_totp_url'])
+    def on_change_with_totp_qrcode(self, name=None):
+        url = self.on_change_with_totp_url()
+        if not url or not QRCode:
+            return
+
+        data = BytesIO()
+        qr = QRCode(image_factory=PilImage)
+        qr.add_data(url)
+        image = qr.make_image()
+        image.save(data)
+        return data.getvalue()
+
+    @classmethod
+    def _totp_admin(cls):
+        ModelAccess = Pool().get('ir.model.access')
+        return ModelAccess.check(
+            'res.user', mode='write', raise_exception=False)
+
+    @classmethod
+    def _totp_key_length_too_short(cls, key):
+        if key:
+            totp = _TOTPFactory.from_json(key)
+            key_length = len(totp.key) * 8
+            return key_length < _totp_key_length
+
     @classmethod
     def generate_totp_secret(cls):
         size = ceil(_totp_key_length / 8)
         return _TOTPFactory.new(size=size).pretty_key()
 
-    @ModelView.button_change('totp_secret')
+    @ModelView.button_change(methods=[
+            'on_change_with_totp_qrcode', 'on_change_with_totp_url'])
     def update_totp_secret(self):
         self.totp_secret = self.generate_totp_secret()
+        self.totp_url = self.on_change_with_totp_url()
+        self.totp_qrcode = self.on_change_with_totp_qrcode()
 
     @classmethod
     def validate(cls, users):

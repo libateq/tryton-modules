@@ -17,6 +17,8 @@ package for full copyright notices, license terms and support information.
       <group string="QR Code" name="totp_qrcode" colspan="3" expandable="0">
         <field name="totp_qrcode" widget="image" width="256" height="256" readonly="1" xfill="0" xexpand="0" xalign="0"/>
       </group>
+
+      <field name="login" invisible="1"/>
     </page>
   </xpath>
 </data>
