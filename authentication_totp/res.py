@@ -16,12 +16,11 @@ from trytond.config import config
 from trytond.i18n import gettext
 from trytond.model import ModelSQL, ModelView, fields
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import Eval
+from trytond.pyson import Eval, PYSONEncoder
 
 from .exception import (
     TOTPAccessCodeReuseError, TOTPInvalidSecretError, TOTPKeyTooShortError,
     TOTPKeyTooShortWarning, TOTPLoginException)
-from .model import UserPreferencesButton
 
 _totp_issuer = config.get(
     'authentication_totp', 'issuer', default='{company} Tryton')
@@ -67,7 +66,7 @@ class User(metaclass=PoolMeta):
             'totp_secret',
             ])
         cls._buttons.update({
-            'update_totp_secret': UserPreferencesButton(),
+            'update_totp_secret': {},
             })
 
     @fields.depends('totp_key')
@@ -175,6 +174,17 @@ class User(metaclass=PoolMeta):
         totp_login = TOTPLogin.get(user_id)
         if totp_login.check(access_code):
             return user_id
+
+    @classmethod
+    def _ModelView__view_look_dom(
+            cls, element, type, fields_width=None, _fields_attrs=None):
+        result = super()._ModelView__view_look_dom(
+            element, type, fields_width, _fields_attrs)
+        if element.get('name') == 'update_totp_secret':
+            encoder = PYSONEncoder()
+            states = cls._buttons['update_totp_secret']
+            element.set('states', encoder.encode(states))
+        return result
 
 
 class UserCompany(metaclass=PoolMeta):
