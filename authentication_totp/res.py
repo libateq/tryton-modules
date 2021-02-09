@@ -20,7 +20,7 @@ from trytond.pyson import Eval, PYSONEncoder
 
 from .exception import (
     TOTPAccessCodeReuseError, TOTPInvalidSecretError, TOTPKeyTooShortError,
-    TOTPKeyTooShortWarning, TOTPLoginException)
+    TOTPLoginException)
 
 _totp_issuer = config.get(
     'authentication_totp', 'issuer', default='{company} Tryton')
@@ -76,28 +76,14 @@ class User(metaclass=PoolMeta):
 
     @classmethod
     def set_totp_secret(cls, users, name, value):
-        Warning = Pool().get('res.user.warning')
-
-        if value:
+        for user in users:
             try:
-                key = _TOTPFactory(key=value).to_json()
+                user.totp_key = _TOTPFactory(key=value).to_json()
             except BinAsciiError:
                 raise TOTPInvalidSecretError(gettext(
                     'authentication_totp.msg_user_invalid_totp_secret',
-                    login=users[0].login))
-        else:
-            key = None
-
-        if cls._totp_admin() and cls._totp_key_length_too_short(key):
-            warning_name = 'authentication_totp.key_too_short'
-            if Warning.check(warning_name):
-                raise TOTPKeyTooShortWarning(warning_name, gettext(
-                    'authentication_totp.msg_user_totp_too_short',
-                    login=users[0].login))
-
-        cls.write(list(users), {
-            'totp_key': key,
-            })
+                    login=user.login))
+        cls.save(users)
 
     def _get_totp_issuer_fields(self):
         return {
@@ -128,19 +114,6 @@ class User(metaclass=PoolMeta):
         return data.getvalue()
 
     @classmethod
-    def _totp_admin(cls):
-        ModelAccess = Pool().get('ir.model.access')
-        return ModelAccess.check(
-            'res.user', mode='write', raise_exception=False)
-
-    @classmethod
-    def _totp_key_length_too_short(cls, key):
-        if key:
-            totp = _TOTPFactory.from_json(key)
-            key_length = len(totp.key) * 8
-            return key_length < _totp_key_length
-
-    @classmethod
     def generate_totp_secret(cls):
         size = ceil(_totp_key_length / 8)
         return _TOTPFactory.new(size=size).pretty_key()
@@ -154,12 +127,17 @@ class User(metaclass=PoolMeta):
 
     @classmethod
     def validate(cls, users):
-        admin = cls._totp_admin()
         for user in users:
-            if not admin and cls._totp_key_length_too_short(user.totp_key):
+            user.check_totp_key_length()
+
+    def check_totp_key_length(self):
+        if self.totp_key:
+            totp = _TOTPFactory.from_json(self.totp_key)
+            key_length = len(totp.key) * 8
+            if key_length < _totp_key_length:
                 raise TOTPKeyTooShortError(gettext(
                     'authentication_totp.msg_user_totp_too_short',
-                    login=user.login))
+                    login=self.login))
 
     @classmethod
     def _login_totp(cls, login, parameters):

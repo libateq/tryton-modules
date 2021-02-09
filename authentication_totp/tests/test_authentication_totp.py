@@ -6,7 +6,7 @@ from passlib.totp import TOTP
 from unittest import TestLoader, skipIf
 
 from trytond.config import config
-from trytond.exceptions import LoginException, UserError, UserWarning
+from trytond.exceptions import LoginException, UserError
 from trytond.modules.company.tests import create_company
 from trytond.pool import Pool
 from trytond.tests.test_tryton import (
@@ -78,7 +78,7 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
             user.totp_secret = 'an_invalid_key'
             user.save()
 
-        with self.assertRaises(UserWarning):
+        with self.assertRaises(UserError):
             user.totp_secret = TOTP_SECRET_KEY[:19]
             user.save()
 
