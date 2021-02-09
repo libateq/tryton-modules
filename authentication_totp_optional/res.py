@@ -43,15 +43,16 @@ class User(metaclass=PoolMeta):
     @classmethod
     def _get_totp_setup_wizard(cls):
         pool = Pool()
-        WizardAction = pool.get('ir.action.wizard')
-        wizards = WizardAction.search([
-            ('wiz_name', '=', 'res.user.setup_totp')], limit=1)
-        return wizards[0]
+        Action = pool.get('ir.action')
+        ModelData = pool.get('ir.model.data')
+        data_id = ModelData.get_id(
+            'authentication_totp_optional', 'wizard_user_setup_totp')
+        return Action.get_action_id(data_id)
 
     @ModelView.button_change('actions')
     def update_totp_secret(self):
         setup_wizard = self._get_totp_setup_wizard()
-        self.actions += (setup_wizard.id,)
+        self.actions += (setup_wizard,)
         self.totp_update_pending = True
 
     @ModelView.button_change()
@@ -71,7 +72,7 @@ class User(metaclass=PoolMeta):
         setup_wizard = cls._get_totp_setup_wizard()
         if setup_wizard:
             for user in users:
-                user.actions += (setup_wizard.id,)
+                user.actions += (setup_wizard,)
         cls.save(users)
 
     @classmethod
@@ -169,7 +170,7 @@ class UserSetupTOTP(Wizard):
             ])
 
     @classmethod
-    def get_wizard_ids(cls):
+    def get_totp_setup_wizards(cls):
         WizardAction = Pool().get('ir.action.wizard')
         wizards = WizardAction.search([
             ('wiz_name', 'in', [
@@ -190,7 +191,7 @@ class UserSetupTOTP(Wizard):
         user = self.start.user
         User.write([user], {
             'totp_secret': self.start.totp_secret,
-            'actions': [('remove', self.get_wizard_ids())],
+            'actions': [('remove', self.get_totp_setup_wizards())],
             })
         return 'done'
 
@@ -198,6 +199,6 @@ class UserSetupTOTP(Wizard):
         User = Pool().get('res.user')
         user = self.start.user
         User.write([user], {
-            'actions': [('remove', self.get_wizard_ids())],
+            'actions': [('remove', self.get_totp_setup_wizards())],
             })
         return 'skipped' if not user.totp_secret else 'end'
