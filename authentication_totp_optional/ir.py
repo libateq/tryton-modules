@@ -11,6 +11,6 @@ class Trigger(metaclass=PoolMeta):
     def __setup__(cls):
         super().__setup__()
         cls.action.selection.append(
-            ('res.user|add_totp_setup_wizard_to_actions',
+            ('res.user|run_totp_setup_wizard_on_login',
              "Run TOTP Setup Wizard on Login"),
             )

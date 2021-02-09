@@ -46,10 +46,10 @@ class User(metaclass=PoolMeta):
     def setup_totp_secret(cls, users):
         pass
 
-    @ModelView.button_change('actions', 'totp_update_pending')
+    @ModelView.button_change(methods=['run_totp_setup_wizard_on_login'])
     def update_totp_secret(self):
         self.totp_update_pending = True
-        self.add_totp_setup_wizard_to_actions([self], save=False)
+        self.run_totp_setup_wizard_on_login([self], save=False)
 
     @ModelView.button_change('totp_key', 'totp_qrcode', 'totp_secret')
     def clear_totp_secret(self):
@@ -58,7 +58,7 @@ class User(metaclass=PoolMeta):
         self.totp_qrcode = None
 
     @classmethod
-    def add_totp_setup_wizard_to_actions(cls, users, trigger=None, save=True):
+    def run_totp_setup_wizard_on_login(cls, users, trigger=None, save=True):
         pool = Pool()
         User = pool.get('res.user')
         WizardAction = pool.get('ir.action.wizard')
