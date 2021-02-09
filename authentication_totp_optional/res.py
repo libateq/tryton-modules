@@ -41,36 +41,38 @@ class User(metaclass=PoolMeta):
         return False
 
     @classmethod
-    @ModelView.button_action(
-        'authentication_totp_optional.wizard_user_setup_totp')
-    def setup_totp_secret(cls, users):
-        pass
+    def _get_totp_setup_wizard(cls):
+        pool = Pool()
+        WizardAction = pool.get('ir.action.wizard')
+        wizards = WizardAction.search([
+            ('wiz_name', '=', 'res.user.setup_totp')], limit=1)
+        return wizards[0]
 
-    @ModelView.button_change(methods=['run_totp_setup_wizard_on_login'])
+    @ModelView.button_change('actions')
     def update_totp_secret(self):
+        setup_wizard = self._get_totp_setup_wizard()
+        self.actions += (setup_wizard.id,)
         self.totp_update_pending = True
-        self.run_totp_setup_wizard_on_login([self], save=False)
 
-    @ModelView.button_change('totp_key', 'totp_qrcode', 'totp_secret')
+    @ModelView.button_change()
     def clear_totp_secret(self):
         self.totp_key = None
         self.totp_secret = None
         self.totp_qrcode = None
 
     @classmethod
-    def run_totp_setup_wizard_on_login(cls, users, trigger=None, save=True):
-        pool = Pool()
-        User = pool.get('res.user')
-        WizardAction = pool.get('ir.action.wizard')
+    @ModelView.button_action(
+        'authentication_totp_optional.wizard_user_setup_totp')
+    def setup_totp_secret(cls, users):
+        pass
 
-        wizards = WizardAction.search([
-            ('wiz_name', '=', 'res.user.setup_totp')], limit=1)
-        if wizards:
-            wizard, = wizards
+    @classmethod
+    def run_totp_setup_wizard_on_login(cls, users, trigger=None):
+        setup_wizard = cls._get_totp_setup_wizard()
+        if setup_wizard:
             for user in users:
-                user.actions += (wizard.id, )
-            if save:
-                User.save(users)
+                user.actions += (setup_wizard.id,)
+        cls.save(users)
 
     @classmethod
     def _login_totp_optional(cls, login, parameters):
