@@ -117,7 +117,7 @@ class UserSetupTOTPStart(ModelView):
         states={
             'invisible': not QRCode,
             })
-    totp_qrcode_disabled = fields.Binary(
+    totp_qrcode_disabled = fields.Boolean(
         "TOTP QR Code Disabled",
         states={
             'invisible': bool(QRCode),
@@ -128,12 +128,6 @@ class UserSetupTOTPStart(ModelView):
         super().__setup__()
         cls.totp_secret.help = TOTPUser.totp_secret.help
         cls.totp_qrcode.help = TOTPUser.totp_qrcode.help
-
-    @fields.depends('totp_secret', 'user')
-    def on_change_with_totp_qrcode(self, name=None):
-        if self.totp_secret and self.user:
-            self.user.totp_secret = self.totp_secret
-            return self.user.on_change_with_totp_qrcode()
 
 
 class UserSetupTOTPSkipped(ModelView):
@@ -184,10 +178,14 @@ class UserSetupTOTP(Wizard):
         pool = Pool()
         User = pool.get('res.user')
         transaction = Transaction()
-        return {
-            'user': transaction.context.get('active_id', transaction.user),
-            'totp_secret': User.generate_totp_secret(),
+        user = User(transaction.context.get('activate_id', transaction.user))
+        result = {
+            'user': user.id,
+            'totp_secret': user.generate_totp_secret(),
+            'totp_qrcode': user.totp_qrcode,
+            'totp_qrcode_disabled': not user.totp_qrcode,
             }
+        return result
 
     def transition_save(self):
         pool = Pool()
