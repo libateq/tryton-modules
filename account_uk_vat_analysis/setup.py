@@ -68,6 +68,7 @@ setup(
         "Tryton module that adds tax codes which give an alternative "
         "breakdown of UK VAT, sales and purchases"),
     long_description=read('README.rst'),
+    long_description_content_type='text/x-rst',
     author='David Harper',
     author_email='tryton@libateq.org',
     url='https://bitbucket.org/libateq/tryton-modules',

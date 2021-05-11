@@ -68,6 +68,7 @@ setup(
         "Tryton module that provides a chart of accounts for personal "
         "accounting"),
     long_description=read('README.rst'),
+    long_description_content_type='text/x-rst',
     author='David Harper',
     author_email='tryton@libateq.org',
     url='https://bitbucket.org/libateq/tryton-modules',

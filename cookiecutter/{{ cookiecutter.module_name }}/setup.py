@@ -75,6 +75,7 @@ setup(
         {{ ('"Tryton module that ' + cookiecutter.purpose + '"') | wordwrap(width=69, wrapstring=' "\n        "')}}),
     {%- endif %}
     long_description=read('README.rst'),
+    long_description_content_type='text/x-rst',
     author='{{ cookiecutter.tryton_package_author }}',
     author_email='{{ cookiecutter.tryton_package_email }}',
     url='{{ cookiecutter.tryton_modules_url }}',

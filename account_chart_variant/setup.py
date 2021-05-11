@@ -68,6 +68,7 @@ setup(
         "Tryton module that makes it easy to define variants of account "
         "templates for specific industry sectors or company types"),
     long_description=read('README.rst'),
+    long_description_content_type='text/x-rst',
     author='David Harper',
     author_email='tryton@libateq.org',
     url='https://bitbucket.org/libateq/tryton-modules',
