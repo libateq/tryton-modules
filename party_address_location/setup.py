@@ -65,8 +65,7 @@ setup(
     name='trytonlq_party_address_location',
     version='{major}.{minor}.{revision}'.format(**version),
     description=(
-        "Tryton module that Tryton module that adds a latitude and longitude "
-        "to addresses"),
+        "Tryton module that adds a latitude and longitude to addresses"),
     long_description=read('README.rst'),
     long_description_content_type='text/x-rst',
     author='David Harper',
