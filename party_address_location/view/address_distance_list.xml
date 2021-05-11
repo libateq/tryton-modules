@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the party_address_location Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<tree>
+  <field name="party" expand="2"/>
+  <field name="distance"/>
+  <field name="party_name"/>
+  <field name="name"/>
+  <field name="postal_code"/>
+  <field name="city"/>
+  <field name="country"/>
+  <field name="subdivision"/>
+</tree>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the party_address_location Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for full copyright notices, license terms and support information.
+-->
+<tryton>
+  <data>
+    <record model="ir.ui.view" id="postal_code_view_form">
+      <field name="model">country.postal_code</field>
+      <field name="inherit" ref="country.postal_code_view_form"/>
+      <field name="name">postal_code_form</field>
+    </record>
+  </data>
+</tryton>

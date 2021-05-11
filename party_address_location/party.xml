@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+This file is part of the party_address_location Tryton module.
+Please see the COPYRIGHT and README.rst files at the top level of this
+package for copyright notices and further information.
+-->
+<tryton>
+  <data>
+    <record model="ir.ui.view" id="address_view_form">
+      <field name="model">party.address</field>
+      <field name="inherit" ref="party.address_view_form"/>
+      <field name="name">address_form</field>
+    </record>
+    <record model="ir.ui.view" id="address_distance_view_list">
+      <field name="model">party.address</field>
+      <field name="type">tree</field>
+      <field name="priority" eval="30"/>
+      <field name="name">address_distance_list</field>
+    </record>
+  </data>
+</tryton>
