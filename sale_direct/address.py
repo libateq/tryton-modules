@@ -66,7 +66,7 @@ class Address(metaclass=PoolMeta):
                     self.name,
                     street,
                     locality,
-                    self.zip,
+                    self.postal_code,
                     self.city,
                     country]))
         if not result:

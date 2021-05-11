@@ -273,7 +273,7 @@ class PerformVisitAddress(ModelView):
             'required': Eval('new_address', False),
         }, depends=_depends)
     street = fields.Text("Street", states=_states, depends=_depends)
-    zip = fields.Char("Zip", states=_states, depends=_depends)
+    postal_code = fields.Char("Postal Code", states=_states, depends=_depends)
     city = fields.Char("City", states=_states, depends=_depends)
     country = fields.Many2One(
         'country.country', "Country", states=_states, depends=_depends)
