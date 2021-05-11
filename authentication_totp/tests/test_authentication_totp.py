@@ -127,8 +127,9 @@ class AuthenticationTOTPCompanyTestCase(ModuleTestCase):
         User = pool.get('res.user')
         company = create_company()
         user = User(
-            name='totp', login='totp', totp_secret=TOTP_SECRET_KEY,
-            main_company=company)
+            name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
+        user.companies = [company]
+        user.company = company
         user.save()
         self.assertIn('issuer=Dunder%20Mifflin%20Tryton', user.totp_url)
 

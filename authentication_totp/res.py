@@ -174,9 +174,9 @@ class User(metaclass=PoolMeta):
 class UserCompany(metaclass=PoolMeta):
     __name__ = 'res.user'
 
-    @fields.depends('main_company')
+    @fields.depends('company')
     def _get_totp_issuer_fields(self):
-        company = self.main_company.rec_name if self.main_company else ""
+        company = self.company.rec_name if self.company else ""
         return {
             'company': company,
             }
