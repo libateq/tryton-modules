@@ -103,7 +103,11 @@ def suite():
     suite.addTests(TestLoader().loadTestsFromTestCase(
         AuthenticationTOTPTestCase))
     suite.addTests(DocFileSuite(
-        'scenario_authentication_totp.rst',
+        'scenario_authentication_totp_admin.rst',
+        tearDown=doctest_teardown, encoding='utf-8', checker=doctest_checker,
+        optionflags=REPORT_ONLY_FIRST_FAILURE))
+    suite.addTests(DocFileSuite(
+        'scenario_authentication_totp_user.rst',
         tearDown=doctest_teardown, encoding='utf-8', checker=doctest_checker,
         optionflags=REPORT_ONLY_FIRST_FAILURE))
     return suite

@@ -79,18 +79,3 @@ If the user has a company then it is included in the totp_url::
 
     >>> user.totp_url
     'otpauth://totp/Dunder%20Mifflin%20Tryton:totp_user?secret=GE3DAYRAKRHVIUBAKNSWG4TFOQQEWZLZ&issuer=Dunder%20Mifflin%20Tryton'
-
-The user can generate a new random TOTP secret::
-
-    >>> set_user(user)
-    >>> new = User.update_totp_secret([user], config.context)[0]
-    >>> new['totp_secret'] != user.totp_secret
-    True
-
-And save it from their preferences::
-
-    >>> User.set_preferences(
-    ...     {'totp_secret': new['totp_secret']}, config.context)
-    >>> user.reload()
-    >>> user.totp_secret != TOTP_SECRET_KEY
-    True
