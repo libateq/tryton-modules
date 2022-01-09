@@ -1,3 +1,4 @@
+Version 6.2.1 - 2022-01-09
 * Ensure users can only access their own totp_secret
 
 Version 6.2.0 - 2021-12-06
