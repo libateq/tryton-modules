@@ -26,25 +26,44 @@ Create a company::
 Create a user with a TOTP secret::
 
     >>> User = Model.get('res.user')
+    >>> admin, = User.find([('login', '=', 'admin')])
+
     >>> user = User()
     >>> user.login = 'totp_user'
     >>> user.totp_secret = TOTP_SECRET_KEY
-    >>> user.company = None
     >>> user.save()
 
-The user's TOTP secret can be changed::
+    >>> set_user(user)
+    >>> user.totp_secret == TOTP_SECRET_KEY
+    True
+    >>> set_user(admin)
+    >>> user.reload()
+
+The admin user cannot see other user's TOTP details::
+
+    >>> user.totp_key
+    >>> user.totp_secret
+    >>> user.totp_qrcode
+    >>> user.totp_url
+
+The admin user can set TOTP secrets::
 
     >>> user.totp_secret = None
     >>> user.save()
+    >>> set_user(user)
     >>> user.totp_secret is None
     True
+    >>> set_user(admin)
 
     >>> user.totp_secret = TOTP_SECRET_KEY
     >>> user.save()
+    >>> set_user(user)
     >>> user.totp_secret == TOTP_SECRET_KEY
     True
+    >>> set_user(admin)
+    >>> user.reload()
 
-It cannot be set to an invalid value::
+Unless it is to an invalid value::
 
     >>> user.totp_secret = 'an_invalid_key'  # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
@@ -56,26 +75,3 @@ It cannot be set to an invalid value::
     Traceback (most recent call last):
        ...
     TOTPKeyTooShortError: ...
-
-    >>> user.reload()
-
-The secret key can be encoded in a url::
-
-    >>> user.totp_url
-    'otpauth://totp/Tryton:totp_user?secret=GE3DAYRAKRHVIUBAKNSWG4TFOQQEWZLZ&issuer=Tryton'
-
-This is used in QR codes for importing into the authenticator app::
-
-    >>> if QRCode:
-    ...     bool(len(user.totp_qrcode))
-    ... else:
-    ...     bool('QRCode not available: skip test')
-    True
-
-If the user has a company then it is included in the totp_url::
-
-    >>> user.company = company
-    >>> user.save()
-
-    >>> user.totp_url
-    'otpauth://totp/Dunder%20Mifflin%20Tryton:totp_user?secret=GE3DAYRAKRHVIUBAKNSWG4TFOQQEWZLZ&issuer=Dunder%20Mifflin%20Tryton'
