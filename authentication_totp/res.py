@@ -17,6 +17,7 @@ from trytond.i18n import gettext
 from trytond.model import ModelSQL, ModelView, fields
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval, PYSONEncoder
+from trytond.transaction import Transaction
 
 from .exception import (
     TOTPAccessCodeReuseError, TOTPInvalidSecretError, TOTPKeyTooShortError,
@@ -129,9 +130,28 @@ class User(metaclass=PoolMeta):
         self.totp_qrcode = self.on_change_with_totp_qrcode()
 
     @classmethod
+    def read(cls, ids, fields_names):
+        result = super().read(ids, fields_names)
+        user_id = Transaction().user
+        if user_id == 0:
+            return result
+
+        clean_fields = ['totp_key', 'totp_secret', 'totp_qrcode', 'totp_url']
+        if fields_names:
+            clean_fields = list(set(clean_fields) & set(fields_names))
+        if clean_fields:
+            for id, values in zip(ids, result):
+                if id != user_id:
+                    for field in clean_fields:
+                        values[field] = None
+        return result
+
+    @classmethod
     def validate(cls, users):
-        for user in users:
-            user.check_totp_key_length()
+        # Use root to ensure the totp_secret is available
+        with Transaction().set_user(0):
+            for user in cls.browse([u.id for u in users]):
+                user.check_totp_key_length()
 
     def check_totp_key_length(self):
         if self.totp_key:
@@ -211,16 +231,22 @@ class UserLoginTOTP(ModelSQL):
             return record
 
     def check(self, code, _time=None):
-        if not self.user.totp_key:
+        pool = Pool()
+        User = pool.get('res.user')
+
+        # Use root to allow access to the totp_secret
+        with Transaction().set_user(0):
+            user, = User.browse([self.user_id])
+        if not user.totp_key:
             return
 
         try:
             counter, _ = _TOTPFactory.verify(
-                code, self.user.totp_key, time=_time,
+                code, user.totp_key, time=_time,
                 last_counter=self.last_counter)
         except UsedTokenError:
             # Warn the user the token has already been used
-            raise TOTPAccessCodeReuseError(self.parameter, self.user.login)
+            raise TOTPAccessCodeReuseError(self.parameter, user.login)
         except TokenError:
             return
 
