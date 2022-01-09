@@ -1,3 +1,5 @@
+* Ensure users can only access their own totp_secret
+
 Version 6.0.0 - 2021-05-11
 * Bug fixes (see git log for details)
 
