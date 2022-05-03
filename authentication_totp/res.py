@@ -246,7 +246,7 @@ class UserLoginTOTP(ModelSQL):
 
         # Use root to allow access to the totp_secret
         with Transaction().set_user(0):
-            user, = User.browse([self.user_id])
+            user = User(self.user_id)
         if not user.totp_key:
             return
 
