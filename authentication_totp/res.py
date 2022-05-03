@@ -171,10 +171,10 @@ class User(metaclass=PoolMeta):
         if not user_id:
             return
 
-        if TOTPLogin.parameter not in parameters:
-            raise TOTPLoginException(TOTPLogin.parameter, login)
+        if 'totp_code' not in parameters:
+            raise TOTPLoginException('totp_code', login)
 
-        access_code = parameters[TOTPLogin.parameter]
+        access_code = parameters['totp_code']
         totp_login = TOTPLogin.get(user_id)
         if totp_login.check(access_code):
             return user_id
@@ -210,8 +210,6 @@ class UserLoginTOTP(ModelSQL):
     user = fields.Function(fields.Many2One('res.user', "User"), 'get_user')
     last_counter = fields.Integer("Last Counter")
 
-    parameter = 'totp_code'
-
     def get_user(self, name):
         return self.user_id
 
@@ -246,7 +244,7 @@ class UserLoginTOTP(ModelSQL):
                 last_counter=self.last_counter)
         except UsedTokenError:
             # Warn the user the token has already been used
-            raise TOTPAccessCodeReuseError(self.parameter, user.login)
+            raise TOTPAccessCodeReuseError('totp_code', user.login)
         except TokenError:
             return
 
