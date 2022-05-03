@@ -235,9 +235,11 @@ class UserLoginTOTP(ModelSQL):
         if not user.totp_key:
             return
 
+        window = config.getint('authentication_totp', 'window', default=30)
+        skew = config.getint('authentication_totp', 'skew', default=0)
         try:
             counter, _ = _TOTPFactory.verify(
-                code, user.totp_key, time=_time,
+                code, user.totp_key, time=_time, window=window, skew=skew,
                 last_counter=self.last_counter)
         except UsedTokenError:
             # Warn the user the token has already been used

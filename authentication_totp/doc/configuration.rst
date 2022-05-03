@@ -78,3 +78,42 @@ are generated when a new TOTP secret is required.
    should be at least 128 bits long, and recommends using 160 bit keys.
 
 The default value is: ``160``
+
+.. _config-authentication_totp.window:
+
+``window``
+==========
+
+The number of seconds forwards and backwards in time to search when checking
+whether the TOTP code matches.
+This can be used to account for transmission delays and small amounts of skew
+in the client's clock.
+
+.. note::
+
+   The default value is normally more than enough to account for transmission
+   delays and user TOTP code entry times, if client and server clocks are both
+   using a reliable time source such as NTP__.
+
+   __ https://en.wikipedia.org/wiki/Network_Time_Protocol
+
+The default value is: ``30``
+
+.. _config-authentication_totp.skew:
+
+``skew``
+========
+
+The number of seconds to adjust the time by before checking whether the TOTP
+code matches.
+Negative skew is used to account for the client clock running behind the server
+clock.
+Positive skew indicates the client clock is running ahead of the server clock.
+
+.. tip::
+
+   For most use cases this setting should be left at ``0``.
+   It is normally best to account for clock skew and transmission delays
+   by using the window_ parameter.
+
+The default value is: ``0``
