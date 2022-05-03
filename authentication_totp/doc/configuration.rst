@@ -74,8 +74,8 @@ are generated when a new TOTP secret is required.
 
 .. note::
 
-   The :rfc:4226 (which is what TOTP :rfc:6238 is based on) suggests that keys
-   should be at least 128 bits long, and recommends using 160 bit keys.
+   The :rfc:`4226` (which is what TOTP :rfc:`6238` is based on) suggests that
+   keys should be at least 128 bits long, and recommends using 160 bit keys.
 
 The default value is: ``160``
 
@@ -144,7 +144,7 @@ The default value is: ``6``
 =============
 
 The name of the hash algorithm to use.
-This, as defined in :rfc:6238, can be one of ``sha1``, ``sha256`` or
+This, as defined in :rfc:`6238`, can be one of ``sha1``, ``sha256`` or
 ``sha512``.
 
 .. warning::
