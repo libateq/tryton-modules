@@ -97,7 +97,7 @@ in the client's clock.
 
    __ https://en.wikipedia.org/wiki/Network_Time_Protocol
 
-The default value is: ``30``
+The default value is: The period_ value
 
 .. _config-authentication_totp.skew:
 

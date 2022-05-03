@@ -250,7 +250,9 @@ class UserLoginTOTP(ModelSQL):
         if not user.totp_key:
             return
 
-        window = config.getint('authentication_totp', 'window', default=30)
+        window = config.getint(
+            'authentication_totp', 'window', default=config.getint(
+                'authentication_totp', 'period', default=30))
         skew = config.getint('authentication_totp', 'skew', default=0)
         try:
             counter, _ = User.totp(source=user.totp_key).match(
