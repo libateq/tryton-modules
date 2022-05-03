@@ -8,6 +8,22 @@ All these configuration options should be set inside the
 ``[authentication_totp]`` section of
 :doc:`configuration file <trytond:topics/configuration>`.
 
+.. _config-authentication_totp.algorithm:
+
+``algorithm``
+=============
+
+The name of the hash algorithm to use.
+This, as defined in :rfc:`6238`, can be one of ``sha1``, ``sha256`` or
+``sha512``.
+
+.. warning::
+
+   Changing this value from the default may cause problems with some OTP
+   client programs which may not support alternative values.
+
+The default value is: ``sha1``
+
 .. _config-authentication_totp.application_secrets_file:
 
 ``application_secrets_file``
@@ -45,6 +61,26 @@ Suitable lines can be created as follows:
 
 The default value is: ``None``
 
+.. _config-authentication_totp.digits:
+
+``digits``
+==========
+
+The number of digits in the generated and/or accepted tokens.
+Must be between 6 and 10 inclusive.
+
+.. warning::
+
+   Changing this value from the default may cause problems with some OTP
+   client programs which may not support alternative values.
+
+.. warning::
+
+   Due to a limitation of the HOTP algorithm the 10th digit can only contain
+   values 0 to 2, and so offers very little extra security.
+
+The default value is: ``6``
+
 .. _config-authentication_totp.issuer:
 
 ``issuer``
@@ -79,25 +115,19 @@ are generated when a new TOTP secret is required.
 
 The default value is: ``160``
 
-.. _config-authentication_totp.window:
+.. _config-authentication_totp.period:
 
-``window``
+``period``
 ==========
 
-The number of seconds forwards and backwards in time to search when checking
-whether the TOTP code matches.
-This can be used to account for transmission delays and small amounts of skew
-in the client's clock.
+How often, in seconds, the generated token changes.
 
-.. note::
+.. warning::
 
-   The default value is normally more than enough to account for transmission
-   delays and user TOTP code entry times, if client and server clocks are both
-   using a reliable time source such as NTP__.
+   Changing this value from the default may cause problems with some OTP
+   client programs which may not support alternative values.
 
-   __ https://en.wikipedia.org/wiki/Network_Time_Protocol
-
-The default value is: The period_ value
+The default value is: ``30``
 
 .. _config-authentication_totp.skew:
 
@@ -118,52 +148,22 @@ Positive skew indicates the client clock is running ahead of the server clock.
 
 The default value is: ``0``
 
-.. _config-authentication_totp.digits:
+.. _config-authentication_totp.window:
 
-``digits``
+``window``
 ==========
 
-The number of digits in the generated and/or accepted tokens.
-Must be between 6 and 10 inclusive.
+The number of seconds forwards and backwards in time to search when checking
+whether the TOTP code matches.
+This can be used to account for transmission delays and small amounts of skew
+in the client's clock.
 
-.. warning::
+.. note::
 
-   Changing this value from the default may cause problems with some OTP
-   client programs which may not support alternative values.
+   The default value is normally more than enough to account for transmission
+   delays and user TOTP code entry times, if client and server clocks are both
+   using a reliable time source such as NTP__.
 
-.. warning::
+   __ https://en.wikipedia.org/wiki/Network_Time_Protocol
 
-   Due to a limitation of the HOTP algorithm the 10th digit can only contain
-   values 0 to 2, and so offers very little extra security.
-
-The default value is: ``6``
-
-.. _config-authentication_totp.algorithm:
-
-``algorithm``
-=============
-
-The name of the hash algorithm to use.
-This, as defined in :rfc:`6238`, can be one of ``sha1``, ``sha256`` or
-``sha512``.
-
-.. warning::
-
-   Changing this value from the default may cause problems with some OTP
-   client programs which may not support alternative values.
-
-The default value is: ``sha1``
-
-.. _config-authentication_totp.period:
-
-``period``
-==========
-
-How often, in seconds, the generated token changes.
-
-.. warning::
-
-   Changing this value from the default may cause problems with some OTP
-   client programs which may not support alternative values.
-
-The default value is: ``30``
+The default value is: The period_ value
