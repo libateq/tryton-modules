@@ -117,3 +117,53 @@ Positive skew indicates the client clock is running ahead of the server clock.
    by using the window_ parameter.
 
 The default value is: ``0``
+
+.. _config-authentication_totp.digits:
+
+``digits``
+==========
+
+The number of digits in the generated and/or accepted tokens.
+Must be between 6 and 10 inclusive.
+
+.. warning::
+
+   Changing this value from the default may cause problems with some OTP
+   client programs which may not support alternative values.
+
+.. warning::
+
+   Due to a limitation of the HOTP algorithm the 10th digit can only contain
+   values 0 to 2, and so offers very little extra security.
+
+The default value is: ``6``
+
+.. _config-authentication_totp.algorithm:
+
+``algorithm``
+=============
+
+The name of the hash algorithm to use.
+This, as defined in :rfc:6238, can be one of ``sha1``, ``sha256`` or
+``sha512``.
+
+.. warning::
+
+   Changing this value from the default may cause problems with some OTP
+   client programs which may not support alternative values.
+
+The default value is: ``sha1``
+
+.. _config-authentication_totp.period:
+
+``period``
+==========
+
+How often, in seconds, the generated token changes.
+
+.. warning::
+
+   Changing this value from the default may cause problems with some OTP
+   client programs which may not support alternative values.
+
+The default value is: ``30``

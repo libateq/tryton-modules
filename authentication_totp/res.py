@@ -119,6 +119,9 @@ class User(metaclass=PoolMeta):
             secrets_path=config.get(
                 'authentication_totp', 'application_secrets_file',
                 default=None),
+            digits=config.getint('authentication_totp', 'digits', default=6),
+            alg=config.get('authentication_totp', 'algorithm', default='sha1'),
+            period=config.getint('authentication_totp', 'period', default=30),
             )
 
     @classmethod
