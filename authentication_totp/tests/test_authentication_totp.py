@@ -111,7 +111,8 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
         User = pool.get('res.user')
         user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
         user.save()
-        qrcode = user.totp_qrcode
+        with Transaction().set_user(0):
+            qrcode = User(user.id).totp_qrcode
         self.assertGreater(len(qrcode), 0)
 
 
