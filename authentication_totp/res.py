@@ -167,15 +167,12 @@ class User(metaclass=PoolMeta):
         pool = Pool()
         TOTPLogin = pool.get('res.user.login.totp')
 
-        user_id = cls._get_login(login)[0]
-        if not user_id:
-            return
-
         if 'totp_code' not in parameters:
             raise TOTPLoginException('totp_code', login)
 
-        access_code = parameters['totp_code']
+        user_id = cls._get_login(login)[0]
         totp_login = TOTPLogin.get(user_id)
+        access_code = parameters['totp_code']
         if totp_login.check(access_code):
             return user_id
 

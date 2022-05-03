@@ -66,6 +66,16 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
                 }))
 
     @with_transaction()
+    def test_user_get_login_unknown_user(self):
+        pool = Pool()
+        User = pool.get('res.user')
+
+        with self.assertRaises(LoginException) as cm:
+            User.get_login('unknown', {})
+        self.assertEqual(cm.exception.name, 'totp_code')
+        self.assertEqual(cm.exception.type, 'char')
+
+    @with_transaction()
     def test_totp_get(self):
         pool = Pool()
         TOTPLogin = pool.get('res.user.login.totp')
