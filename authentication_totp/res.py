@@ -23,10 +23,16 @@ from .exception import (
     TOTPAccessCodeReuseError, TOTPInvalidSecretError, TOTPKeyTooShortError,
     TOTPLoginException)
 
-_totp_issuer = config.get(
+_algorithm = config.get('authentication_totp', 'algorithm', default='sha1')
+_digits = config.getint('authentication_totp', 'digits', default=6)
+_issuer = config.get(
     'authentication_totp', 'issuer', default='{company} Tryton')
-_totp_key_length = config.get(
-    'authentication_totp', 'key_length', default=160)
+_key_length = config.get('authentication_totp', 'key_length', default=160)
+_period = config.getint('authentication_totp', 'period', default=30)
+_secrets_file = config.get(
+    'authentication_totp', 'application_secrets_file', default=None)
+_window = config.getint('authentication_totp', 'window', default=_period)
+_skew = config.getint('authentication_totp', 'skew', default=0)
 
 
 class User(metaclass=PoolMeta):
@@ -95,7 +101,7 @@ class User(metaclass=PoolMeta):
     def on_change_with_totp_url(self, name=None):
         if not self.totp_secret:
             return
-        issuer = _totp_issuer.format(**self._get_totp_issuer_fields())
+        issuer = _issuer.format(**self._get_totp_issuer_fields())
         issuer = issuer.strip()
         totp = self.totp(key=self.totp_secret)
         return totp.to_uri(label=self.login, issuer=issuer)
@@ -116,13 +122,8 @@ class User(metaclass=PoolMeta):
     @classmethod
     def _totp_factory(cls):
         return TOTP.using(
-            secrets_path=config.get(
-                'authentication_totp', 'application_secrets_file',
-                default=None),
-            digits=config.getint('authentication_totp', 'digits', default=6),
-            alg=config.get('authentication_totp', 'algorithm', default='sha1'),
-            period=config.getint('authentication_totp', 'period', default=30),
-            )
+            secrets_path=_secrets_file, digits=_digits, alg=_algorithm,
+            period=_period)
 
     @classmethod
     def totp(cls, source=None, **kwargs):
@@ -130,7 +131,7 @@ class User(metaclass=PoolMeta):
         if source:
             return totp.from_source(source=source)
         else:
-            kwargs.setdefault('size', ceil(_totp_key_length / 8))
+            kwargs.setdefault('size', ceil(_key_length / 8))
             return totp(**kwargs)
 
     @classmethod
@@ -170,9 +171,9 @@ class User(metaclass=PoolMeta):
 
     def check_totp_key_length(self):
         if self.totp_key:
+            min_key_length = _key_length / 8
             totp = self.totp(source=self.totp_key)
-            key_length = len(totp.key) * 8
-            if key_length < _totp_key_length:
+            if len(totp.key) < min_key_length:
                 raise TOTPKeyTooShortError(gettext(
                     'authentication_totp.msg_user_totp_too_short',
                     login=self.login))
@@ -250,13 +251,9 @@ class UserLoginTOTP(ModelSQL):
         if not user.totp_key:
             return
 
-        window = config.getint(
-            'authentication_totp', 'window', default=config.getint(
-                'authentication_totp', 'period', default=30))
-        skew = config.getint('authentication_totp', 'skew', default=0)
         try:
             counter, _ = User.totp(source=user.totp_key).match(
-                code, time=_time, window=window, skew=skew,
+                code, time=_time, window=_window, skew=_skew,
                 last_counter=self.last_counter)
         except UsedTokenError:
             # Warn the user the token has already been used
