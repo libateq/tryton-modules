@@ -114,13 +114,11 @@ setup(
     install_requires=install_requires(),
     extras_require={
         'qrcode': ['qrcode', 'pillow'],
+        'test': tests_require,
         },
     zip_safe=False,
     entry_points="""
     [trytond.modules]
     authentication_totp = trytond.modules.authentication_totp
     """,
-    test_suite='tests',
-    test_loader='trytond.test_loader:Loader',
-    tests_require=tests_require(),
     )

@@ -1,17 +1,13 @@
 # This file is part of the authentication_totp Tryton module.
 # Please see the COPYRIGHT and README.rst files at the top level of this
 # package for full copyright notices, license terms and support information.
-from doctest import DocFileSuite, REPORT_ONLY_FIRST_FAILURE
 from passlib.totp import TOTP
 from time import time
-from unittest import TestLoader
 
 from trytond.config import config
 from trytond.exceptions import LoginException
 from trytond.pool import Pool
-from trytond.tests.test_tryton import (
-    ModuleTestCase, doctest_checker, doctest_teardown, with_transaction,
-    suite as test_suite)
+from trytond.tests.test_tryton import ModuleTestCase, with_transaction
 
 TOTP_SECRET_KEY = 'GE3D-AYRA-KRHV-IUBA-KNSW-G4TF-OQQE-WZLZ'
 
@@ -108,16 +104,4 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
         self.assertRegex(cm.exception.message, r'(?i)warning.*already.*used')
 
 
-def suite():
-    suite = test_suite()
-    suite.addTests(TestLoader().loadTestsFromTestCase(
-        AuthenticationTOTPTestCase))
-    suite.addTests(DocFileSuite(
-        'scenario_authentication_totp_admin.rst',
-        tearDown=doctest_teardown, encoding='utf-8', checker=doctest_checker,
-        optionflags=REPORT_ONLY_FIRST_FAILURE))
-    suite.addTests(DocFileSuite(
-        'scenario_authentication_totp_user.rst',
-        tearDown=doctest_teardown, encoding='utf-8', checker=doctest_checker,
-        optionflags=REPORT_ONLY_FIRST_FAILURE))
-    return suite
+del ModuleTestCase

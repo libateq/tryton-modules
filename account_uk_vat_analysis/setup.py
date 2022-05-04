@@ -112,12 +112,12 @@ setup(
     license='GPL-3',
     python_requires='>=3.6',
     install_requires=install_requires(),
+    extras_require={
+        'test': tests_require,
+        },
     zip_safe=False,
     entry_points="""
     [trytond.modules]
     account_uk_vat_analysis = trytond.modules.account_uk_vat_analysis
     """,
-    test_suite='tests',
-    test_loader='trytond.test_loader:Loader',
-    tests_require=tests_require(),
     )
