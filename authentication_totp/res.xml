@@ -6,6 +6,14 @@ package for full copyright notices, license terms and support information.
 -->
 <tryton>
     <data>
+        <record model="res.group" id="update_totp_secret_group">
+            <field name="name">Update TOTP Secret</field>
+        </record>
+        <record model="res.user-res.group" id="admin_user_update_totp_secret_group">
+            <field name="user" ref="res.user_admin"/>
+            <field name="group" ref="update_totp_secret_group"/>
+        </record>
+
         <record model="ir.ui.view" id="user_view_form">
             <field name="model">res.user</field>
             <field name="inherit" ref="res.user_view_form"/>
@@ -22,6 +30,10 @@ package for full copyright notices, license terms and support information.
             <field name="string">Update Secret</field>
             <field name="help">Update the TOTP secret and enable TOTP two-factor authentication.</field>
             <field name="model" search="[('model', '=', 'res.user')]"/>
+        </record>
+        <record model="ir.model.button-res.group" id="update_totp_secret_button_wizard_group">
+            <field name="button" ref="update_totp_secret_button"/>
+            <field name="group" ref="update_totp_secret_group"/>
         </record>
     </data>
 </tryton>

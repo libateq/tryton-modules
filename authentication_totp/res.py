@@ -18,7 +18,7 @@ from trytond.config import config
 from trytond.i18n import gettext
 from trytond.model import ModelSQL, ModelView, fields
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import Eval, PYSONEncoder
+from trytond.pyson import Eval
 from trytond.transaction import Transaction
 
 from .exception import (
@@ -201,17 +201,6 @@ class User(metaclass=PoolMeta):
         access_code = parameters['totp_code']
         if TOTPLogin.check(user_id, access_code):
             return user_id
-
-    @classmethod
-    def _ModelView__view_look_dom(
-            cls, element, type, fields_width=None, _fields_attrs=None):
-        result = super()._ModelView__view_look_dom(
-            element, type, fields_width, _fields_attrs)
-        if element.get('name') == 'update_totp_secret':
-            encoder = PYSONEncoder()
-            states = cls._buttons['update_totp_secret']
-            element.set('states', encoder.encode(states))
-        return result
 
 
 class UserCompany(metaclass=PoolMeta):
