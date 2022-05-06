@@ -6,6 +6,8 @@ from io import BytesIO
 from math import ceil
 from passlib.exc import TokenError, UsedTokenError
 from passlib.totp import TOTP
+from sql import Null
+from sql.aggregate import Max
 try:
     from qrcode import QRCode
     from qrcode.image.pil import PilImage
@@ -196,9 +198,8 @@ class User(metaclass=PoolMeta):
             raise TOTPLoginException('totp_code', login)
 
         user_id = cls._get_login(login)[0]
-        totp_login = TOTPLogin.get(user_id)
         access_code = parameters['totp_code']
-        if totp_login.check(access_code):
+        if TOTPLogin.check(user_id, access_code):
             return user_id
 
     @classmethod
@@ -228,49 +229,74 @@ class UserLoginTOTP(ModelSQL):
     "User Login TOTP"
     __name__ = 'res.user.login.totp'
 
-    user_id = fields.Integer("User ID")
-    user = fields.Function(fields.Many2One('res.user', "User"), 'get_user')
-    last_counter = fields.Integer("Last Counter")
-
-    def get_user(self, name):
-        return self.user_id
+    user_id = fields.Integer("User ID", required=True)
+    counter = fields.Integer("Counter", required=True)
 
     @classmethod
-    def get(cls, user_id):
-        records = cls.search([
-            ('user_id', '=', user_id),
-            ])
-        if records:
-            record = records.pop()
-            if records:
-                cls.delete(records)
-            return record
-        else:
-            record = cls(user_id=user_id)
-            record.save()
-            return record
+    def __register__(cls, module_name):
+        cursor = Transaction().connection.cursor()
+        table = cls.__table_handler__(module_name)
+        sql_table = cls.__table__()
 
-    def check(self, code, _time=None):
+        # Migration from 6.2: rename last_counter to counter
+        if table.column_exist('last_counter'):
+            cursor.execute(*sql_table.delete(
+                where=(
+                    (sql_table.user_id == Null)
+                    | (sql_table.last_counter == Null))))
+            table.column_rename('last_counter', 'counter')
+
+        super().__register__(module_name)
+
+    @classmethod
+    def get_last_counter(cls, user):
+        cursor = Transaction().connection.cursor()
+        table = cls.__table__()
+        cursor.execute(*table.select(
+            Max(table.counter),
+            where=table.user_id == user.id))
+        record = cursor.fetchone()
+        if record:
+            return record[0]
+
+    @classmethod
+    def mark_counter_used(cls, user, counter):
+        record = cls()
+        record.user_id = user.id
+        record.counter = counter
+        record.save()
+
+    @classmethod
+    def clean_old_counters(cls, user, counter):
+        records = cls.search([
+            ('user_id', '=', user.id),
+            ('counter', '<', counter),
+            ])
+        cls.delete(records)
+
+    @classmethod
+    def check(cls, user_id, code, _time=None):
         pool = Pool()
         User = pool.get('res.user')
 
-        # Use root to allow access to the totp_secret
+        # Use root to allow access to the totp_key
         with Transaction().set_user(0):
-            user = User(self.user_id)
+            user = User(user_id)
         if not user.totp_key:
             return
 
+        last_counter = cls.get_last_counter(user)
         try:
             counter, _ = User.totp(source=user.totp_key).match(
                 code, time=_time, window=_window, skew=_skew,
-                last_counter=self.last_counter)
+                last_counter=last_counter)
         except UsedTokenError:
             # Warn the user the token has already been used
             raise TOTPAccessCodeReuseError('totp_code', user.login)
         except TokenError:
             return
 
-        self.last_counter = counter
-        self.save()
+        cls.mark_counter_used(user, counter)
+        cls.clean_old_counters(user, counter)
 
         return True

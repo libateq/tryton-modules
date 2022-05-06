@@ -78,12 +78,59 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
         self.assertEqual(cm.exception.type, 'char')
 
     @with_transaction()
-    def test_totp_get(self):
+    def test_totp_get_last_counter(self):
         pool = Pool()
         TOTPLogin = pool.get('res.user.login.totp')
-        record, = TOTPLogin.create([{'user_id': 1}])
-        totp_login = TOTPLogin.get(1)
-        self.assertEqual(record, totp_login)
+
+        user = create_user(totp_secret=TOTP_SECRET_KEY)
+        for counter in [123, 45, 678, 90]:
+            totp_login = TOTPLogin()
+            totp_login.user_id = user.id
+            totp_login.counter = counter
+            totp_login.save()
+
+        last_counter = TOTPLogin.get_last_counter(user)
+        self.assertEqual(last_counter, 678)
+
+    @with_transaction()
+    def test_totp_get_last_counter_no_login(self):
+        pool = Pool()
+        TOTPLogin = pool.get('res.user.login.totp')
+
+        user = create_user(totp_secret=TOTP_SECRET_KEY)
+        last_counter = TOTPLogin.get_last_counter(user)
+        self.assertIsNone(last_counter)
+
+    @with_transaction()
+    def test_totp_mark_counter_used(self):
+        pool = Pool()
+        TOTPLogin = pool.get('res.user.login.totp')
+
+        counter = 123456
+        user = create_user(totp_secret=TOTP_SECRET_KEY)
+
+        TOTPLogin.mark_counter_used(user, counter)
+
+        totp_logins = TOTPLogin.search([('user_id', '=', user.id)])
+        counters = [l.counter for l in totp_logins]
+        self.assertIn(counter, counters)
+
+    @with_transaction()
+    def test_totp_clean_old_counters(self):
+        pool = Pool()
+        TOTPLogin = pool.get('res.user.login.totp')
+
+        user = create_user(totp_secret=TOTP_SECRET_KEY)
+        for counter in [123, 45, 678, 90]:
+            totp_login = TOTPLogin()
+            totp_login.user_id = user.id
+            totp_login.counter = counter
+            totp_login.save()
+
+        TOTPLogin.clean_old_counters(user, 678)
+
+        totp_login, = TOTPLogin.search([('user_id', '=', user.id)])
+        self.assertEqual(totp_login.counter, 678)
 
     @with_transaction()
     def test_totp_check(self):
@@ -93,17 +140,16 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
         time = current_timestamp()
         user = create_user(totp_secret=TOTP_SECRET_KEY)
         totp_code = TOTP(key=TOTP_SECRET_KEY).generate(time=time).token
-        totp_login, = TOTPLogin.create([{'user_id': user.id}])
 
-        self.assertFalse(totp_login.check('0', _time=time))
-        self.assertFalse(totp_login.check('invalid_code', _time=time))
-        self.assertFalse(totp_login.check('000000', _time=time))
+        self.assertFalse(TOTPLogin.check(user.id, '0', _time=time))
+        self.assertFalse(TOTPLogin.check(user.id, 'invalid_code', _time=time))
+        self.assertFalse(TOTPLogin.check(user.id, '000000', _time=time))
 
-        self.assertTrue(totp_login.check(totp_code, _time=time))
+        self.assertTrue(TOTPLogin.check(user.id, totp_code, _time=time))
 
         # Second check raises warning about replay attack
         with self.assertRaises(LoginException) as cm:
-            totp_login.check(totp_code, _time=time)
+            TOTPLogin.check(user.id, totp_code, _time=time)
         self.assertEqual(cm.exception.name, 'totp_code')
         self.assertRegex(cm.exception.message, r'(?i)warning.*already.*used')
 
