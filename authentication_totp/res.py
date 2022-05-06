@@ -163,20 +163,29 @@ class User(metaclass=PoolMeta):
         return result
 
     @classmethod
-    def validate(cls, users):
-        # Use root to ensure the totp_secret is available
-        with Transaction().set_user(0):
-            for user in cls.browse([u.id for u in users]):
-                user.check_totp_key_length()
+    def validate_fields(cls, users, field_names):
+        super().validate_fields(users, field_names)
+        cls.check_totp_key_length(users, field_names=field_names)
 
-    def check_totp_key_length(self):
-        if self.totp_key:
-            min_key_length = _key_length / 8
-            totp = self.totp(source=self.totp_key)
+    @classmethod
+    def check_totp_key_length(cls, users, field_names=None):
+        if field_names and 'totp_key' not in field_names:
+            return
+
+        # Rebrowse as root so totp_key is available
+        with Transaction().set_user(0):
+            users = cls.browse([u.id for u in users])
+
+        min_key_length = _key_length / 8
+        for user in users:
+            if not user.totp_key:
+                continue
+
+            totp = cls.totp(source=user.totp_key)
             if len(totp.key) < min_key_length:
                 raise TOTPKeyTooShortError(gettext(
                     'authentication_totp.msg_user_totp_too_short',
-                    login=self.login))
+                    login=user.login))
 
     @classmethod
     def _login_totp(cls, login, parameters):
