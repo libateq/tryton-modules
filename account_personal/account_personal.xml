@@ -317,7 +317,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_asset_current">
       <field name="name">Current Assets</field>
       <field name="code">A1</field>
-      <field name="type" ref="asset_current"/>
       <field name="parent" ref="account_assets"/>
     </record>
     <record model="account.account.template" id="account_current_accounts">
@@ -349,7 +348,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_asset_fixed">
       <field name="name">Fixed Assets</field>
       <field name="code">A2</field>
-      <field name="type" ref="asset_fixed"/>
       <field name="parent" ref="account_assets"/>
     </record>
     <record model="account.account.template" id="account_property">
@@ -368,7 +366,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_investments">
       <field name="name">Investments</field>
       <field name="code">A3</field>
-      <field name="type" ref="asset_non_current"/>
       <field name="parent" ref="account_assets"/>
     </record>
     <record model="account.account.template" id="account_shares">
@@ -408,7 +405,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_liability_current">
       <field name="name">Current Liabilities</field>
       <field name="code">B1</field>
-      <field name="type" ref="liability_current"/>
       <field name="parent" ref="account_liabilities"/>
     </record>
     <record model="account.account.template" id="account_bank_loans_short">
@@ -440,7 +436,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_liability_long_term">
       <field name="name">Long Term Liabilities</field>
       <field name="code">B2</field>
-      <field name="type" ref="liability_non_current"/>
       <field name="parent" ref="account_liabilities"/>
     </record>
     <record model="account.account.template" id="account_bank_loans_long">
@@ -507,7 +502,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_income_investments">
       <field name="name">Investments</field>
       <field name="code">D2</field>
-      <field name="type" ref="income_investment"/>
       <field name="parent" ref="account_income"/>
     </record>
     <record model="account.account.template" id="account_dividends">
@@ -544,7 +538,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_income_other">
       <field name="name">Other Income</field>
       <field name="code">D3</field>
-      <field name="type" ref="income_other"/>
       <field name="parent" ref="account_income"/>
     </record>
     <record model="account.account.template" id="account_income_gifts">
@@ -563,7 +556,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_expense_financial">
       <field name="name">Financial Expenses</field>
       <field name="code">E1</field>
-      <field name="type" ref="expense_financial"/>
       <field name="parent" ref="account_expenses"/>
     </record>
     <record model="account.account.template" id="account_bank_charges">
@@ -600,7 +592,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_essentials">
       <field name="name">Food and Essentials</field>
       <field name="code">E2</field>
-      <field name="type" ref="expense_essential"/>
       <field name="parent" ref="account_expenses"/>
     </record>
     <record model="account.account.template" id="account_childcare">
@@ -625,7 +616,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_housing">
       <field name="name">Housing</field>
       <field name="code">E3</field>
-      <field name="type" ref="expense_housing"/>
       <field name="parent" ref="account_expenses"/>
     </record>
     <record model="account.account.template" id="account_domestic_appliances">
@@ -668,7 +658,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_expense_living">
       <field name="name">Living Expenses</field>
       <field name="code">E4</field>
-      <field name="type" ref="expense_living"/>
       <field name="parent" ref="account_expenses"/>
     </record>
     <record model="account.account.template" id="account_clothing">
@@ -693,7 +682,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_expense_other">
       <field name="name">Other Expenses</field>
       <field name="code">E5</field>
-      <field name="type" ref="expense_other"/>
       <field name="parent" ref="account_expenses"/>
     </record>
     <record model="account.account.template" id="account_charity">
@@ -718,7 +706,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_entertainment">
       <field name="name">Recreation and Entertainment</field>
       <field name="code">E6</field>
-      <field name="type" ref="expense_recreation"/>
       <field name="parent" ref="account_expenses"/>
     </record>
     <record model="account.account.template" id="account_books">
@@ -767,7 +754,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_taxes">
       <field name="name">Taxes</field>
       <field name="code">E7</field>
-      <field name="type" ref="expense_taxes"/>
       <field name="parent" ref="account_expenses"/>
     </record>
     <record model="account.account.template" id="account_council_tax">
@@ -798,7 +784,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_utilities">
       <field name="name">Utilities</field>
       <field name="code">E8</field>
-      <field name="type" ref="expense_utilities"/>
       <field name="parent" ref="account_expenses"/>
     </record>
     <record model="account.account.template" id="account_power">
@@ -847,7 +832,6 @@ package for full copyright notices, license terms and support information.
     <record model="account.account.template" id="account_transport">
       <field name="name">Transport</field>
       <field name="code">E9</field>
-      <field name="type" ref="expense_transport"/>
       <field name="parent" ref="account_expenses"/>
     </record>
     <record model="account.account.template" id="account_car">
