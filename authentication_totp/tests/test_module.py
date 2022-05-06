@@ -12,6 +12,14 @@ from trytond.tests.test_tryton import ModuleTestCase, with_transaction
 TOTP_SECRET_KEY = 'GE3D-AYRA-KRHV-IUBA-KNSW-G4TF-OQQE-WZLZ'
 
 
+def create_user(name='totp', login='totp', totp_secret=None):
+    pool = Pool()
+    User = pool.get('res.user')
+    user = User(name=name, login=login, totp_secret=totp_secret)
+    user.save()
+    return user
+
+
 def current_timestamp():
     return int(time())
 
@@ -30,9 +38,8 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
     def test_user_get_login(self):
         pool = Pool()
         User = pool.get('res.user')
-        user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
-        user.save()
 
+        user = create_user(totp_secret=TOTP_SECRET_KEY)
         with self.assertRaises(LoginException) as cm:
             User.get_login('totp', {})
         self.assertEqual(cm.exception.name, 'totp_code')
@@ -48,9 +55,8 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
     def test_user_get_login_no_secret(self):
         pool = Pool()
         User = pool.get('res.user')
-        user = User(name='totp', login='totp')
-        user.save()
 
+        create_user()
         with self.assertRaises(LoginException) as cm:
             User.get_login('totp', {})
         self.assertEqual(cm.exception.name, 'totp_code')
@@ -83,11 +89,9 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
     def test_totp_check(self):
         pool = Pool()
         TOTPLogin = pool.get('res.user.login.totp')
-        User = pool.get('res.user')
-        user = User(name='totp', login='totp', totp_secret=TOTP_SECRET_KEY)
-        user.save()
 
         time = current_timestamp()
+        user = create_user(totp_secret=TOTP_SECRET_KEY)
         totp_code = TOTP(key=TOTP_SECRET_KEY).generate(time=time).token
         totp_login, = TOTPLogin.create([{'user_id': user.id}])
 
