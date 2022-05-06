@@ -180,10 +180,11 @@ class User(metaclass=PoolMeta):
             return user_id
 
     @classmethod
-    def _ModelView__view_look_dom(
+    def _ModelView__parse_fields(
             cls, element, type, fields_width=None, _fields_attrs=None):
-        result = super()._ModelView__view_look_dom(
+        result = super()._ModelView__parse_fields(
             element, type, fields_width, _fields_attrs)
+        # Make the update_totp_secret button clickable in preferences
         if element.get('name') == 'update_totp_secret':
             encoder = PYSONEncoder()
             states = cls._buttons['update_totp_secret']
