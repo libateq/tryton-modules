@@ -112,7 +112,7 @@ class AuthenticationTOTPTestCase(ModuleTestCase):
         TOTPLogin.mark_counter_used(user, counter)
 
         totp_logins = TOTPLogin.search([('user_id', '=', user.id)])
-        counters = [l.counter for l in totp_logins]
+        counters = [t.counter for t in totp_logins]
         self.assertIn(counter, counters)
 
     @with_transaction()
