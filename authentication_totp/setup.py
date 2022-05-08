@@ -114,7 +114,7 @@ setup(
     install_requires=install_requires(),
     extras_require={
         'qrcode': ['qrcode', 'pillow'],
-        'test': tests_require,
+        'test': tests_require(),
         },
     zip_safe=False,
     entry_points="""

@@ -113,7 +113,7 @@ setup(
     python_requires='>=3.6',
     install_requires=install_requires(),
     extras_require={
-        'test': tests_require,
+        'test': tests_require(),
         },
     zip_safe=False,
     entry_points="""
