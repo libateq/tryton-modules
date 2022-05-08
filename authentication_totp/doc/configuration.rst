@@ -24,12 +24,21 @@ This, as defined in :rfc:`6238`, can be one of ``sha1``, ``sha256`` or
 
 The default value is: ``sha1``
 
+.. _config-authentication_totp.application_secrets_dir:
+
+``application_secrets_dir``
+===========================
+
+This is the directory that contains the application_secrets_file_.
+
+The default value is: `[database] path <trytond:config-database.path>`
+
 .. _config-authentication_totp.application_secrets_file:
 
 ``application_secrets_file``
 ============================
 
-This is the path to a file that contains secrets that are used to encrypt
+This is the name of the file that contains secrets used to encrypt
 and decrypt the TOTP keys when they are stored and retrieved from the
 database.
 The file should contain lines of the form ``tag: secret``.
@@ -37,21 +46,10 @@ It is recommended to either incremental counters (``1``, ``2``, ...) or
 ISO dates (``2020-05-04``, ``2020-07-21``, ...) as the ``tag``.
 Take care to ensure the secrets have sufficient entropy.
 
-Suitable lines can be created as follows:
-
-.. code-block:: bash
-
-   python3 -c "
-   from passlib.totp import generate_secret
-   from datetime import date
-   print('{}: {}'.format(date.today(), generate_secret()))"
-
 .. note::
 
-   This configuration option is not set by default.
-   This means the TOTP keys are stored unencrypted in the database.
-   It is **strongly recommended** that you setup a suitable secrets file
-   and use it, especially on production systems.
+   If this file does not exist it will be created automatically by trytond.
+   Take care to ensure the contents of this file is kept secure.
 
 .. seealso::
 
@@ -59,7 +57,7 @@ Suitable lines can be created as follows:
 
    __ https://passlib.readthedocs.io/en/stable/lib/passlib.totp.html#appwallet
 
-The default value is: ``None``
+The default value is: ``application.secrets``
 
 .. _config-authentication_totp.digits:
 

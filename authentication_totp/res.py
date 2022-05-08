@@ -2,10 +2,13 @@
 # Please see the COPYRIGHT and README.rst files at the top level of this
 # package for full copyright notices, license terms and support information.
 from binascii import Error as BinAsciiError
+from datetime import date
 from io import BytesIO
 from math import ceil
+from os import O_CREAT, O_WRONLY, open as os_open
+from os.path import exists, join as join_path
 from passlib.exc import TokenError, UsedTokenError
-from passlib.totp import TOTP
+from passlib.totp import TOTP, generate_secret
 from sql import Null
 from sql.aggregate import Max
 try:
@@ -25,14 +28,29 @@ from .exception import (
     TOTPAccessCodeReuseError, TOTPInvalidSecretError, TOTPKeyTooShortError,
     TOTPLoginException)
 
+
+def get_application_secrets_file():
+    secrets_file = join_path(
+        config.get(
+            'authentication_totp', 'application_secrets_dir',
+            default=config.get('database', 'path')),
+        config.get(
+            'authentication_totp', 'application_secrets_file',
+            default='application.secrets'))
+    if not exists(secrets_file):
+        flags = O_WRONLY | O_CREAT
+        with open(os_open(secrets_file, flags, mode=0o600), 'w') as file:
+            file.write('{}: {}\n'.format(date.today(), generate_secret()))
+    return secrets_file
+
+
 _algorithm = config.get('authentication_totp', 'algorithm', default='sha1')
+_application_secrets_file = get_application_secrets_file()
 _digits = config.getint('authentication_totp', 'digits', default=6)
 _issuer = config.get(
     'authentication_totp', 'issuer', default='{company} Tryton')
 _key_length = config.get('authentication_totp', 'key_length', default=160)
 _period = config.getint('authentication_totp', 'period', default=30)
-_secrets_file = config.get(
-    'authentication_totp', 'application_secrets_file', default=None)
 _window = config.getint('authentication_totp', 'window', default=_period)
 _skew = config.getint('authentication_totp', 'skew', default=0)
 
@@ -124,8 +142,8 @@ class User(metaclass=PoolMeta):
     @classmethod
     def _totp_factory(cls):
         return TOTP.using(
-            secrets_path=_secrets_file, digits=_digits, alg=_algorithm,
-            period=_period)
+            secrets_path=_application_secrets_file, digits=_digits,
+            alg=_algorithm, period=_period)
 
     @classmethod
     def totp(cls, source=None, **kwargs):

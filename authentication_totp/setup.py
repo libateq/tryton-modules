@@ -45,7 +45,7 @@ def required_version(name, version):
 
 
 def install_requires(third_party_packages={}):
-    python_packages = ['passlib']
+    python_packages = ['cryptography', 'passlib']
     trytond_requires = [required_version('trytond', version)]
     for module in tryton_cfg.get('depends', []):
         if not match(r'(ir|res)(\W|$)', module):
