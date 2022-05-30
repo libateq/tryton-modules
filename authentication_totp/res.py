@@ -1,14 +1,11 @@
 # This file is part of the authentication_totp Tryton module.
 # Please see the COPYRIGHT and README.rst files at the top level of this
 # package for full copyright notices, license terms and support information.
+import os
 from binascii import Error as BinAsciiError
 from datetime import date
 from io import BytesIO
 from math import ceil
-from os import O_CREAT, O_WRONLY
-from os import open as os_open
-from os.path import exists
-from os.path import join as join_path
 
 from passlib.exc import TokenError, UsedTokenError
 from passlib.totp import TOTP, generate_secret
@@ -34,16 +31,16 @@ from .exception import (
 
 
 def get_application_secrets_file():
-    secrets_file = join_path(
+    secrets_file = os.path.join(
         config.get(
             'authentication_totp', 'application_secrets_dir',
             default=config.get('database', 'path')),
         config.get(
             'authentication_totp', 'application_secrets_file',
             default='application.secrets'))
-    if not exists(secrets_file):
-        flags = O_WRONLY | O_CREAT
-        with open(os_open(secrets_file, flags, mode=0o600), 'w') as file:
+    if not os.path.exists(secrets_file):
+        flags = os.O_WRONLY | os.O_CREAT
+        with open(os.open(secrets_file, flags, mode=0o600), 'w') as file:
             file.write('{}: {}\n'.format(date.today(), generate_secret()))
     return secrets_file
 
