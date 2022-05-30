@@ -3,8 +3,7 @@
 # package for full copyright notices, license terms and support information.
 from trytond.pool import Pool
 
-from . import country
-from . import party
+from . import country, party
 
 
 def register():

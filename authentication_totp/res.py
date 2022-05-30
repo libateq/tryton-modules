@@ -5,12 +5,16 @@ from binascii import Error as BinAsciiError
 from datetime import date
 from io import BytesIO
 from math import ceil
-from os import O_CREAT, O_WRONLY, open as os_open
-from os.path import exists, join as join_path
+from os import O_CREAT, O_WRONLY
+from os import open as os_open
+from os.path import exists
+from os.path import join as join_path
+
 from passlib.exc import TokenError, UsedTokenError
 from passlib.totp import TOTP, generate_secret
 from sql import Null
 from sql.aggregate import Max
+
 try:
     from qrcode import QRCode
     from qrcode.image.pil import PilImage

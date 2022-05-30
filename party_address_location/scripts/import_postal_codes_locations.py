@@ -4,13 +4,14 @@
 # package for full copyright notices, license terms and support information.
 import csv
 import sys
-
 from io import StringIO
+
 from proteus import Model
+
 from trytond.modules.country.scripts import import_postal_codes
 
 try:
-    from progressbar import ProgressBar, Bar, ETA, SimpleProgress
+    from progressbar import ETA, Bar, ProgressBar, SimpleProgress
 except ImportError:
     ProgressBar = None
 
