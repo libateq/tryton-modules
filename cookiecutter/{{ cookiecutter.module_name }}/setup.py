@@ -2,72 +2,84 @@
 # This file is part of the {{ cookiecutter.module_name }} Tryton module.
 # Please see the COPYRIGHT and README.rst files at the top level of this
 # package for full copyright notices, license terms and support information.
+import io
+import os
+import re
 from configparser import ConfigParser
-from io import open
-from os.path import dirname, join
-from re import match, sub
+
 from setuptools import find_packages, setup
 
-
-def setup_tryton_cfg():
-    global tryton_cfg
-    config = ConfigParser()
-    with open('tryton.cfg') as config_file:
-        config.read_file(config_file)
-    tryton_cfg = dict(config.items('tryton'))
-    for key in ('depends', 'extras_depend', 'xml'):
-        if key in tryton_cfg:
-            tryton_cfg[key] = tryton_cfg[key].strip().splitlines()
-
-
-def setup_version():
-    global version
-    version = tryton_cfg.get('version', '0.0.1').split('.', 2)
-    version = dict(
-        zip(('major', 'minor', 'revision'), [int(i) for i in version]))
-    if version['minor'] % 2:
-        version['revision'] = 'dev{}'.format(version['revision'])
+MODULE2PREFIX = {}
 
 
 def read(fname):
-    with open(join(dirname(__file__), fname), 'r', encoding='utf-8') as file:
-        content = file.read()
-    content = sub(
+    content = io.open(
+        os.path.join(os.path.dirname(__file__), fname),
+        'r', encoding='utf-8').read()
+    content = re.sub(
         r'(?m)^\.\. toctree::\r?\n((^$|^\s.*$)\r?\n)*', '', content)
     return content
 
 
-def required_version(name, version):
-    required = '{name} >={major}.{minor}{dev}, <{next_major}.{next_minor}'
-    return required.format(
-        name=name, next_major=version['major'], next_minor=version['minor']+1,
-        dev='.dev0' if version['minor'] % 2 else '', **version)
+def get_require_version(name):
+    if minor_version % 2:
+        require = '%s >= %s.%s.dev0, < %s.%s'
+    else:
+        require = '%s >= %s.%s, < %s.%s'
+    require %= (
+        name, major_version, minor_version, major_version, minor_version + 1)
+    return require
 
 
-def install_requires(third_party_packages={}):
-    python_packages = []
-    trytond_requires = [required_version('trytond', version)]
-    for module in tryton_cfg.get('depends', []):
-        if not match(r'(ir|res)(\W|$)', module):
-            module_name = third_party_packages.get(
-                module, 'trytond_{module}'.format(module=module))
-            trytond_requires.append(required_version(module_name, version))
-    return python_packages + trytond_requires
+config = ConfigParser()
+config.read_file(open(os.path.join(os.path.dirname(__file__), 'tryton.cfg')))
+info = dict(config.items('tryton'))
+for key in ('depends', 'extras_depend', 'xml'):
+    if key in info:
+        info[key] = info[key].strip().splitlines()
+version = info.get('version', '0.0.1')
+major_version, minor_version, _ = version.split('.', 2)
+major_version = int(major_version)
+minor_version = int(minor_version)
+name = '{{ cookiecutter.package_name }}'
 
+if minor_version % 2:
+    version = '%s.%s.dev0' % (major_version, minor_version)
+local_version = []
+if os.environ.get('CI_JOB_ID'):
+    local_version.append(os.environ['CI_JOB_ID'])
+else:
+    for build in ['CI_BUILD_NUMBER', 'CI_JOB_NUMBER']:
+        if os.environ.get(build):
+            local_version.append(os.environ[build])
+        else:
+            local_version = []
+            break
+if local_version:
+    version += '+' + '.'.join(local_version)
 
-def tests_require():
-    {% if cookiecutter.test_with_scenario.lower().startswith('y') -%}
-    return [required_version('proteus', version)]
-    {%- else -%}
-    return []
-    {%- endif %}
+requires = []
+for dep in info.get('depends', []):
+    if not re.match(r'(ir|res)(\W|$)', dep):
+        prefix = MODULE2PREFIX.get(dep, 'trytond')
+        requires.append(get_require_version('%s_%s' % (prefix, dep)))
+requires.append(get_require_version('trytond'))
 
+{% if cookiecutter.test_with_scenario.lower().startswith('y') -%}
+tests_require = [get_require_version('proteus')]
+{%- else -%}
+tests_require = []
+{%- endif %}
+dependency_links = []
+if minor_version % 2:
+    dependency_links.append(
+        'https://trydevpi.tryton.org/?local_version='
+        + '.'.join(local_version)
+        + '&mirror=github')
 
-setup_tryton_cfg()
-setup_version()
 setup(
-    name='{{ cookiecutter.package_name }}',
-    version='{major}.{minor}.{revision}'.format(**version),
+    name=name,
+    version=version,
     {% if cookiecutter.purpose|length <= 41 -%}
     description="Tryton module that {{ cookiecutter.purpose }}",
     {%- else -%}
@@ -86,15 +98,15 @@ setup(
     keywords='{{ cookiecutter.keywords }}',
     package_dir={'trytond.modules.{{ cookiecutter.module_name }}': '.'},
     packages=(
-        ['trytond.modules.{{ cookiecutter.module_name }}'] +
-        ['trytond.modules.{{ cookiecutter.module_name }}.{}'.format(p)
-         for p in find_packages()]
+        ['trytond.modules.{{ cookiecutter.module_name }}']
+        + ['trytond.modules.{{ cookiecutter.module_name }}.%s' % p
+            for p in find_packages()]
         ),
     package_data={
         'trytond.modules.{{ cookiecutter.module_name }}': (
-            tryton_cfg.get('xml', []) + [
-                '*.fodt', 'icons/*.svg', 'locale/*.po', 'tests/*.rst',
-                'tryton.cfg', 'view/*.xml']),
+            info.get('xml', [])
+            + ['tryton.cfg', 'view/*.xml', 'locale/*.po', '*.fodt',
+                'icons/*.svg', 'tests/*.rst']),
         },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -103,8 +115,8 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: Financial and Insurance Industry',
         'Intended Audience :: Legal Industry',
-        'Intended Audience :: Manufacturing',
-        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',  # noqa: E501
+        'License :: OSI Approved :: '
+        'GNU General Public License v3 or later (GPLv3+)',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
@@ -117,10 +129,11 @@ setup(
         ],
     license='GPL-3',
     python_requires='>=3.7',
-    install_requires=install_requires(),
+    install_requires=requires,
     extras_require={
         'test': tests_require,
         },
+    dependency_links=dependency_links,
     zip_safe=False,
     entry_points="""
     [trytond.modules]

@@ -8,6 +8,6 @@ def register():
     Pool.register(
         module='{{ cookiecutter.module_name }}', type_='model')
     Pool.register(
-        module='{{ cookiecutter.module_name }}', type_='report')
-    Pool.register(
         module='{{ cookiecutter.module_name }}', type_='wizard')
+    Pool.register(
+        module='{{ cookiecutter.module_name }}', type_='report')
