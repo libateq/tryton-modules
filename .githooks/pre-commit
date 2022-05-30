@@ -25,6 +25,14 @@ if git diff --cached --name-only --diff-filter=ACM | grep -q '.*\.py'; then
     [ $? != 0 ] && exit 1
 fi
 
+# Check to ensure python imports are sorted correctly
+if git diff --cached --name-only --diff-filter=ACM | grep -q '.*\.py'; then
+    isort --check $( \
+        git diff --cached --name-only --diff-filter=ACM "${AGAINST}" | \
+        grep '.*\.py' )
+    [ $? != 0 ] && exit 1
+fi
+
 # Check xml files to ensure that they are valid
 if git diff --cached --name-only --diff-filter=ACM | grep -q '.*\.xml'; then
     xmllint --noout $( \
