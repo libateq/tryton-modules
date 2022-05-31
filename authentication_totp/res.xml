@@ -28,7 +28,6 @@ package for full copyright notices, license terms and support information.
         <record model="ir.model.button" id="update_totp_secret_button">
             <field name="name">update_totp_secret</field>
             <field name="string">Update Secret</field>
-            <field name="help">Update the TOTP secret and enable TOTP two-factor authentication.</field>
             <field name="model" search="[('model', '=', 'res.user')]"/>
         </record>
         <record model="ir.model.button-res.group" id="update_totp_secret_button_wizard_group">
