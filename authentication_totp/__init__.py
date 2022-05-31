@@ -8,9 +8,14 @@ from . import res
 
 def register():
     Pool.register(
+        res.UpdateSecretStart,
         res.User,
         res.UserLoginTOTP,
         module='authentication_totp', type_='model')
+    Pool.register(
+        res.UpdateSecret,
+        module='authentication_totp', type_='wizard')
+
     Pool.register(
         res.UserCompany,
         module='authentication_totp', type_='model', depends=['company'])

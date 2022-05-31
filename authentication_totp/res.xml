@@ -34,5 +34,20 @@ package for full copyright notices, license terms and support information.
             <field name="button" ref="update_totp_secret_button"/>
             <field name="group" ref="update_totp_secret_group"/>
         </record>
+
+        <record model="ir.ui.view" id="update_totp_secret_view_form">
+            <field name="model">res.user.update_totp_secret.start</field>
+            <field name="type">form</field>
+            <field name="name">update_totp_secret_form</field>
+        </record>
+        <record model="ir.action.wizard" id="update_totp_secret_wizard">
+            <field name="name">Update TOTP Secret</field>
+            <field name="wiz_name">res.user.update_totp_secret</field>
+            <field name="model">res.user</field>
+        </record>
+        <record model="ir.action-res.group" id="update_totp_secret_wizard_group">
+            <field name="action" ref="update_totp_secret_wizard"/>
+            <field name="group" ref="update_totp_secret_group"/>
+        </record>
     </data>
 </tryton>

@@ -21,13 +21,15 @@ except ImportError:
 from trytond.config import config
 from trytond.i18n import gettext
 from trytond.model import ModelSQL, ModelView, fields
+from trytond.model.exceptions import AccessError
 from trytond.pool import Pool, PoolMeta
 from trytond.pyson import Eval
 from trytond.transaction import Transaction
+from trytond.wizard import Button, StateTransition, StateView, Wizard
 
 from .exception import (
     TOTPAccessCodeReuseError, TOTPInvalidSecretError, TOTPKeyTooShortError,
-    TOTPLoginException)
+    TOTPLoginException, TOTPTokenIncorrect)
 
 
 def get_application_secrets_file():
@@ -165,12 +167,10 @@ class User(QRCodeMixin, metaclass=PoolMeta):
     def generate_totp_secret(cls):
         return get_totp(new=True).pretty_key()
 
-    @ModelView.button_change(methods=[
-            'on_change_with_totp_qrcode', 'on_change_with_totp_url'])
-    def update_totp_secret(self):
-        self.totp_secret = self.generate_totp_secret()
-        self.totp_url = self.on_change_with_totp_url()
-        self.totp_qrcode = self.on_change_with_totp_qrcode()
+    @classmethod
+    @ModelView.button_action('authentication_totp.update_totp_secret_wizard')
+    def update_totp_secret(cls, users):
+        pass
 
     @classmethod
     def read(cls, ids, fields_names):
@@ -314,3 +314,90 @@ class UserLoginTOTP(ModelSQL):
         cls.clean_old_counters(user, counter)
 
         return True
+
+
+class UpdateSecretStart(QRCodeMixin, ModelView):
+    "Update Secret"
+    __name__ = 'res.user.update_totp_secret.start'
+
+    user = fields.Many2One('res.user', "User", readonly=True)
+    login = fields.Function(
+        fields.Char("Login"),
+        'on_change_with_login')
+    totp_secret = fields.Char(
+        "TOTP Secret", required=True,
+        help="Secret key used for time-based one-time password (TOTP) "
+        "user authentication.")
+    totp_token = fields.Char("TOTP Token", required=True)
+
+    @fields.depends('user')
+    def on_change_with_login(self, name=None):
+        if self.user:
+            return self.user.login
+
+    @fields.depends('user')
+    def _get_totp_url_fields(self):
+        result = super()._get_totp_url_fields()
+        if getattr(self.user, 'company', None):
+            result['company'] = self.user.company.rec_name
+        return result
+
+
+class UpdateSecret(Wizard):
+    "Update Secret"
+    __name__ = 'res.user.update_totp_secret'
+
+    start = StateView(
+        'res.user.update_totp_secret.start',
+        'authentication_totp.update_totp_secret_view_form', [
+            Button("Cancel", 'end', 'tryton-cancel'),
+            Button("Update", 'update', 'tryton-ok', default=True),
+            ])
+    update = StateTransition()
+
+    def default_start(self, fields):
+        result = {
+            'user': self.record.id,
+            'totp_secret': self.record.generate_totp_secret(),
+            }
+        return result
+
+    def transition_update(self):
+        self.check_user_access()
+        try:
+            counter, _ = get_totp(key=self.start.totp_secret).match(
+                self.start.totp_token, window=_window, skew=_skew)
+        except BinAsciiError:
+            raise TOTPInvalidSecretError(gettext(
+                'authentication_totp.msg_user_invalid_totp_secret',
+                login=self.start.login))
+        except TokenError:
+            raise TOTPTokenIncorrect(gettext(
+                'authentication_totp.msg_incorrect_token'))
+
+        self.record.totp_secret = self.start.totp_secret
+        self.record.save()
+
+        return 'end'
+
+    def end(self):
+        return 'reload'
+
+    def _execute(self, state_name):
+        self.check_user_access()
+        return super()._execute(state_name)
+
+    def check_user_access(self):
+        pool = Pool()
+        Group = pool.get('res.group')
+        ModelData = pool.get('ir.model.data')
+        User = pool.get('res.user')
+
+        super().check_access()
+
+        user = User(Transaction().user)
+        admin_group = Group(ModelData.get_id('res', 'group_admin'))
+        if self.record != user and admin_group not in user.groups:
+            raise AccessError(gettext(
+                'ir.msg_access_wizard_error',
+                name=self.__class__.__name__))

@@ -12,6 +12,9 @@ package for full copyright notices, license terms and support information.
     <record model="ir.message" id="msg_user_totp_code_reused">
       <field name="text">WARNING - this Access Code has already been used, please enter the next Access Code for %(login)s</field>
     </record>
+    <record model="ir.message" id="msg_incorrect_token">
+      <field name="text">To update the TOTP secret you need to enter in a valid token.</field>
+    </record>
     <record model="ir.message" id="msg_user_invalid_totp_secret">
       <field name="text">The TOTP secret for %(login)s must be a base32 encoded string.</field>
     </record>

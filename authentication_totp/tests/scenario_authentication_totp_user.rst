@@ -4,6 +4,7 @@ TOTP Authentication Scenario
 
 Imports::
 
+    >>> from passlib.totp import TOTP
     >>> from proteus import Model, Wizard
     >>> from trytond.modules.authentication_totp.res import QRCode
     >>> from trytond.modules.company.tests.tools import (
@@ -23,14 +24,20 @@ Create some users with TOTP secrets::
     >>> User = Model.get('res.user')
     >>> admin, = User.find([('login', '=', 'admin')])
 
+    >>> Group = Model.get('res.group')
+    >>> update_secret_group, = Group.find(
+    ...     [('name', '=', 'Update TOTP Secret')])
+
     >>> user = User()
     >>> user.login = 'totp_user'
     >>> user.totp_secret = TOTP_SECRET_KEY
+    >>> user.groups.append(Group(update_secret_group.id))
     >>> user.save()
 
     >>> user_other = User()
     >>> user_other.login = 'totp_user_other'
     >>> user_other.totp_secret = TOTP_SECRET_KEY
+    >>> user_other.groups.append(Group(update_secret_group.id))
     >>> user_other.save()
 
 The user can see their own TOTP details::
@@ -67,16 +74,35 @@ TOTP urls include the company, if the user has one::
     >>> user.totp_url
     'otpauth://totp/Dunder%20Mifflin%20Tryton:totp_user?secret=GE3DAYRAKRHVIUBAKNSWG4TFOQQEWZLZ&issuer=Dunder%20Mifflin%20Tryton'
 
-A user can generate a new random TOTP secret::
+A user can start to update their TOTP secret to a new one::
 
-    >>> new = User.update_totp_secret([user], config.context)[0]
-    >>> new['totp_secret'] != user.totp_secret
+    >>> update_secret = Wizard('res.user.update_totp_secret', [user])
+    >>> update_secret.form.totp_secret != user.totp_secret
     True
 
-And save a new TOTP secret in their preferences::
+But they must enter in the correct token to save the new secret::
+
+    >>> update_secret.form.totp_token = 'INCORRECT TOKEN'
+    >>> update_secret.execute('update')  # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+       ...
+    TOTPTokenIncorrect: ...
+
+    >>> token = TOTP(key=update_secret.form.totp_secret).generate().token
+    >>> update_secret.form.totp_token = token
+    >>> update_secret.execute('update')
+
+A user cannot update other user's TOTP secrets::
+
+    >>> update_secret = Wizard('res.user.update_totp_secret', [user_other])  # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+       ...
+    AccessError: ...
+
+And manually save a new TOTP secret in their preferences::
 
     >>> User.set_preferences(
-    ...     {'totp_secret': new['totp_secret']}, config.context)
+    ...     {'totp_secret': TOTP(new=True).pretty_key()}, config.context)
     >>> user.reload()
     >>> user.totp_secret != TOTP_SECRET_KEY
     True

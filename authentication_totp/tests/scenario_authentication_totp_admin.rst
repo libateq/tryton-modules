@@ -65,10 +65,11 @@ The admin user can set TOTP secrets::
 
 Unless it is to an invalid value::
 
-    >>> user.totp_secret = 'an_invalid_key'  # doctest: +IGNORE_EXCEPTION_DETAIL
+    >>> user.totp_secret = 'an_invalid_key'
+    >>> user.save()  # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
        ...
-    binascii.Error: ...
+    TOTPInvalidSecretError: ...
 
     >>> user.totp_secret = TOTP_SECRET_KEY[:19]
     >>> user.save()  # doctest: +IGNORE_EXCEPTION_DETAIL

@@ -22,6 +22,10 @@ class TOTPAccessCodeReuseError(TOTPLoginException):
         super().__init__(parameter, login, 'msg_user_totp_code_reused')
 
 
+class TOTPTokenIncorrect(UserError):
+    "Raised if the token is wrong when trying to update the totp secret"
+
+
 class TOTPInvalidSecretError(UserError):
     "Raised when the secret is not of the right form"
 
