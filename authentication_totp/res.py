@@ -56,6 +56,17 @@ _window = config.getint('authentication_totp', 'window', default=_period)
 _skew = config.getint('authentication_totp', 'skew', default=0)
 
 
+def get_totp(source=None, **kwargs):
+    totp = TOTP.using(
+        secrets_path=_application_secrets_file, digits=_digits,
+        alg=_algorithm, period=_period)
+    if source:
+        return totp.from_source(source=source)
+    else:
+        kwargs.setdefault('size', ceil(_key_length / 8))
+        return totp(**kwargs)
+
+
 class User(metaclass=PoolMeta):
     __name__ = 'res.user'
 
@@ -96,14 +107,14 @@ class User(metaclass=PoolMeta):
 
     def get_totp_secret(self, name):
         if self.totp_key:
-            return self.totp(source=self.totp_key).pretty_key()
+            return get_totp(source=self.totp_key).pretty_key()
 
     @classmethod
     def set_totp_secret(cls, users, name, value):
         for user in users:
             if value:
                 try:
-                    user.totp_key = cls.totp(key=value).to_json()
+                    user.totp_key = get_totp(key=value).to_json()
                 except BinAsciiError:
                     raise TOTPInvalidSecretError(gettext(
                         'authentication_totp.msg_user_invalid_totp_secret',
@@ -124,7 +135,7 @@ class User(metaclass=PoolMeta):
             return
         issuer = _issuer.format(**self._get_totp_issuer_fields())
         issuer = issuer.strip()
-        totp = self.totp(key=self.totp_secret)
+        totp = get_totp(key=self.totp_secret)
         return totp.to_uri(label=self.login, issuer=issuer)
 
     @fields.depends('totp_secret', methods=['on_change_with_totp_url'])
@@ -141,23 +152,8 @@ class User(metaclass=PoolMeta):
         return data.getvalue()
 
     @classmethod
-    def _totp_factory(cls):
-        return TOTP.using(
-            secrets_path=_application_secrets_file, digits=_digits,
-            alg=_algorithm, period=_period)
-
-    @classmethod
-    def totp(cls, source=None, **kwargs):
-        totp = cls._totp_factory()
-        if source:
-            return totp.from_source(source=source)
-        else:
-            kwargs.setdefault('size', ceil(_key_length / 8))
-            return totp(**kwargs)
-
-    @classmethod
     def generate_totp_secret(cls):
-        return cls.totp(new=True).pretty_key()
+        return get_totp(new=True).pretty_key()
 
     @ModelView.button_change(methods=[
             'on_change_with_totp_qrcode', 'on_change_with_totp_url'])
@@ -202,7 +198,7 @@ class User(metaclass=PoolMeta):
             if not user.totp_key:
                 continue
 
-            totp = cls.totp(source=user.totp_key)
+            totp = get_totp(source=user.totp_key)
             if len(totp.key) < min_key_length:
                 raise TOTPKeyTooShortError(gettext(
                     'authentication_totp.msg_user_totp_too_short',
@@ -295,7 +291,7 @@ class UserLoginTOTP(ModelSQL):
 
         last_counter = cls.get_last_counter(user)
         try:
-            counter, _ = User.totp(source=user.totp_key).match(
+            counter, _ = get_totp(source=user.totp_key).match(
                 code, time=_time, window=_window, skew=_skew,
                 last_counter=last_counter)
         except UsedTokenError:
