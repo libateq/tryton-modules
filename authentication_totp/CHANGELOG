@@ -1,4 +1,14 @@
+Version 6.4.0 - 2022-05-31
+* Add update totp secret wizard
+* Drop python 3.6 and add python 3.10
+* Automatically create totp application_secrets_file
+* Enable update_totp_secret button using a group
+* Only create totp login records on successful match
+* Replace test setuptools command by unittest discover
+* Allow configuration of totp digits, algorithm and period
+* Allow configuration of totp window and skew
 * Ensure users can only access their own totp_secret
+* Bug fixes (see git log for details)
 
 Version 6.2.0 - 2021-12-06
 * Bug fixes (see git log for details)
