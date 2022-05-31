@@ -67,7 +67,63 @@ def get_totp(source=None, **kwargs):
         return totp(**kwargs)
 
 
-class User(metaclass=PoolMeta):
+class QRCodeMixin:
+    __slots__ = ()
+
+    totp_qrcode = fields.Function(
+        fields.Binary(
+            "TOTP QR Code",
+            states={
+                'invisible': ~Eval('totp_secret', '') | (not QRCode),
+                },
+            depends=['totp_secret'],
+            help="The QR code that contains the details of the TOTP secret."),
+        'on_change_with_totp_qrcode')
+    totp_url = fields.Function(
+        fields.Char(
+            "TOTP URL",
+            states={
+                'invisible': ~Eval('totp_secret', ''),
+                },
+            depends=['totp_secret'],
+            help="The URL that contains the details of the TOTP secret."),
+        'on_change_with_totp_url')
+
+    @fields.depends('login')
+    def _get_totp_url_fields(self):
+        return {
+            'label': self.login,
+            'company': "",
+            }
+
+    @fields.depends('totp_secret', methods=['_get_totp_url_fields'])
+    def on_change_with_totp_url(self, name=None):
+        if not self.totp_secret:
+            return
+
+        url_fields = self._get_totp_url_fields()
+        issuer = _issuer.format(**url_fields).strip()
+        try:
+            totp = get_totp(key=self.totp_secret)
+        except BinAsciiError:
+            return
+        return totp.to_uri(label=url_fields['label'], issuer=issuer)
+
+    @fields.depends('totp_secret', methods=['on_change_with_totp_url'])
+    def on_change_with_totp_qrcode(self, name=None):
+        url = self.on_change_with_totp_url()
+        if not url or not QRCode:
+            return
+
+        data = BytesIO()
+        qr = QRCode(image_factory=PilImage)
+        qr.add_data(url)
+        image = qr.make_image()
+        image.save(data)
+        return data.getvalue()
+
+
+class User(QRCodeMixin, metaclass=PoolMeta):
     __name__ = 'res.user'
 
     totp_key = fields.Char("TOTP Key")
@@ -76,24 +132,6 @@ class User(metaclass=PoolMeta):
             help="Secret key used for time-based one-time password (TOTP) "
             "user authentication."),
         'get_totp_secret', setter='set_totp_secret')
-    totp_qrcode = fields.Function(fields.Binary(
-            "TOTP QR Code",
-            states={
-                'invisible': ~Eval('totp_secret', '') | (not QRCode),
-                },
-            depends=['totp_secret'],
-            help="The QR code for the secret key. Used with authenticator "
-            "apps."),
-        'on_change_with_totp_qrcode')
-    totp_url = fields.Function(fields.Char(
-            "TOTP URL",
-            states={
-                'invisible': ~Eval('totp_secret', ''),
-                },
-            depends=['totp_secret'],
-            help="The URL that contains the secret key and which gets encoded "
-            "into a QR Code."),
-        'on_change_with_totp_url')
 
     @classmethod
     def __setup__(cls):
@@ -122,34 +160,6 @@ class User(metaclass=PoolMeta):
             else:
                 user.totp_key = None
         cls.save(users)
-
-    def _get_totp_issuer_fields(self):
-        return {
-            'company': "",
-            }
-
-    @fields.depends(
-        'login', 'totp_secret', methods=['_get_totp_issuer_fields'])
-    def on_change_with_totp_url(self, name=None):
-        if not self.totp_secret:
-            return
-        issuer = _issuer.format(**self._get_totp_issuer_fields())
-        issuer = issuer.strip()
-        totp = get_totp(key=self.totp_secret)
-        return totp.to_uri(label=self.login, issuer=issuer)
-
-    @fields.depends('totp_secret', methods=['on_change_with_totp_url'])
-    def on_change_with_totp_qrcode(self, name=None):
-        url = self.on_change_with_totp_url()
-        if not url or not QRCode:
-            return
-
-        data = BytesIO()
-        qr = QRCode(image_factory=PilImage)
-        qr.add_data(url)
-        image = qr.make_image()
-        image.save(data)
-        return data.getvalue()
 
     @classmethod
     def generate_totp_secret(cls):
@@ -222,11 +232,11 @@ class UserCompany(metaclass=PoolMeta):
     __name__ = 'res.user'
 
     @fields.depends('company')
-    def _get_totp_issuer_fields(self):
-        company = self.company.rec_name if self.company else ""
-        return {
-            'company': company,
-            }
+    def _get_totp_url_fields(self):
+        result = super()._get_totp_url_fields()
+        if self.company:
+            result['company'] = self.company.rec_name
+        return result
 
 
 class UserLoginTOTP(ModelSQL):
